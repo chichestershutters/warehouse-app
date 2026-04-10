@@ -13,7 +13,7 @@
     --bg:#0f1117;--surface:#1a1d27;--surface2:#232636;--border:#2e3246;
     --accent:#3d7fff;--accent2:#00c896;--warn:#ff7043;--info:#9c6fff;
     --text:#f0f2ff;--text2:#8890b0;--text3:#555e7a;
-    --scraft:#3d7fff;--tropical:#00c896;--myt:#ff9f43;
+    --scraft:#3d7fff;--tropical:#00b8d9;--myt:#ff9f43;--courier:#9c6fff;
     --r:14px;--font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
@@ -94,9 +94,9 @@
   .driver-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
   .driver-btn{padding:16px 10px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;text-align:center;}
   .driver-btn.sc{border-color:var(--scraft);color:var(--scraft);background:rgba(61,127,255,.08);}
-  .driver-btn.tr{border-color:var(--tropical);color:var(--tropical);background:rgba(0,200,150,.08);}
+  .driver-btn.tr{border-color:var(--tropical);color:var(--tropical);background:rgba(0,184,217,.08);}
   .driver-btn.my{border-color:var(--myt);color:var(--myt);background:rgba(255,159,67,.08);}
-  .driver-btn.co{border-color:var(--text3);color:var(--text2);}
+  .driver-btn.co{border-color:var(--courier);color:var(--courier);background:rgba(156,111,255,.08);}
   .driver-btn:active{transform:scale(.94);}
 
   /* FILTER CHIPS */
@@ -112,8 +112,9 @@
   .cc-id{font-size:19px;font-weight:800;letter-spacing:-.3px;}
   .sup-badge{font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;letter-spacing:.5px;}
   .sb-sc{background:rgba(61,127,255,.15);color:var(--scraft);}
-  .sb-tr{background:rgba(0,200,150,.15);color:var(--tropical);}
+  .sb-tr{background:rgba(0,184,217,.15);color:var(--tropical);}
   .sb-my{background:rgba(255,159,67,.15);color:var(--myt);}
+  .sb-co{background:rgba(156,111,255,.15);color:var(--courier);}
   .cc-stats{display:flex;gap:20px;}
   .cc-stat-val{font-size:22px;font-weight:800;letter-spacing:-.5px;}
   .cc-stat-lbl{font-size:10px;color:var(--text2);font-weight:500;margin-top:1px;}
@@ -338,6 +339,7 @@
     <div class="nav-item active" onclick="showHome()"><div class="nav-icon">🏠</div><div class="nav-label">HOME</div></div>
     <div class="nav-item" onclick="showDeliveries()"><div class="nav-icon">🚛</div><div class="nav-label">DELIVERIES</div><div class="nav-badge" id="navBadge" style="display:none">0</div></div>
     <div class="nav-item" onclick="showPipeline()"><div class="nav-icon">🚢</div><div class="nav-label">PIPELINE</div></div>
+    <div class="nav-item" onclick="showHistory()"><div class="nav-icon">📋</div><div class="nav-label">HISTORY</div></div>
     <div class="nav-item" onclick="showSearch()"><div class="nav-icon">🔍</div><div class="nav-label">SEARCH</div></div>
   </div>
 </div>
@@ -366,6 +368,7 @@
     <div class="nav-item" onclick="showHome()"><div class="nav-icon">🏠</div><div class="nav-label">HOME</div></div>
     <div class="nav-item active" onclick="showDeliveries()"><div class="nav-icon">🚛</div><div class="nav-label">DELIVERIES</div></div>
     <div class="nav-item" onclick="showPipeline()"><div class="nav-icon">🚢</div><div class="nav-label">PIPELINE</div></div>
+    <div class="nav-item" onclick="showHistory()"><div class="nav-icon">📋</div><div class="nav-label">HISTORY</div></div>
     <div class="nav-item" onclick="showSearch()"><div class="nav-icon">🔍</div><div class="nav-label">SEARCH</div></div>
   </div>
 </div>
@@ -390,7 +393,7 @@
   <div class="topbar">
     <div class="topbar-left">
       <div class="topbar-title">Pipeline</div>
-      <div class="topbar-sub">Containers in transit</div>
+      <div class="topbar-sub">Containers in transit — tap to view orders</div>
     </div>
     <div class="topbar-right">
       <div class="icon-btn" onclick="loadPipeline()">🔄</div>
@@ -403,6 +406,31 @@
     <div class="nav-item" onclick="showHome()"><div class="nav-icon">🏠</div><div class="nav-label">HOME</div></div>
     <div class="nav-item" onclick="showDeliveries()"><div class="nav-icon">🚛</div><div class="nav-label">DELIVERIES</div></div>
     <div class="nav-item active" onclick="showPipeline()"><div class="nav-icon">🚢</div><div class="nav-label">PIPELINE</div></div>
+    <div class="nav-item" onclick="showHistory()"><div class="nav-icon">📋</div><div class="nav-label">HISTORY</div></div>
+    <div class="nav-item" onclick="showSearch()"><div class="nav-icon">🔍</div><div class="nav-label">SEARCH</div></div>
+  </div>
+</div>
+
+
+<!-- ═══ HISTORY ═══ -->
+<div class="screen" id="screen-history">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-title">History</div>
+      <div class="topbar-sub">Past deliveries — tap to view orders</div>
+    </div>
+    <div class="topbar-right">
+      <div class="icon-btn" onclick="loadHistory()">🔄</div>
+    </div>
+  </div>
+  <div class="scroll-body">
+    <div id="historyList"><div class="loading"><div class="spinner"></div>Loading...</div></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="showHome()"><div class="nav-icon">🏠</div><div class="nav-label">HOME</div></div>
+    <div class="nav-item" onclick="showDeliveries()"><div class="nav-icon">🚛</div><div class="nav-label">DELIVERIES</div></div>
+    <div class="nav-item" onclick="showPipeline()"><div class="nav-icon">🚢</div><div class="nav-label">PIPELINE</div></div>
+    <div class="nav-item active" onclick="showHistory()"><div class="nav-icon">📋</div><div class="nav-label">HISTORY</div></div>
     <div class="nav-item" onclick="showSearch()"><div class="nav-icon">🔍</div><div class="nav-label">SEARCH</div></div>
   </div>
 </div>
@@ -433,6 +461,7 @@
     <div class="nav-item" onclick="showHome()"><div class="nav-icon">🏠</div><div class="nav-label">HOME</div></div>
     <div class="nav-item" onclick="showDeliveries()"><div class="nav-icon">🚛</div><div class="nav-label">DELIVERIES</div></div>
     <div class="nav-item" onclick="showPipeline()"><div class="nav-icon">🚢</div><div class="nav-label">PIPELINE</div></div>
+    <div class="nav-item" onclick="showHistory()"><div class="nav-icon">📋</div><div class="nav-label">HISTORY</div></div>
     <div class="nav-item active" onclick="showSearch()"><div class="nav-icon">🔍</div><div class="nav-label">SEARCH</div></div>
   </div>
 </div>
@@ -1182,31 +1211,150 @@ async function loadPipeline() {
   try {
     const data = await apiFetch('getPipeline');
     const items = data.pipeline || [];
+    state.pipeline = items;
     if (!items.length) {
       list.innerHTML = '<div class="empty-state"><div class="empty-icon">🚢</div><div class="empty-text">No containers in transit</div></div>';
       return;
     }
-    list.innerHTML = items.map(p => {
-      const supClass = p.supplier === 'S:CRAFT' ? 'sb-sc' : p.supplier === 'TROPICAL' ? 'sb-tr' : 'sb-my';
-      const statClass = p.status === 'ON VESSEL' ? 'ps-vessel' : 'ps-port';
-      return `
-      <div class="pipeline-card">
-        <div class="pipe-top">
-          <div>
-            <div class="pipe-id">${p.containerID}</div>
-            <div class="sup-badge ${supClass}" style="display:inline-block;margin-top:4px">${p.supplier}</div>
+    list.innerHTML = items.map(p => renderContainerCard(p, 'pipeline')).join('');
+  } catch(e) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Could not load pipeline</div></div>';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// HISTORY
+// ═══════════════════════════════════════════════════════════
+function showHistory() {
+  showScreen('history');
+  loadHistory();
+}
+
+async function loadHistory() {
+  const list = document.getElementById('historyList');
+  list.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+  try {
+    const data = await apiFetch('getHistory');
+    const items = data.history || [];
+    state.historyItems = items;
+    if (!items.length) {
+      list.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">No history yet</div><div class="empty-sub">Past deliveries will appear here</div></div>';
+      return;
+    }
+    list.innerHTML = items.map(p => renderContainerCard(p, 'history')).join('');
+  } catch(e) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Could not load history</div></div>';
+  }
+}
+
+// Shared card renderer for pipeline and history
+function renderContainerCard(p, context) {
+  const supClass = p.supplier === 'S:CRAFT' ? 'sb-sc' : p.supplier === 'TROPICAL' ? 'sb-tr' : 'sb-my';
+  const isPipeline = context === 'pipeline';
+  const statusColor = p.status === 'FULLY ZONED' ? 'var(--accent2)' :
+                      p.status === 'ARRIVED'      ? 'var(--warn)' :
+                      p.status === 'ON VESSEL'     ? 'var(--accent)' : 'var(--info)';
+  const dateLabel = isPipeline ? 'ETA' : 'Arrived';
+  const dateVal   = isPipeline ? (p.etaDate || 'TBC') : (p.actualArrivalDate || p.confirmedDelDate || '—');
+  return `
+  <div class="container-card" onclick="showContainerDetail('${p.containerID}','${context}')">
+    <div class="cc-top">
+      <div>
+        <div style="font-size:11px;color:var(--text3);font-weight:600;letter-spacing:.3px">${p.supplier}</div>
+        <div class="cc-id">Container ${p.containerID}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="sup-badge ${supClass}" style="margin-bottom:4px">${p.supplier}</div>
+        <div style="font-size:11px;padding:2px 8px;border-radius:6px;font-weight:700;display:inline-block;background:rgba(61,127,255,.1);color:${statusColor}">${p.status}</div>
+      </div>
+    </div>
+    <div class="cc-stats">
+      <div><div class="cc-stat-val">${p.expectedBoxes || '—'}</div><div class="cc-stat-lbl">Boxes</div></div>
+      <div><div class="cc-stat-val">${p.orderCount || '—'}</div><div class="cc-stat-lbl">Orders</div></div>
+      ${!isPipeline ? `<div><div class="cc-stat-val">${p.zonedCount || 0}/${p.orderCount || 0}</div><div class="cc-stat-lbl">Zoned</div></div>` : ''}
+      <div><div class="cc-stat-val" style="font-size:14px">${dateVal}</div><div class="cc-stat-lbl">${dateLabel}</div></div>
+    </div>
+    <div style="margin-top:8px;font-size:12px;color:var(--text3)">Tap to view orders →</div>
+  </div>`;
+}
+
+// Shows orders for a pipeline or history container (read-only view)
+async function showContainerDetail(containerID, context) {
+  state.currentContainer = containerID;
+  state.orderStates = {};
+  showScreen('detail');
+
+  // Find container from pipeline or history cache
+  const container = (context === 'pipeline'
+    ? (state.pipeline || [])
+    : (state.historyItems || [])
+  ).find(d => d.containerID === containerID) || { containerID, supplier: '', confirmedDelDate: '' };
+
+  document.getElementById('detailTitle').textContent = 'Container ' + containerID;
+  document.getElementById('detailSub').textContent = (container.supplier || '') + (container.confirmedDelDate ? ' — ' + container.confirmedDelDate : '');
+
+  const body = document.getElementById('detailBody');
+  const supClass = container.supplier === 'S:CRAFT' ? 'sb-sc' : container.supplier === 'TROPICAL' ? 'sb-tr' : 'sb-my';
+  const isHistory = context === 'history';
+
+  body.innerHTML = `
+    <div class="detail-header">
+      <div class="detail-id">Container ${containerID}</div>
+      <div class="detail-meta-row">
+        <div class="detail-meta-item"><div class="detail-meta-val">${container.expectedBoxes || '—'}</div><div class="detail-meta-lbl">Expected Boxes</div></div>
+        <div class="detail-meta-item"><div class="detail-meta-val">${container.orderCount || '—'}</div><div class="detail-meta-lbl">Orders</div></div>
+        <div class="detail-meta-item"><div class="detail-meta-val sup-badge ${supClass}" style="font-size:12px">${container.supplier || ''}</div><div class="detail-meta-lbl">Supplier</div></div>
+      </div>
+      ${isHistory && container.actualArrivalDate ? `<div style="margin-top:10px;font-size:13px;color:var(--accent2)">✅ Arrived: ${container.actualArrivalDate}</div>` : ''}
+      ${isHistory && container.notes ? `<div style="margin-top:6px;font-size:12px;color:var(--text2)">📝 ${container.notes}</div>` : ''}
+    </div>
+    <div style="padding:16px">
+      <div class="orders-section">
+        <div class="orders-header">
+          <div class="section-title">${container.supplier || 'SUPPLIER'} ORDERS</div>
+          ${isHistory ? '<div style="font-size:12px;color:var(--text3)">Read only</div>' : ''}
+        </div>
+        <div id="ordersList"><div class="loading"><div class="spinner"></div>Loading orders...</div></div>
+      </div>
+      <button class="confirm-btn" style="background:var(--surface2);color:var(--text2);margin-top:8px" onclick="${context === 'pipeline' ? 'showPipeline()' : 'showHistory()'}">← Back</button>
+      <div style="height:16px"></div>
+    </div>`;
+
+  // Load orders in read-only mode
+  try {
+    const data = await apiFetch('getOrders', { containerID });
+    const orders = data.orders || [];
+    const list = document.getElementById('ordersList');
+    if (!orders.length) {
+      list.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">No orders found</div></div>';
+      return;
+    }
+    list.innerHTML = orders.map(o => {
+      const remakeTag = o.isRemake === 'Y' ? '<span style="font-size:10px;background:rgba(255,112,67,.15);color:var(--warn);padding:2px 6px;border-radius:4px;font-weight:700;margin-left:4px">REMAKE</span>' : '';
+      const zoneInfo = o.zoneAssigned ? `<div class="zone-tag" style="margin-top:8px">📍 Zone ${o.zoneAssigned}</div>` : '';
+      const statusColor = o.status === 'ZONED' ? 'var(--accent2)' : o.status === 'IN TRANSIT' ? 'var(--text3)' : 'var(--text2)';
+      const damageInfo = o.damageFlag === 'Y' ? `<div style="margin-top:6px;font-size:12px;color:var(--warn);font-weight:700">⚠ ${o.damageType || 'DAMAGE FLAGGED'}</div>` : '';
+      return `<div class="order-row ${o.zoneAssigned ? 'order-zoned' : ''}" style="margin-bottom:8px">
+        <div class="order-main">
+          <div class="order-ref-name">
+            <div class="order-ref">${o.customerRef}</div>
+            <div class="order-name">${o.customerName}${remakeTag}</div>
           </div>
-          <div class="pipe-status ${statClass}">${p.status.replace('_',' ')}</div>
+          <div class="order-box-col">
+            <div class="order-box-num">${o.boxesShipped}</div>
+            <div class="order-box-lbl">BOXES</div>
+          </div>
         </div>
-        <div class="pipe-meta">
-          <div class="pipe-eta">ETA <span>${p.etaDate || 'TBC'}</span></div>
-          <div class="pipe-eta">Orders <span>${p.orderCount}</span></div>
-          <div class="pipe-eta">Boxes <span>${p.expectedBoxes}</span></div>
+        <div style="display:flex;gap:14px;margin-top:6px;font-size:12px;color:var(--text2)">
+          <span>Status: <span style="color:${statusColor};font-weight:700">${o.status}</span></span>
+          <span>Booking: <span style="color:var(--text)">${o.bookingStatus || '—'}</span></span>
         </div>
+        ${zoneInfo}${damageInfo}
+        ${o.notes ? `<div style="margin-top:6px;font-size:12px;color:var(--text2);padding:6px 8px;background:var(--surface2);border-radius:6px">📝 ${o.notes}</div>` : ''}
       </div>`;
     }).join('');
   } catch(e) {
-    list.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Could not load pipeline</div></div>';
+    document.getElementById('ordersList').innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Could not load orders</div></div>';
   }
 }
 
@@ -1216,8 +1364,17 @@ async function loadPipeline() {
 async function driverDropoff(supplier) {
   const time = new Date().toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'});
   const date = new Date().toLocaleDateString('en-GB', {weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const loggedBy = state.user || 'Unknown';
   try {
-    await apiPost('driverDropoff', { supplier, time, date, loggedBy: state.user || 'Unknown' });
+    // Send both as JSON blob and as individual params for reliability
+    const url = new URL(CONFIG.WEB_APP_URL);
+    url.searchParams.set('action', 'driverDropoff');
+    url.searchParams.set('supplier', supplier);
+    url.searchParams.set('loggedBy', loggedBy);
+    url.searchParams.set('time', time);
+    url.searchParams.set('date', date);
+    url.searchParams.set('data', JSON.stringify({ supplier, time, date, loggedBy }));
+    await fetch(url.toString());
     showToast('📣 ' + supplier + ' delivery logged — office notified', 'success');
   } catch(e) {
     showToast('Logged locally (offline)', '');
