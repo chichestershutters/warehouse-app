@@ -143,29 +143,30 @@
   .detail-meta-val{font-size:18px;font-weight:800;}
   .detail-meta-lbl{font-size:10px;color:var(--text2);font-weight:500;margin-top:1px;}
 
-  /* ARRIVAL PANEL */
-  .arrival-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px;}
-  .panel-title{font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+  /* ARRIVAL PANEL — blue tint to distinguish from order section */
+  .arrival-panel{background:rgba(61,127,255,.05);border:1.5px solid rgba(61,127,255,.2);border-radius:var(--r);padding:16px;margin-bottom:14px;}
+  .panel-title{font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px;color:var(--accent);}
   .panel-title-icon{font-size:16px;}
   .input-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
   .input-label{font-size:13px;color:var(--text2);flex:1;}
   .num-input{width:80px;padding:10px;border-radius:10px;background:var(--bg);border:1.5px solid var(--border);color:var(--text);font-family:var(--font);font-size:18px;font-weight:700;text-align:center;}
   .num-input:focus{outline:none;border-color:var(--accent);}
   .toggle-row{display:flex;gap:8px;margin-bottom:10px;}
-  /* Present/absent — visible border so they look like real buttons before selection */
   .toggle-btn{flex:1;padding:13px;border-radius:10px;border:2px solid var(--text3);background:var(--surface2);color:var(--text2);font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;}
   .toggle-btn.yes{border-color:var(--accent2);background:rgba(0,200,150,.18);color:var(--accent2);}
   .toggle-btn.no{border-color:var(--accent2);background:rgba(0,200,150,.18);color:var(--accent2);}
   .toggle-btn:active{transform:scale(.96);}
-  .notes-input{width:100%;padding:12px;border-radius:10px;background:var(--bg);border:1.5px solid var(--border);color:var(--text);font-family:var(--font);font-size:14px;resize:none;min-height:70px;margin-bottom:10px;}
+  .notes-input{width:100%;padding:12px;border-radius:10px;background:var(--bg);border:1.5px solid var(--border);color:var(--text);font-family:var(--font);font-size:14px;resize:none;min-height:60px;margin-bottom:10px;}
   .notes-input:focus{outline:none;border-color:var(--accent);}
   .notes-input::placeholder{color:var(--text3);}
+  /* All Received — neutral until pressed, then goes green */
+  .select-all-btn{width:100%;padding:12px;border-radius:10px;background:var(--surface2);border:2px solid var(--text3);color:var(--text2);font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;}
+  .select-all-btn:active{transform:scale(.97);}
+  .select-all-btn.done{background:rgba(0,200,150,.15);border-color:var(--accent2);color:var(--accent2);}
 
   /* ORDER ROWS */
   .orders-section{margin-bottom:14px;}
   .orders-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-  .select-all-btn{padding:8px 14px;border-radius:8px;background:rgba(0,200,150,.15);border:1px solid rgba(0,200,150,.3);color:var(--accent2);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;}
-  .select-all-btn:active{transform:scale(.95);}
 
   .order-row{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;transition:all .15s;}
   .order-row.selected-order{border-color:var(--accent2);background:rgba(0,200,150,.05);}
@@ -192,12 +193,12 @@
   .partial-label{font-size:13px;color:var(--text2);flex:1;}
 
   .order-check-row{display:flex;gap:8px;margin-top:10px;}
-  /* Received/Partial — NEUTRAL grey before tapped, colour only after action */
-  .check-btn{flex:1;padding:10px;border-radius:9px;border:2px solid var(--text3);background:var(--surface2);color:var(--text2);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;}
-  .check-btn.complete{border-color:var(--text3);background:var(--surface2);color:var(--text2);}
-  .check-btn.partial{border-color:var(--text3);background:var(--surface2);color:var(--text2);}
+  /* Received/Partial — both clearly outlined buttons matching assign zone style */
+  .check-btn{flex:1;padding:11px;border-radius:9px;border:2px solid var(--text3);background:var(--surface2);color:var(--text2);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;}
+  .check-btn.complete{border-color:rgba(61,127,255,.5);background:rgba(61,127,255,.08);color:var(--accent);}
+  .check-btn.partial{border-color:rgba(255,112,67,.5);background:rgba(255,112,67,.08);color:var(--warn);}
   .check-btn:active{transform:scale(.95);}
-  /* After tapping — green for received, orange for partial */
+  /* After tapping — solid fill confirms the action */
   .check-btn.active-complete{background:rgba(0,200,150,.2);border-color:var(--accent2);color:var(--accent2);}
   .check-btn.active-partial{background:rgba(255,112,67,.2);border-color:var(--warn);color:var(--warn);}
 
@@ -316,7 +317,7 @@
     <div class="stats-grid" id="statsGrid">
       <div class="stat-card blue" onclick="showDeliveries()"><div class="stat-value" id="statDeliveries">—</div><div class="stat-label">Containers needing check-in</div></div>
       <div class="stat-card green"><div class="stat-value" id="statBoxes">—</div><div class="stat-label">Boxes in warehouse</div></div>
-      <div class="stat-card orange" onclick="showDeliveries()"><div class="stat-value" id="statUnzoned">—</div><div class="stat-label">Orders awaiting zone</div></div>
+      <div class="stat-card orange" onclick="showDeliveriesFiltered('ARRIVED')"><div class="stat-value" id="statUnzoned">—</div><div class="stat-label">Orders awaiting zone</div></div>
       <div class="stat-card purple" onclick="showPipeline()"><div class="stat-value" id="statPipeline">—</div><div class="stat-label">Containers in transit</div></div>
     </div>
 
@@ -602,6 +603,15 @@ function showDeliveries() {
   loadDeliveries();
 }
 
+function showDeliveriesFiltered(status) {
+  showScreen('deliveries');
+  // Load then filter to only show containers with matching status
+  loadDeliveries().then(() => {
+    state.filterStatus = status;
+    renderDeliveriesList();
+  });
+}
+
 function showPipeline() {
   showScreen('pipeline');
   loadPipeline();
@@ -699,6 +709,7 @@ async function loadDeliveries() {
     const data = await apiFetch('getDeliveries');
     state.deliveries = data.deliveries || [];
     renderDeliveriesList();
+    return state.deliveries;
   } catch(e) {
     list.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Could not load deliveries</div><div class="empty-sub">Check connection and try again</div></div>';
   }
@@ -706,6 +717,7 @@ async function loadDeliveries() {
 
 function filterDeliveries(supplier, chip) {
   state.filterSupplier = supplier;
+  state.filterStatus = null; // clear any status filter
   document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
   chip.classList.add('active');
   renderDeliveriesList();
@@ -715,6 +727,7 @@ function renderDeliveriesList() {
   const list = document.getElementById('deliveriesList');
   let items = state.deliveries;
   if (state.filterSupplier !== 'ALL') items = items.filter(d => d.supplier === state.filterSupplier);
+  if (state.filterStatus) items = items.filter(d => d.status === state.filterStatus);
 
   if (!items.length) {
     list.innerHTML = '<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-text">All clear!</div><div class="empty-sub">No deliveries currently need action</div></div>';
@@ -827,18 +840,20 @@ async function showDetail(containerID) {
           <button class="toggle-btn" id="presentNo" onclick="setPresent(false)">Driver left it</button>
         </div>
         <textarea class="notes-input" id="arrivalNotes" placeholder="Notes — missing boxes, unexpected items, damage etc."></textarea>
+        <button class="select-all-btn" id="allReceivedBtn" onclick="markAllComplete()" style="width:100%;padding:12px;font-size:14px;border-radius:10px;margin-top:2px">
+          Mark All Orders as Received
+        </button>
       </div>
 
       <div class="orders-section">
         <div class="orders-header">
           <div class="section-title">${container.supplier || 'SUPPLIER'} ORDERS</div>
-          <button class="select-all-btn" onclick="markAllComplete()">✓ All Received</button>
         </div>
         <div id="ordersList"><div class="loading"><div class="spinner"></div>Loading orders...</div></div>
       </div>
 
-      <button class="confirm-btn" id="confirmBtn" onclick="confirmDelivery()" disabled>
-        Confirm Delivery
+      <button class="confirm-btn" id="confirmBtn" onclick="confirmDelivery()">
+        Save — Confirm Delivery Received
       </button>
       <div style="height:16px"></div>
     </div>`;
@@ -1066,8 +1081,10 @@ function markAllComplete() {
   Object.keys(state.orderStates).forEach(id => {
     state.orderStates[id].status = 'received';
   });
+  // Turn button green
+  const btn = document.getElementById('allReceivedBtn');
+  if (btn) { btn.textContent = '✓ All Orders Marked as Received'; btn.classList.add('done'); }
   // Re-render
-  const container = state.deliveries.find(d => d.containerID === state.currentContainer) || {};
   apiFetch('getOrders', { containerID: state.currentContainer }).then(data => {
     renderOrders(data.orders || []);
     showToast('All orders marked as received', 'success');
