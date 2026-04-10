@@ -692,7 +692,7 @@ async function showDetail(containerID) {
         <div class="panel-title"><span class="panel-title-icon">📋</span> Arrival Confirmation</div>
         <div class="input-row">
           <div class="input-label">Boxes received</div>
-          <input class="num-input" type="number" id="boxesReceived" placeholder="${container.expectedBoxes || '?'}" min="0">
+          <input class="num-input" type="number" id="boxesReceived" value="${container.expectedBoxes || '?'}" min="0">
         </div>
         <div class="panel-title" style="margin-top:4px;font-size:12px;color:var(--text2)">Was someone present?</div>
         <div class="toggle-row">
