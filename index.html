@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CS Warehouse">
+<title>CS Warehouse</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=DM+Mono:wght@400;500&display=swap');
+  :root {
+    --bg:#0f1117;--surface:#1a1d27;--surface2:#232636;--border:#2e3246;
+    --accent:#3d7fff;--accent2:#00c896;--warn:#ff7043;--info:#9c6fff;
+    --text:#f0f2ff;--text2:#8890b0;--text3:#555e7a;
+    --scraft:#3d7fff;--tropical:#00c896;--myt:#ff9f43;
+    --r:14px;--font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+  .screen{display:none;min-height:100dvh;flex-direction:column;}
+  .screen.active{display:flex;}
+
+  /* TOPBAR */
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;}
+  .topbar-left{display:flex;flex-direction:column;}
+  .topbar-title{font-size:17px;font-weight:700;letter-spacing:-.3px;}
+  .topbar-sub{font-size:12px;color:var(--text2);margin-top:1px;}
+  .topbar-right{display:flex;gap:8px;}
+  .icon-btn{width:38px;height:38px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;}
+  .icon-btn:active{transform:scale(.93);background:var(--border);}
+
+  /* SCROLL BODY */
+  .scroll-body{flex:1;overflow-y:auto;padding:16px;padding-bottom:90px;}
+
+  /* BOTTOM NAV */
+  .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);display:flex;padding:8px 0 max(8px,env(safe-area-inset-bottom));z-index:20;}
+  .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0;transition:all .15s;position:relative;}
+  .nav-item:active{opacity:.7;}
+  .nav-icon{font-size:22px;line-height:1;}
+  .nav-label{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.3px;}
+  .nav-item.active .nav-label{color:var(--accent);}
+  .nav-badge{position:absolute;top:0;right:calc(50% - 18px);background:var(--warn);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;}
+
+  /* LOGIN */
+  #screen-login{background:var(--bg);align-items:center;justify-content:flex-start;padding:40px 24px 24px;}
+  .login-logo{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,var(--accent),#6a5aff);display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:24px;box-shadow:0 8px 32px rgba(61,127,255,.35);}
+  .login-title{font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px;}
+  .login-sub{font-size:14px;color:var(--text2);margin-bottom:28px;}
+  .role-section{width:100%;margin-bottom:18px;}
+  .role-label{font-size:11px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
+  .name-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .name-btn{padding:13px 12px;border-radius:12px;background:var(--surface);border:1.5px solid var(--border);color:var(--text);font-family:var(--font);font-size:15px;font-weight:600;cursor:pointer;transition:all .15s;text-align:left;display:flex;align-items:center;gap:8px;width:100%;}
+  .name-btn:active{transform:scale(.96);}
+  .name-btn.selected{border-color:var(--accent);background:rgba(61,127,255,.12);color:var(--accent);}
+  .rdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .rdot.fitter{background:var(--accent);}
+  .rdot.office{background:var(--accent2);}
+  .rdot.surveyor{background:var(--warn);}
+  .rdot.admin{background:var(--info);}
+  .login-btn{width:100%;padding:17px;border-radius:var(--r);background:var(--accent);border:none;color:#fff;font-family:var(--font);font-size:17px;font-weight:700;cursor:pointer;transition:all .15s;margin-top:8px;}
+  .login-btn:active{transform:scale(.97);opacity:.9;}
+  .login-btn:disabled{background:var(--surface2);color:var(--text3);cursor:not-allowed;transform:none;}
+
+  /* HOME */
+  .greeting{font-size:22px;font-weight:800;letter-spacing:-.4px;margin-bottom:3px;}
+  .greeting-sub{font-size:13px;color:var(--text2);margin-bottom:20px;}
+  .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;}
+  .stat-value{font-size:30px;font-weight:800;letter-spacing:-1px;line-height:1;}
+  .stat-label{font-size:11px;color:var(--text2);margin-top:4px;font-weight:500;}
+  .stat-card.blue .stat-value{color:var(--accent);}
+  .stat-card.green .stat-value{color:var(--accent2);}
+  .stat-card.orange .stat-value{color:var(--warn);}
+  .stat-card.purple .stat-value{color:var(--info);}
+  .section-title{font-size:11px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;}
+  .action-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .15s;margin-bottom:10px;}
+  .action-card:active{transform:scale(.98);background:var(--surface2);}
+  .action-icon{font-size:24px;width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .action-icon.blue{background:rgba(61,127,255,.15);}
+  .action-icon.green{background:rgba(0,200,150,.15);}
+  .action-icon.orange{background:rgba(255,112,67,.15);}
+  .action-icon.purple{background:rgba(156,111,255,.15);}
+  .action-text-main{font-size:16px;font-weight:700;}
+  .action-text-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+  .action-badge{margin-left:auto;color:#fff;font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;}
+  .action-badge.blue{background:var(--accent);}
+  .action-badge.green{background:var(--accent2);}
+  .action-badge.orange{background:var(--warn);}
+
+  /* DRIVER DROP-OFF */
+  .driver-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-top:16px;}
+  .driver-title{font-size:12px;font-weight:700;color:var(--text2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:12px;}
+  .driver-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .driver-btn{padding:16px 10px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;text-align:center;}
+  .driver-btn.sc{border-color:var(--scraft);color:var(--scraft);background:rgba(61,127,255,.08);}
+  .driver-btn.tr{border-color:var(--tropical);color:var(--tropical);background:rgba(0,200,150,.08);}
+  .driver-btn.my{border-color:var(--myt);color:var(--myt);background:rgba(255,159,67,.08);}
+  .driver-btn.co{border-color:var(--text3);color:var(--text2);}
+  .driver-btn:active{transform:scale(.94);}
+
+  /* FILTER CHIPS */
+  .filter-row{display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px;}
+  .filter-chip{padding:7px 14px;border-radius:20px;font-size:13px;font-weight:600;background:var(--surface);border:1.5px solid var(--border);color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0;}
+  .filter-chip.active{background:rgba(61,127,255,.15);border-color:var(--accent);color:var(--accent);}
+  .filter-chip:active{transform:scale(.95);}
+
+  /* CONTAINER CARDS */
+  .container-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:10px;cursor:pointer;transition:all .15s;}
+  .container-card:active{transform:scale(.99);background:var(--surface2);}
+  .cc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
+  .cc-id{font-size:19px;font-weight:800;letter-spacing:-.3px;}
+  .sup-badge{font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;letter-spacing:.5px;}
+  .sb-sc{background:rgba(61,127,255,.15);color:var(--scraft);}
+  .sb-tr{background:rgba(0,200,150,.15);color:var(--tropical);}
+  .sb-my{background:rgba(255,159,67,.15);color:var(--myt);}
+  .cc-stats{display:flex;gap:20px;}
+  .cc-stat-val{font-size:22px;font-weight:800;letter-spacing:-.5px;}
+  .cc-stat-lbl{font-size:10px;color:var(--text2);font-weight:500;margin-top:1px;}
+  .cc-footer{display:flex;align-items:center;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
+  .status-dot{width:7px;height:7px;border-radius:50%;}
+  .dot-confirmed{background:var(--warn);}
+  .dot-arrived{background:var(--accent2);}
+  .dot-zoned{background:var(--info);}
+  .cc-status{font-size:12px;color:var(--text2);font-weight:500;}
+  .cc-date{margin-left:auto;font-size:12px;color:var(--text3);font-family:var(--mono);}
+  .progress-bar{height:4px;background:var(--border);border-radius:2px;margin-top:10px;overflow:hidden;}
+  .progress-fill{height:100%;border-radius:2px;background:var(--accent);transition:width .3s;}
+  .progress-fill.done{background:var(--accent2);}
+  .empty-state{text-align:center;padding:48px 20px;color:var(--text3);}
+  .empty-icon{font-size:48px;margin-bottom:12px;}
+  .empty-text{font-size:15px;font-weight:600;color:var(--text2);margin-bottom:6px;}
+  .empty-sub{font-size:13px;}
+
+  /* DETAIL SCREEN */
+  #screen-detail .scroll-body{padding-top:0;}
+  .detail-header{padding:16px;background:var(--surface2);border-bottom:1px solid var(--border);}
+  .detail-id{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px;}
+  .detail-meta-row{display:flex;gap:20px;}
+  .detail-meta-item{display:flex;flex-direction:column;}
+  .detail-meta-val{font-size:18px;font-weight:800;}
+  .detail-meta-lbl{font-size:10px;color:var(--text2);font-weight:500;margin-top:1px;}
+
+  /* ARRIVAL PANEL */
+  .arrival-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px;}
+  .panel-title{font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+  .panel-title-icon{font-size:16px;}
+  .input-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .input-label{font-size:13px;color:var(--text2);flex:1;}
+  .num-input{width:80px;padding:10px;border-radius:10px;background:var(--bg);border:1.5px solid var(--border);color:var(--text);font-family:var(--font);font-size:18px;font-weight:700;text-align:center;}
+  .num-input:focus{outline:none;border-color:var(--accent);}
+  .toggle-row{display:flex;gap:8px;margin-bottom:10px;}
+  .toggle-btn{flex:1;padding:11px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text2);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;}
+  .toggle-btn.yes{border-color:var(--accent2);background:rgba(0,200,150,.12);color:var(--accent2);}
+  .toggle-btn.no{border-color:var(--warn);background:rgba(255,112,67,.12);color:var(--warn);}
+  .toggle-btn:active{transform:scale(.96);}
+  .notes-input{width:100%;padding:12px;border-radius:10px;background:var(--bg);border:1.5px solid var(--border);color:var(--text);font-family:var(--font);font-size:14px;resize:none;min-height:70px;margin-bottom:10px;}
+  .notes-input:focus{outline:none;border-color:var(--accent);}
+  .notes-input::placeholder{color:var(--text3);}
+
+  /* ORDER ROWS */
+  .orders-section{margin-bottom:14px;}
+  .orders-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .select-all-btn{padding:8px 14px;border-radius:8px;background:rgba(61,127,255,.15);border:1px solid rgba(61,127,255,.3);color:var(--accent);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;}
+  .select-all-btn:active{transform:scale(.95);}
+
+  .order-row{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;transition:all .15s;}
+  .order-row.selected-order{border-color:var(--accent);background:rgba(61,127,255,.05);}
+  .order-row.order-zoned{border-color:var(--accent2);background:rgba(0,200,150,.05);}
+  .order-row.order-partial{border-color:var(--warn);background:rgba(255,112,67,.05);}
+
+  .order-main{display:flex;align-items:center;gap:10px;cursor:pointer;}
+  .order-ref-name{flex:1;}
+  .order-ref{font-size:13px;font-weight:700;font-family:var(--mono);color:var(--accent);margin-bottom:2px;}
+  .order-name{font-size:15px;font-weight:700;}
+  .order-box-col{text-align:center;flex-shrink:0;min-width:44px;}
+  .order-box-num{font-size:22px;font-weight:800;letter-spacing:-.5px;line-height:1;}
+  .order-box-lbl{font-size:9px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+
+  .order-zone-row{display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+  .zone-tag{display:inline-flex;align-items:center;gap:4px;background:rgba(0,200,150,.15);border:1px solid rgba(0,200,150,.3);color:var(--accent2);font-size:12px;font-weight:700;padding:5px 10px;border-radius:6px;}
+  .edit-zone-btn{padding:5px 10px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;}
+  .edit-zone-btn:active{transform:scale(.95);}
+  .assign-zone-btn{padding:8px 14px;border-radius:8px;background:rgba(61,127,255,.15);border:1px solid rgba(61,127,255,.3);color:var(--accent);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;}
+  .assign-zone-btn:active{transform:scale(.95);}
+
+  .partial-area{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+  .partial-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .partial-label{font-size:13px;color:var(--text2);flex:1;}
+
+  .order-check-row{display:flex;gap:8px;margin-top:10px;}
+  .check-btn{flex:1;padding:10px;border-radius:9px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text2);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;}
+  .check-btn.complete{border-color:var(--accent2);color:var(--accent2);}
+  .check-btn.partial{border-color:var(--warn);color:var(--warn);}
+  .check-btn:active{transform:scale(.95);}
+  .check-btn.active-complete{background:rgba(0,200,150,.2);border-color:var(--accent2);color:var(--accent2);}
+  .check-btn.active-partial{background:rgba(255,112,67,.2);border-color:var(--warn);color:var(--warn);}
+
+  /* CONFIRM BTN */
+  .confirm-btn{width:100%;padding:17px;border-radius:var(--r);background:var(--accent);border:none;color:#fff;font-family:var(--font);font-size:17px;font-weight:700;cursor:pointer;transition:all .15s;margin-top:8px;}
+  .confirm-btn:active{transform:scale(.97);opacity:.9;}
+  .confirm-btn:disabled{background:var(--surface2);color:var(--text3);cursor:not-allowed;transform:none;}
+  .confirm-btn.green{background:var(--accent2);}
+
+  /* ZONE PICKER */
+  .zone-overlay{display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);align-items:flex-end;justify-content:center;}
+  .zone-overlay.open{display:flex;}
+  .zone-sheet{background:var(--surface);border-radius:20px 20px 0 0;padding:20px 16px max(20px,env(safe-area-inset-bottom));width:100%;max-width:480px;}
+  .zone-sheet-title{font-size:16px;font-weight:700;text-align:center;margin-bottom:4px;}
+  .zone-sheet-sub{font-size:13px;color:var(--text2);text-align:center;margin-bottom:16px;}
+  .zone-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:10px;}
+  .z-btn{padding:15px 4px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-family:var(--font);font-size:17px;font-weight:700;cursor:pointer;transition:all .12s;text-align:center;}
+  .z-btn:active{transform:scale(.88);}
+  .z-btn.z-sel{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .z-edr{grid-column:1/-1;background:rgba(255,112,67,.1);border-color:rgba(255,112,67,.3);color:var(--warn);font-size:15px;}
+  .z-edr.z-sel{background:var(--warn);border-color:var(--warn);color:#fff;}
+  .zone-cancel{width:100%;padding:14px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-family:var(--font);font-size:15px;font-weight:600;cursor:pointer;margin-top:8px;}
+  .zone-cancel:active{transform:scale(.97);}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface);border:1px solid var(--border);color:var(--text);padding:12px 20px;border-radius:10px;font-size:14px;font-weight:600;opacity:0;transition:all .3s;z-index:200;white-space:nowrap;pointer-events:none;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .toast.success{border-color:var(--accent2);color:var(--accent2);}
+  .toast.error{border-color:var(--warn);color:var(--warn);}
+
+  /* PIPELINE / COMING SOON */
+  .pipeline-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:8px;}
+  .pipe-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+  .pipe-id{font-size:16px;font-weight:800;}
+  .pipe-status{font-size:11px;font-weight:700;padding:4px 9px;border-radius:5px;}
+  .ps-vessel{background:rgba(61,127,255,.12);color:var(--accent);}
+  .ps-port{background:rgba(156,111,255,.12);color:var(--info);}
+  .pipe-meta{display:flex;gap:16px;}
+  .pipe-eta{font-size:12px;color:var(--text2);}
+  .pipe-eta span{color:var(--text);font-weight:600;}
+
+  /* DIVIDER */
+  .divider{height:1px;background:var(--border);margin:16px 0;}
+
+  /* LOADING */
+  .loading{display:flex;align-items:center;justify-content:center;gap:10px;padding:32px;color:var(--text2);font-size:14px;}
+  .spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ZONE PICKER OVERLAY -->
+<div class="zone-overlay" id="zoneOverlay">
+  <div class="zone-sheet">
+    <div class="zone-sheet-title">Select Zone</div>
+    <div class="zone-sheet-sub" id="zoneSub">Assigning zone for order</div>
+    <div class="zone-grid" id="zoneGrid"></div>
+    <button class="zone-cancel" onclick="closeZonePicker()">Cancel</button>
+  </div>
+</div>
+
+<!-- ═══ LOGIN ═══ -->
+<div class="screen active" id="screen-login">
+  <div class="login-logo">📦</div>
+  <div class="login-title">CS Warehouse</div>
+  <div class="login-sub">Chichester Shutters — Delivery Hub</div>
+
+  <div class="role-section" id="loginFitters">
+    <div class="role-label">Fitters</div>
+    <div class="name-grid" id="fitterGrid"></div>
+  </div>
+  <div class="role-section" id="loginOffice">
+    <div class="role-label">Office & Admin</div>
+    <div class="name-grid" id="officeGrid"></div>
+  </div>
+
+  <button class="login-btn" id="loginBtn" disabled onclick="doLogin()">Select your name to continue</button>
+</div>
+
+<!-- ═══ HOME ═══ -->
+<div class="screen" id="screen-home">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-title" id="homeTitle">Home</div>
+      <div class="topbar-sub" id="homeDate"></div>
+    </div>
+    <div class="topbar-right">
+      <div class="icon-btn" onclick="doLogout()" title="Switch user">👤</div>
+    </div>
+  </div>
+  <div class="scroll-body">
+    <div class="greeting" id="homeGreeting">Good morning</div>
+    <div class="greeting-sub" id="homeGreetingSub">Here's today's warehouse summary</div>
+
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card blue"><div class="stat-value" id="statDeliveries">—</div><div class="stat-label">Deliveries needing action</div></div>
+      <div class="stat-card green"><div class="stat-value" id="statBoxes">—</div><div class="stat-label">Boxes in warehouse</div></div>
+      <div class="stat-card orange"><div class="stat-value" id="statUnzoned">—</div><div class="stat-label">Orders awaiting zone</div></div>
+      <div class="stat-card purple"><div class="stat-value" id="statPipeline">—</div><div class="stat-label">Containers in pipeline</div></div>
+    </div>
+
+    <div class="section-title">Quick Actions</div>
+    <div class="action-card" onclick="showDeliveries()">
+      <div class="action-icon blue">🚛</div>
+      <div><div class="action-text-main">Check In Delivery</div><div class="action-text-sub">Confirm arrivals & assign zones</div></div>
+      <div class="action-badge blue" id="deliveryBadge">0</div>
+    </div>
+    <div class="action-card" onclick="showPipeline()">
+      <div class="action-icon purple">🚢</div>
+      <div><div class="action-text-main">Coming Soon</div><div class="action-text-sub">Containers in transit</div></div>
+      <div class="action-badge" style="background:var(--info)" id="pipelineBadge">0</div>
+    </div>
+
+    <div class="driver-section">
+      <div class="driver-title">🔔 Driver Drop-Off Alert</div>
+      <div class="driver-grid">
+        <button class="driver-btn sc" onclick="driverDropoff('S:CRAFT')">S:CRAFT</button>
+        <button class="driver-btn tr" onclick="driverDropoff('TROPICAL')">TROPICAL</button>
+        <button class="driver-btn my" onclick="driverDropoff('MYT')">MYT</button>
+        <button class="driver-btn co" onclick="driverDropoff('COURIER')">COURIER</button>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="showHome()"><div class="nav-icon">🏠</div><div class="nav-label">HOME</div></div>
+    <div class="nav-item" onclick="showDeliveries()"><div class="nav-icon">🚛</div><div class="nav-label">DELIVERIES</div><div class="nav-badge" id="navBadge" style="display:none">0</div></div>
+    <div class="nav-item" onclick="showPipeline()"><div class="nav-icon">🚢</div><div class="nav-label">PIPELINE</div></div>
+  </div>
+</div>
+
+<!-- ═══ DELIVERIES LIST ═══ -->
+<div class="screen" id="screen-deliveries">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-title">Deliveries</div>
+      <div class="topbar-sub">Needing action</div>
+    </div>
+    <div class="topbar-right">
+      <div class="icon-btn" onclick="loadDeliveries()">🔄</div>
+    </div>
+  </div>
+  <div class="scroll-body">
+    <div class="filter-row" id="deliveryFilters">
+      <div class="filter-chip active" onclick="filterDeliveries('ALL',this)">All</div>
+      <div class="filter-chip" onclick="filterDeliveries('S:CRAFT',this)">S:Craft</div>
+      <div class="filter-chip" onclick="filterDeliveries('TROPICAL',this)">Tropical</div>
+      <div class="filter-chip" onclick="filterDeliveries('MYT',this)">MYT</div>
+    </div>
+    <div id="deliveriesList"><div class="loading"><div class="spinner"></div>Loading...</div></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="showHome()"><div class="nav-icon">🏠</div><div class="nav-label">HOME</div></div>
+    <div class="nav-item active" onclick="showDeliveries()"><div class="nav-icon">🚛</div><div class="nav-label">DELIVERIES</div></div>
+    <div class="nav-item" onclick="showPipeline()"><div class="nav-icon">🚢</div><div class="nav-label">PIPELINE</div></div>
+  </div>
+</div>
+
+<!-- ═══ CONTAINER DETAIL ═══ -->
+<div class="screen" id="screen-detail">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-title" id="detailTitle">Container</div>
+      <div class="topbar-sub" id="detailSub"></div>
+    </div>
+    <div class="topbar-right">
+      <div class="icon-btn" onclick="showDeliveries()">←</div>
+    </div>
+  </div>
+  <div class="scroll-body" id="detailBody">
+  </div>
+</div>
+
+<!-- ═══ PIPELINE ═══ -->
+<div class="screen" id="screen-pipeline">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-title">Pipeline</div>
+      <div class="topbar-sub">Containers in transit</div>
+    </div>
+    <div class="topbar-right">
+      <div class="icon-btn" onclick="loadPipeline()">🔄</div>
+    </div>
+  </div>
+  <div class="scroll-body">
+    <div id="pipelineList"><div class="loading"><div class="spinner"></div>Loading...</div></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="showHome()"><div class="nav-icon">🏠</div><div class="nav-label">HOME</div></div>
+    <div class="nav-item" onclick="showDeliveries()"><div class="nav-icon">🚛</div><div class="nav-label">DELIVERIES</div></div>
+    <div class="nav-item active" onclick="showPipeline()"><div class="nav-icon">🚢</div><div class="nav-label">PIPELINE</div></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// CONFIGURATION — update WEB_APP_URL after deploying
+// ═══════════════════════════════════════════════════════════
+const CONFIG = {
+  WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbyrw58W6C0cFyzc5cBghIecsypyiw1DrIeuI-sh_yU85IVkKyKlHZaDdh4kuYqZtlyH/exec',
+  APP_NAME: 'CS Warehouse',
+  WAREHOUSE: 'Unit 7, Kingley Centre'
+};
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+let state = {
+  user: null,
+  role: null,
+  deliveries: [],
+  orders: {},       // keyed by containerID
+  pipeline: [],
+  filterSupplier: 'ALL',
+  currentContainer: null,
+  zoneTarget: null, // { containerID, orderRowID }
+  orderStates: {}   // orderRowID -> { status, zone, boxesReceived, partial }
+};
+
+// ═══════════════════════════════════════════════════════════
+// USERS — loaded from sheet via API; fallback for demo
+// ═══════════════════════════════════════════════════════════
+const USERS = [
+  {name:'Miles', role:'Fitter'},
+  {name:'Chris', role:'Fitter'},
+  {name:'Matt',  role:'Fitter'},
+  {name:'Tom',   role:'Fitter'},
+  {name:'Harley',role:'Fitter'},
+  {name:'Dale',  role:'Surveyor'},
+  {name:'Colin', role:'Surveyor'},
+  {name:'Karen', role:'Office'},
+  {name:'Becky', role:'Office'},
+  {name:'Tia',   role:'Office'},
+  {name:'Cheryl',role:'Office'},
+  {name:'Debbie',role:'Office'},
+  {name:'Sam',   role:'Admin'},
+  {name:'Claire',role:'Office'},
+  {name:'Amy',   role:'Office'},
+];
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  buildLoginScreen();
+  // Check for saved login
+  const saved = localStorage.getItem('cs_user');
+  if (saved) {
+    try {
+      const u = JSON.parse(saved);
+      state.user = u.name;
+      state.role = u.role;
+      showHome();
+    } catch(e) { buildLoginScreen(); }
+  }
+  // Update date
+  document.getElementById('homeDate').textContent = new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+});
+
+function buildLoginScreen() {
+  const fGrid = document.getElementById('fitterGrid');
+  const oGrid = document.getElementById('officeGrid');
+  fGrid.innerHTML = '';
+  oGrid.innerHTML = '';
+
+  USERS.forEach(u => {
+    const btn = document.createElement('button');
+    btn.className = 'name-btn';
+    const roleLower = u.role.toLowerCase();
+    btn.innerHTML = `<span class="rdot ${roleLower}"></span>${u.name}`;
+    btn.onclick = () => selectUser(u.name, u.role, btn);
+    if (['Fitter','Surveyor'].includes(u.role)) fGrid.appendChild(btn);
+    else oGrid.appendChild(btn);
+  });
+}
+
+function selectUser(name, role, btn) {
+  document.querySelectorAll('.name-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  state.user = name;
+  state.role = role;
+  const lb = document.getElementById('loginBtn');
+  lb.disabled = false;
+  lb.textContent = `Continue as ${name}`;
+}
+
+function doLogin() {
+  localStorage.setItem('cs_user', JSON.stringify({name: state.user, role: state.role}));
+  showHome();
+}
+
+function doLogout() {
+  if (!confirm('Switch user?')) return;
+  localStorage.removeItem('cs_user');
+  state.user = null;
+  state.role = null;
+  showScreen('login');
+  document.querySelectorAll('.name-btn').forEach(b => b.classList.remove('selected'));
+  const lb = document.getElementById('loginBtn');
+  lb.disabled = true;
+  lb.textContent = 'Select your name to continue';
+}
+
+// ═══════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+}
+
+function showHome() {
+  showScreen('home');
+  document.getElementById('homeGreeting').textContent = getGreeting() + ', ' + state.user;
+  document.getElementById('homeTitle').textContent = state.user || 'Home';
+  loadStats();
+}
+
+function showDeliveries() {
+  showScreen('deliveries');
+  loadDeliveries();
+}
+
+function showPipeline() {
+  showScreen('pipeline');
+  loadPipeline();
+}
+
+function getGreeting() {
+  const h = new Date().getHours();
+  if (h < 12) return 'Good morning';
+  if (h < 17) return 'Good afternoon';
+  return 'Good evening';
+}
+
+// ═══════════════════════════════════════════════════════════
+// DATA — calls Apps Script Web App
+// ═══════════════════════════════════════════════════════════
+async function apiFetch(action, params = {}) {
+  if (CONFIG.WEB_APP_URL === 'https://script.google.com/macros/s/AKfycbyrw58W6C0cFyzc5cBghIecsypyiw1DrIeuI-sh_yU85IVkKyKlHZaDdh4kuYqZtlyH/exec') {
+    return getMockData(action, params);
+  }
+  const url = new URL(CONFIG.WEB_APP_URL);
+  url.searchParams.set('action', action);
+  Object.entries(params).forEach(([k,v]) => url.searchParams.set(k, v));
+  const res = await fetch(url.toString());
+  return res.json();
+}
+
+async function apiPost(action, body = {}) {
+  if (CONFIG.WEB_APP_URL === 'https://script.google.com/macros/s/AKfycbyrw58W6C0cFyzc5cBghIecsypyiw1DrIeuI-sh_yU85IVkKyKlHZaDdh4kuYqZtlyH/exec') {
+    return { success: true, mock: true };
+  }
+  const res = await fetch(CONFIG.WEB_APP_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action, ...body })
+  });
+  return res.json();
+}
+
+// ── MOCK DATA (used until Apps Script is deployed) ──
+function getMockData(action) {
+  if (action === 'getDeliveries') {
+    return { deliveries: [
+      { containerID:'AOA-29', supplier:'S:CRAFT', status:'CONFIRMED DELIVERY',
+        confirmedDelDate:'09/04/2026', expectedBoxes:3, orderCount:3, zonedCount:0 },
+      { containerID:'AOS-1110', supplier:'S:CRAFT', status:'ARRIVED',
+        confirmedDelDate:'08/04/2026', expectedBoxes:91, orderCount:11, zonedCount:4 },
+      { containerID:'CONT-26023', supplier:'TROPICAL', status:'CONFIRMED DELIVERY',
+        confirmedDelDate:'10/04/2026', expectedBoxes:9, orderCount:1, zonedCount:0 },
+    ]};
+  }
+  if (action === 'getOrders') {
+    return { orders: [
+      { orderRowID:'ORD-0001', customerRef:'5060', customerName:'Gary Knight', boxesShipped:1, status:'IN TRANSIT', zoneAssigned:'', isRemake:'N' },
+      { orderRowID:'ORD-0002', customerRef:'5970', customerName:'(A) Veronica Dunn', boxesShipped:1, status:'IN TRANSIT', zoneAssigned:'', isRemake:'N' },
+      { orderRowID:'ORD-0003', customerRef:'5952', customerName:'Mark Billington', boxesShipped:1, status:'IN TRANSIT', zoneAssigned:'5', isRemake:'N' },
+    ]};
+  }
+  if (action === 'getPipeline') {
+    return { pipeline: [
+      { containerID:'AOS-1107', supplier:'S:CRAFT', status:'ON VESSEL', etaDate:'11/05/2026', orderCount:13, expectedBoxes:204 },
+      { containerID:'AOS-1104', supplier:'S:CRAFT', status:'ON VESSEL', etaDate:'20/04/2026', orderCount:4, expectedBoxes:38 },
+      { containerID:'CONT-26021', supplier:'TROPICAL', status:'LEFT PORT', etaDate:'20/05/2026', orderCount:8, expectedBoxes:102 },
+    ]};
+  }
+  if (action === 'getStats') {
+    return { deliveriesNeeding:3, boxesInWarehouse:247, unzoned:18, pipeline:8 };
+  }
+  return {};
+}
+
+// ═══════════════════════════════════════════════════════════
+// STATS
+// ═══════════════════════════════════════════════════════════
+async function loadStats() {
+  try {
+    const data = await apiFetch('getStats');
+    document.getElementById('statDeliveries').textContent = data.deliveriesNeeding ?? '—';
+    document.getElementById('statBoxes').textContent = data.boxesInWarehouse ?? '—';
+    document.getElementById('statUnzoned').textContent = data.unzoned ?? '—';
+    document.getElementById('statPipeline').textContent = data.pipeline ?? '—';
+    document.getElementById('deliveryBadge').textContent = data.deliveriesNeeding ?? '0';
+    document.getElementById('pipelineBadge').textContent = data.pipeline ?? '0';
+    const nb = document.getElementById('navBadge');
+    if (data.deliveriesNeeding > 0) { nb.textContent = data.deliveriesNeeding; nb.style.display = 'block'; }
+    else { nb.style.display = 'none'; }
+  } catch(e) { console.error('Stats error:', e); }
+}
+
+// ═══════════════════════════════════════════════════════════
+// DELIVERIES LIST
+// ═══════════════════════════════════════════════════════════
+async function loadDeliveries() {
+  const list = document.getElementById('deliveriesList');
+  list.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+  try {
+    const data = await apiFetch('getDeliveries');
+    state.deliveries = data.deliveries || [];
+    renderDeliveriesList();
+  } catch(e) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Could not load deliveries</div><div class="empty-sub">Check connection and try again</div></div>';
+  }
+}
+
+function filterDeliveries(supplier, chip) {
+  state.filterSupplier = supplier;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  renderDeliveriesList();
+}
+
+function renderDeliveriesList() {
+  const list = document.getElementById('deliveriesList');
+  let items = state.deliveries;
+  if (state.filterSupplier !== 'ALL') items = items.filter(d => d.supplier === state.filterSupplier);
+
+  if (!items.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-text">All clear!</div><div class="empty-sub">No deliveries currently need action</div></div>';
+    return;
+  }
+
+  list.innerHTML = items.map(d => {
+    const pct = d.orderCount > 0 ? Math.round((d.zonedCount / d.orderCount) * 100) : 0;
+    const supClass = d.supplier === 'S:CRAFT' ? 'sb-sc' : d.supplier === 'TROPICAL' ? 'sb-tr' : 'sb-my';
+    const dotClass = d.status === 'ARRIVED' ? 'dot-arrived' : 'dot-confirmed';
+    return `
+    <div class="container-card" onclick="showDetail('${d.containerID}')">
+      <div class="cc-top">
+        <div class="cc-id">${d.containerID}</div>
+        <div class="sup-badge ${supClass}">${d.supplier}</div>
+      </div>
+      <div class="cc-stats">
+        <div><div class="cc-stat-val">${d.expectedBoxes}</div><div class="cc-stat-lbl">Boxes</div></div>
+        <div><div class="cc-stat-val">${d.orderCount}</div><div class="cc-stat-lbl">Orders</div></div>
+        <div><div class="cc-stat-val">${d.zonedCount}/${d.orderCount}</div><div class="cc-stat-lbl">Zoned</div></div>
+      </div>
+      <div class="cc-footer">
+        <div class="status-dot ${dotClass}"></div>
+        <div class="cc-status">${d.status}</div>
+        <div class="cc-date">${d.confirmedDelDate || ''}</div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill ${pct===100?'done':''}" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// CONTAINER DETAIL
+// ═══════════════════════════════════════════════════════════
+async function showDetail(containerID) {
+  state.currentContainer = containerID;
+  state.orderStates = {};
+  showScreen('detail');
+
+  const container = state.deliveries.find(d => d.containerID === containerID) || {};
+  document.getElementById('detailTitle').textContent = containerID;
+  const supClass = container.supplier === 'S:CRAFT' ? 'sb-sc' : container.supplier === 'TROPICAL' ? 'sb-tr' : 'sb-my';
+  document.getElementById('detailSub').textContent = container.supplier + ' — ' + (container.confirmedDelDate || '');
+
+  const body = document.getElementById('detailBody');
+  body.innerHTML = `
+    <div class="detail-header">
+      <div class="detail-id">${containerID}</div>
+      <div class="detail-meta-row">
+        <div class="detail-meta-item"><div class="detail-meta-val">${container.expectedBoxes || '?'}</div><div class="detail-meta-lbl">Expected Boxes</div></div>
+        <div class="detail-meta-item"><div class="detail-meta-val">${container.orderCount || '?'}</div><div class="detail-meta-lbl">Orders</div></div>
+        <div class="detail-meta-item"><div class="detail-meta-val sup-badge ${supClass}" style="font-size:12px">${container.supplier || ''}</div><div class="detail-meta-lbl">Supplier</div></div>
+      </div>
+    </div>
+    <div style="padding:16px 16px 0">
+      <div class="arrival-panel">
+        <div class="panel-title"><span class="panel-title-icon">📋</span> Arrival Confirmation</div>
+        <div class="input-row">
+          <div class="input-label">Boxes received</div>
+          <input class="num-input" type="number" id="boxesReceived" placeholder="${container.expectedBoxes || '?'}" min="0">
+        </div>
+        <div class="panel-title" style="margin-top:4px;font-size:12px;color:var(--text2)">Was someone present?</div>
+        <div class="toggle-row">
+          <button class="toggle-btn" id="presentYes" onclick="setPresent(true)">✓ Yes — I was here</button>
+          <button class="toggle-btn" id="presentNo" onclick="setPresent(false)">Driver left it</button>
+        </div>
+        <textarea class="notes-input" id="arrivalNotes" placeholder="Notes — missing boxes, unexpected items, damage etc."></textarea>
+      </div>
+
+      <div class="orders-section">
+        <div class="orders-header">
+          <div class="section-title">${container.supplier || 'SUPPLIER'} ORDERS</div>
+          <button class="select-all-btn" onclick="markAllComplete()">✓ All Received</button>
+        </div>
+        <div id="ordersList"><div class="loading"><div class="spinner"></div>Loading orders...</div></div>
+      </div>
+
+      <button class="confirm-btn" id="confirmBtn" onclick="confirmDelivery()" disabled>
+        Confirm Delivery
+      </button>
+      <div style="height:16px"></div>
+    </div>`;
+
+  loadOrders(containerID);
+}
+
+async function loadOrders(containerID) {
+  try {
+    const data = await apiFetch('getOrders', { containerID });
+    const orders = data.orders || [];
+    orders.forEach(o => {
+      state.orderStates[o.orderRowID] = {
+        status: o.zoneAssigned ? 'zoned' : 'pending',
+        zone: o.zoneAssigned || '',
+        boxesReceived: o.boxesShipped,
+        boxesShipped: o.boxesShipped,
+        isRemake: o.isRemake === 'Y'
+      };
+    });
+    renderOrders(orders);
+  } catch(e) {
+    document.getElementById('ordersList').innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Could not load orders</div></div>';
+  }
+}
+
+function renderOrders(orders) {
+  const list = document.getElementById('ordersList');
+  if (!orders.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">No orders found</div></div>';
+    return;
+  }
+
+  list.innerHTML = orders.map(o => {
+    const os = state.orderStates[o.orderRowID];
+    const rowClass = os.zone ? 'order-zoned' : '';
+    const remakeTag = o.isRemake === 'Y' ? '<span style="font-size:10px;background:rgba(255,112,67,.15);color:var(--warn);padding:2px 6px;border-radius:4px;font-weight:700;margin-left:4px">REMAKE</span>' : '';
+    return `
+    <div class="order-row ${rowClass}" id="orow-${o.orderRowID}">
+      <div class="order-main">
+        <div class="order-ref-name">
+          <div class="order-ref">${o.customerRef}</div>
+          <div class="order-name">${o.customerName}${remakeTag}</div>
+        </div>
+        <div class="order-box-col">
+          <div class="order-box-num">${o.boxesShipped}</div>
+          <div class="order-box-lbl">BOXES</div>
+        </div>
+      </div>
+      ${os.zone ? `
+        <div class="order-zone-row">
+          <div class="zone-tag">📍 Zone ${os.zone}</div>
+          <button class="edit-zone-btn" onclick="openZonePicker('${o.orderRowID}','${o.customerName}',true)">Edit Zone</button>
+        </div>` : `
+        <div class="order-check-row">
+          <button class="check-btn complete" onclick="markComplete('${o.orderRowID}')">✓ Received</button>
+          <button class="check-btn partial" onclick="togglePartial('${o.orderRowID}')">⚠ Partial</button>
+        </div>
+        <div id="partial-${o.orderRowID}" style="display:none">
+          <div class="partial-area">
+            <div class="partial-row">
+              <div class="partial-label">Boxes actually received</div>
+              <input class="num-input" type="number" id="partial-boxes-${o.orderRowID}" placeholder="${o.boxesShipped}" min="0" max="${o.boxesShipped}" onchange="setPartialBoxes('${o.orderRowID}',this.value)">
+            </div>
+            <textarea class="notes-input" placeholder="Note reason — e.g. 1 box missing on delivery" style="min-height:50px" id="partial-note-${o.orderRowID}"></textarea>
+          </div>
+        </div>`}
+      ${!os.zone ? `<button class="assign-zone-btn" style="margin-top:8px;width:100%" onclick="openZonePicker('${o.orderRowID}','${o.customerName}',false)">📍 Assign Zone</button>` : ''}
+    </div>`;
+  }).join('');
+
+  checkConfirmReady();
+}
+
+function markComplete(orderRowID) {
+  const os = state.orderStates[orderRowID];
+  if (!os) return;
+  os.status = 'received';
+  const row = document.getElementById('orow-' + orderRowID);
+  if (row) {
+    const checkRow = row.querySelector('.order-check-row');
+    if (checkRow) checkRow.innerHTML = '<div style="color:var(--accent2);font-size:13px;font-weight:700">✓ Marked as received — assign zone below</div>';
+  }
+  checkConfirmReady();
+}
+
+function togglePartial(orderRowID) {
+  const area = document.getElementById('partial-' + orderRowID);
+  if (area) area.style.display = area.style.display === 'none' ? 'block' : 'none';
+  const os = state.orderStates[orderRowID];
+  if (os) os.status = 'partial';
+}
+
+function setPartialBoxes(orderRowID, val) {
+  const os = state.orderStates[orderRowID];
+  if (os) os.boxesReceived = parseInt(val) || 0;
+}
+
+function markAllComplete() {
+  Object.keys(state.orderStates).forEach(id => {
+    state.orderStates[id].status = 'received';
+  });
+  // Re-render
+  const container = state.deliveries.find(d => d.containerID === state.currentContainer) || {};
+  apiFetch('getOrders', { containerID: state.currentContainer }).then(data => {
+    renderOrders(data.orders || []);
+    showToast('All orders marked as received', 'success');
+  });
+}
+
+function setPresent(yes) {
+  document.getElementById('presentYes').className = 'toggle-btn ' + (yes ? 'yes' : '');
+  document.getElementById('presentNo').className = 'toggle-btn ' + (!yes ? 'no' : '');
+  state.wasPresent = yes;
+}
+
+function checkConfirmReady() {
+  const btn = document.getElementById('confirmBtn');
+  if (!btn) return;
+  const allDone = Object.values(state.orderStates).every(os => os.status !== 'pending' || os.zone);
+  btn.disabled = false; // allow partial confirms
+}
+
+// ═══════════════════════════════════════════════════════════
+// ZONE PICKER
+// ═══════════════════════════════════════════════════════════
+function openZonePicker(orderRowID, customerName, isEdit) {
+  state.zoneTarget = { orderRowID, isEdit };
+  document.getElementById('zoneSub').textContent = (isEdit ? 'Editing zone for ' : 'Assign zone for ') + customerName;
+
+  const grid = document.getElementById('zoneGrid');
+  const currentZone = state.orderStates[orderRowID]?.zone || '';
+
+  // Build zones 1-25
+  let html = '';
+  for (let i = 1; i <= 25; i++) {
+    html += `<button class="z-btn ${currentZone == i ? 'z-sel' : ''}" onclick="selectZone('${i}')">${i}</button>`;
+  }
+  html += `<button class="z-btn z-edr ${currentZone === 'EDR' ? 'z-sel' : ''}" onclick="selectZone('EDR')">EDR</button>`;
+  grid.innerHTML = html;
+
+  document.getElementById('zoneOverlay').classList.add('open');
+}
+
+function selectZone(zone) {
+  const { orderRowID } = state.zoneTarget;
+  const os = state.orderStates[orderRowID];
+  if (os) {
+    os.zone = zone;
+    os.status = 'zoned';
+  }
+  closeZonePicker();
+
+  // Update the row UI
+  const row = document.getElementById('orow-' + orderRowID);
+  if (row) {
+    let zoneRow = row.querySelector('.order-zone-row');
+    if (zoneRow) {
+      zoneRow.innerHTML = `<div class="zone-tag">📍 Zone ${zone}</div><button class="edit-zone-btn" onclick="openZonePicker('${orderRowID}','',true)">Edit Zone</button>`;
+    } else {
+      const assignBtn = row.querySelector('.assign-zone-btn');
+      if (assignBtn) {
+        assignBtn.outerHTML = `<div class="order-zone-row"><div class="zone-tag">📍 Zone ${zone}</div><button class="edit-zone-btn" onclick="openZonePicker('${orderRowID}','',true)">Edit Zone</button></div>`;
+      }
+    }
+    row.className = 'order-row order-zoned';
+  }
+  showToast('Zone ' + zone + ' assigned', 'success');
+  checkConfirmReady();
+}
+
+function closeZonePicker() {
+  document.getElementById('zoneOverlay').classList.remove('open');
+}
+
+// ═══════════════════════════════════════════════════════════
+// CONFIRM DELIVERY
+// ═══════════════════════════════════════════════════════════
+async function confirmDelivery() {
+  const boxesReceived = document.getElementById('boxesReceived')?.value;
+  const notes = document.getElementById('arrivalNotes')?.value || '';
+  const wasPresent = state.wasPresent !== false;
+
+  if (!boxesReceived) {
+    showToast('Please enter boxes received', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('confirmBtn');
+  btn.textContent = 'Saving...';
+  btn.disabled = true;
+
+  // Check for discrepancies
+  const container = state.deliveries.find(d => d.containerID === state.currentContainer) || {};
+  const expected = container.expectedBoxes || 0;
+  const received = parseInt(boxesReceived);
+  const hasDiscrepancy = received < expected;
+
+  // Build order updates
+  const orderUpdates = Object.entries(state.orderStates).map(([id, os]) => ({
+    orderRowID: id,
+    zone: os.zone,
+    boxesReceived: os.boxesReceived,
+    status: os.status,
+    note: document.getElementById('partial-note-' + id)?.value || ''
+  }));
+
+  try {
+    await apiPost('confirmDelivery', {
+      containerID: state.currentContainer,
+      boxesReceived: received,
+      wasPresent,
+      notes,
+      fitterName: state.user,
+      orderUpdates,
+      hasDiscrepancy
+    });
+
+    showToast(hasDiscrepancy ? '⚠ Saved — Becky alerted about missing boxes' : '✅ Delivery confirmed!', hasDiscrepancy ? 'error' : 'success');
+    setTimeout(() => showDeliveries(), 1500);
+  } catch(e) {
+    btn.textContent = 'Confirm Delivery';
+    btn.disabled = false;
+    showToast('Save failed — check connection', 'error');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// PIPELINE
+// ═══════════════════════════════════════════════════════════
+async function loadPipeline() {
+  const list = document.getElementById('pipelineList');
+  list.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+  try {
+    const data = await apiFetch('getPipeline');
+    const items = data.pipeline || [];
+    if (!items.length) {
+      list.innerHTML = '<div class="empty-state"><div class="empty-icon">🚢</div><div class="empty-text">No containers in transit</div></div>';
+      return;
+    }
+    list.innerHTML = items.map(p => {
+      const supClass = p.supplier === 'S:CRAFT' ? 'sb-sc' : p.supplier === 'TROPICAL' ? 'sb-tr' : 'sb-my';
+      const statClass = p.status === 'ON VESSEL' ? 'ps-vessel' : 'ps-port';
+      return `
+      <div class="pipeline-card">
+        <div class="pipe-top">
+          <div>
+            <div class="pipe-id">${p.containerID}</div>
+            <div class="sup-badge ${supClass}" style="display:inline-block;margin-top:4px">${p.supplier}</div>
+          </div>
+          <div class="pipe-status ${statClass}">${p.status.replace('_',' ')}</div>
+        </div>
+        <div class="pipe-meta">
+          <div class="pipe-eta">ETA <span>${p.etaDate || 'TBC'}</span></div>
+          <div class="pipe-eta">Orders <span>${p.orderCount}</span></div>
+          <div class="pipe-eta">Boxes <span>${p.expectedBoxes}</span></div>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Could not load pipeline</div></div>';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// DRIVER DROP-OFF
+// ═══════════════════════════════════════════════════════════
+async function driverDropoff(supplier) {
+  const time = new Date().toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'});
+  try {
+    await apiPost('driverDropoff', { supplier, time, loggedBy: state.user || 'Unknown' });
+    showToast('📣 ' + supplier + ' drop-off logged — Becky notified', 'success');
+  } catch(e) {
+    showToast('Logged locally (offline)', '');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════════
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (type || '');
+  setTimeout(() => t.className = 'toast', 2800);
+}
+</script>
+</body>
+</html>
