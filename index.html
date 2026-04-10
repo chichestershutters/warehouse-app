@@ -149,18 +149,19 @@
   .panel-title-icon{font-size:16px;}
   .input-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
   .input-label{font-size:13px;color:var(--text2);flex:1;}
-  .num-input{width:80px;padding:10px;border-radius:10px;background:var(--bg);border:1.5px solid var(--border);color:var(--text);font-family:var(--font);font-size:18px;font-weight:700;text-align:center;}
+  .num-input{width:80px;padding:10px;border-radius:10px;background:var(--bg);border:1.5px solid rgba(61,127,255,.3);color:var(--text);font-family:var(--font);font-size:18px;font-weight:700;text-align:center;}
   .num-input:focus{outline:none;border-color:var(--accent);}
   .toggle-row{display:flex;gap:8px;margin-bottom:10px;}
-  .toggle-btn{flex:1;padding:13px;border-radius:10px;border:2px solid var(--text3);background:var(--surface2);color:var(--text2);font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;}
-  .toggle-btn.yes{border-color:var(--accent2);background:rgba(0,200,150,.18);color:var(--accent2);}
-  .toggle-btn.no{border-color:var(--accent2);background:rgba(0,200,150,.18);color:var(--accent2);}
+  /* Yes/Driver buttons — match blue outlined style */
+  .toggle-btn{flex:1;padding:13px;border-radius:10px;border:1.5px solid rgba(61,127,255,.35);background:rgba(61,127,255,.06);color:var(--text2);font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;}
+  .toggle-btn.yes{border-color:var(--accent2);background:rgba(0,200,150,.15);color:var(--accent2);}
+  .toggle-btn.no{border-color:var(--accent2);background:rgba(0,200,150,.15);color:var(--accent2);}
   .toggle-btn:active{transform:scale(.96);}
-  .notes-input{width:100%;padding:12px;border-radius:10px;background:var(--bg);border:1.5px solid var(--border);color:var(--text);font-family:var(--font);font-size:14px;resize:none;min-height:60px;margin-bottom:10px;}
+  .notes-input{width:100%;padding:12px;border-radius:10px;background:var(--bg);border:1.5px solid rgba(61,127,255,.2);color:var(--text);font-family:var(--font);font-size:14px;resize:none;min-height:60px;margin-bottom:0;}
   .notes-input:focus{outline:none;border-color:var(--accent);}
   .notes-input::placeholder{color:var(--text3);}
-  /* All Received — neutral until pressed, then goes green */
-  .select-all-btn{width:100%;padding:12px;border-radius:10px;background:var(--surface2);border:2px solid var(--text3);color:var(--text2);font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;}
+  /* All Received — below the order list, neutral until pressed */
+  .select-all-btn{width:100%;padding:12px;border-radius:10px;background:rgba(61,127,255,.06);border:1.5px solid rgba(61,127,255,.35);color:var(--text2);font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;margin-top:10px;}
   .select-all-btn:active{transform:scale(.97);}
   .select-all-btn.done{background:rgba(0,200,150,.15);border-color:var(--accent2);color:var(--accent2);}
 
@@ -216,13 +217,11 @@
   .zone-sheet-sub{font-size:13px;color:var(--text2);text-align:center;margin-bottom:16px;}
   .zone-grid{margin-bottom:10px;}
   .wh-section{background:rgba(61,127,255,.04);border:2px solid rgba(61,127,255,.2);border-radius:12px;padding:10px;margin-bottom:8px;}
-  .wh-wall-h{height:6px;background:rgba(61,127,255,.35);border-radius:3px;margin:6px 2px;}
-  .wh-wall-v{width:6px;background:rgba(61,127,255,.35);border-radius:3px;flex-shrink:0;}
-  .z-btn{padding:0;height:44px;width:100%;border-radius:8px;border:1.5px solid rgba(61,127,255,.25);background:rgba(61,127,255,.06);color:var(--text);font-family:var(--font);font-size:16px;font-weight:700;cursor:pointer;transition:all .12s;text-align:center;display:flex;align-items:center;justify-content:center;}
+  .z-btn{padding:0;height:48px;width:100%;border-radius:8px;border:1.5px solid rgba(61,127,255,.3);background:rgba(61,127,255,.07);color:var(--text);font-family:var(--font);font-size:16px;font-weight:700;cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center;}
   .z-btn:active{transform:scale(.88);}
   .z-btn.z-sel{background:var(--accent);border-color:var(--accent);color:#fff;}
-  .z-btn.z-office{background:rgba(255,255,255,.02);border:1.5px dashed rgba(61,127,255,.15);color:var(--text3);font-size:9px;font-weight:600;letter-spacing:.3px;}
-  .z-btn.z-edr{background:rgba(255,112,67,.08);border-color:rgba(255,112,67,.3);color:var(--warn);}
+  .z-btn.z-office{background:rgba(255,255,255,.02);border:1.5px dashed rgba(61,127,255,.12);color:var(--text3);font-size:9px;font-weight:600;cursor:default;}
+  .z-btn.z-edr{background:rgba(255,112,67,.08);border-color:rgba(255,112,67,.35);color:var(--warn);}
   .z-btn.z-edr.z-sel{background:var(--warn);border-color:var(--warn);color:#fff;}
   .zone-cancel{width:100%;padding:14px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-family:var(--font);font-size:15px;font-weight:600;cursor:pointer;margin-top:8px;}
   .zone-cancel:active{transform:scale(.97);}
@@ -844,15 +843,14 @@ async function showDetail(containerID) {
           <button class="toggle-btn" id="presentNo" onclick="setPresent(false)">Driver left it</button>
         </div>
         <textarea class="notes-input" id="arrivalNotes" placeholder="Notes — missing boxes, unexpected items, damage etc."></textarea>
-        <button class="select-all-btn" id="allReceivedBtn" onclick="markAllComplete()" style="width:100%;padding:12px;font-size:14px;border-radius:10px;margin-top:2px">
-          Mark All Orders as Received
-        </button>
       </div>
 
       <div class="orders-section">
         <div class="orders-header">
           <div class="section-title">${container.supplier || 'SUPPLIER'} ORDERS</div>
         </div>
+        <button class="select-all-btn" id="allReceivedBtn" onclick="markAllComplete()">Mark All Orders as Received</button>
+        <div style="height:8px"></div>
         <div id="ordersList"><div class="loading"><div class="spinner"></div>Loading orders...</div></div>
       </div>
 
@@ -1124,58 +1122,55 @@ function buildWarehouseGrid(currentZone) {
     const sel = String(currentZone) === String(n) ? 'z-sel' : '';
     return `<button class="z-btn ${cls||''} ${sel}" onclick="selectZone('${n}')">${n}</button>`;
   }
-  // Wall = thick solid line, Racking = slightly thinner line, both visual not text
 
-  const wall  = `<div style="height:8px;background:rgba(61,127,255,.5);border-radius:4px;margin:5px 0"></div>`;
-  const rack  = `<div style="height:4px;background:rgba(61,127,255,.25);border-radius:2px;margin:5px 0"></div>`;
-  const wallV = `<div style="width:8px;background:rgba(61,127,255,.5);border-radius:4px;flex-shrink:0"></div>`;
+  const wall = `<div style="height:7px;background:rgba(61,127,255,.55);border-radius:4px;margin:6px 0"></div>`;
+  const rack = `<div style="height:5px;background:rgba(61,127,255,.3);border-radius:3px;margin:5px 0"></div>`;
+  const g    = `style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:0"`;
 
   return `
   <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-align:center;text-transform:uppercase;margin-bottom:6px">Main Warehouse — 13.4 × 6.8m</div>
   <div class="wh-section">
-
     ${wall}
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:5px">
+    <div ${g}>
       ${btn(1)} ${btn(2)} ${btn(3)} ${btn(4)}
-      <div class="z-btn z-office" style="cursor:default;font-size:9px;line-height:1.2">OFFICE<br>AREA</div>
+      <div class="z-btn z-office">OFFICE</div>
     </div>
     ${rack}
-    <div style="display:flex;gap:5px;align-items:stretch">
-      ${wallV}
-      <div style="flex:1">
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px">
-          ${btn(5)} ${btn(6)} ${btn(7)}
-        </div>
-        ${rack}
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px">
-          ${btn(8)} ${btn(9)} ${btn(10)}
-        </div>
-      </div>
-      <div style="display:flex;align-items:center;padding:0 2px">
-        <div style="width:8px;background:rgba(61,127,255,.5);border-radius:4px;align-self:stretch"></div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:5px;justify-content:center">
-        ${btn(11)}
-      </div>
+    <div ${g}>
+      ${btn(11)} ${btn(5)} ${btn(6)} ${btn(7)} <div></div>
     </div>
     ${rack}
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px">
-      ${btn(12)} ${btn(13)} ${btn(14)}
+    <div ${g}>
+      <div></div> ${btn(8)} ${btn(9)} ${btn(10)} <div></div>
+    </div>
+    ${rack}
+    <div ${g}>
+      ${btn(12)} ${btn(13)} ${btn(14)} <div></div> <div></div>
     </div>
     ${wall}
-
   </div>
 
   <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-align:center;text-transform:uppercase;margin:8px 0 6px">EDR Room — 4.5 × 6.6m</div>
-  <div class="wh-section" style="max-width:220px;margin-left:auto;margin-right:auto">
-    <div style="font-size:10px;font-weight:700;color:var(--warn);text-align:center;letter-spacing:.5px;margin-bottom:4px">EDR</div>
+  <div class="wh-section" style="max-width:240px;margin-left:auto;margin-right:auto">
     ${wall}
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
-      <div style="display:grid;gap:5px">${btn(20)} ${btn(19)} ${btn(18)}</div>
-      <div style="display:grid;gap:5px">${btn(15)} ${btn(16)} ${btn(17)}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+      ${btn(20)} ${btn(15)}
+    </div>
+    ${rack}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+      ${btn(19)} ${btn(16)}
+    </div>
+    ${rack}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+      ${btn(18)} ${btn(17)}
+    </div>
+    ${rack}
+    <div style="display:grid;grid-template-columns:1fr;gap:6px">
+      ${btn('EDR','z-edr')}
     </div>
     ${wall}
   </div>`;
+}
 }
 
 function selectZone(zone) {
