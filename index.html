@@ -179,7 +179,7 @@
 
   .order-zone-row{display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
   .zone-tag{display:inline-flex;align-items:center;gap:4px;background:rgba(0,200,150,.15);border:1px solid rgba(0,200,150,.3);color:var(--accent2);font-size:12px;font-weight:700;padding:5px 10px;border-radius:6px;}
-  .edit-zone-btn{padding:5px 10px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;}
+  .edit-zone-btn{padding:6px 12px;border-radius:8px;background:var(--surface2);border:1.5px solid var(--text3);color:var(--text2);font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;}
   .edit-zone-btn:active{transform:scale(.95);}
   .assign-zone-btn{padding:8px 14px;border-radius:8px;background:rgba(61,127,255,.15);border:1px solid rgba(61,127,255,.3);color:var(--accent);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;}
   .assign-zone-btn:active{transform:scale(.95);}
@@ -255,6 +255,19 @@
     <div class="zone-sheet-sub" id="zoneSub">Assigning zone for order</div>
     <div class="zone-grid" id="zoneGrid"></div>
     <button class="zone-cancel" onclick="closeZonePicker()">Cancel</button>
+  </div>
+</div>
+
+<!-- ═══ NOTES OVERLAY ═══ -->
+<div class="zone-overlay" id="notesOverlay">
+  <div class="zone-sheet">
+    <div class="zone-sheet-title">📝 Edit Notes</div>
+    <div class="zone-sheet-sub" id="notesSub">Add or update notes for this order</div>
+    <textarea id="notesInput" class="notes-input" style="width:100%;min-height:100px;margin:14px 0" placeholder="Enter notes — e.g. missing box, damage, query..."></textarea>
+    <div style="display:flex;gap:10px">
+      <button class="zone-cancel" style="flex:1" onclick="closeNotesOverlay()">Cancel</button>
+      <button class="login-btn" style="flex:2;margin-top:0;padding:14px" onclick="saveNotesOverlay()">Save Notes</button>
+    </div>
   </div>
 </div>
 
@@ -825,10 +838,9 @@ function renderOrders(orders) {
 
   list.innerHTML = orders.map(o => {
     const os = state.orderStates[o.orderRowID];
-    const rowClass = os.zone ? 'order-zoned' : (os.status === 'received' ? 'selected-order' : '');
     const remakeTag = o.isRemake === 'Y' ? '<span style="font-size:10px;background:rgba(255,112,67,.15);color:var(--warn);padding:2px 6px;border-radius:4px;font-weight:700;margin-left:4px">REMAKE</span>' : '';
     return `
-    <div class="order-row ${os.zone || o.zoneAssigned ? 'order-zoned' : (os.status === 'received' ? 'selected-order' : '')}" id="orow-${o.orderRowID}">
+    <div class="order-row ${os.zone || o.zoneAssigned ? 'order-zoned' : (os.status === 'received' ? 'selected-order' : (os.status === 'partial' ? 'order-partial' : ''))}" id="orow-${o.orderRowID}">
       <div class="order-main">
         <div class="order-ref-name">
           <div class="order-ref">${o.customerRef}</div>
@@ -843,19 +855,27 @@ function renderOrders(orders) {
         <div class="order-zone-row">
           <div class="zone-tag">📍 Zone ${os.zone || o.zoneAssigned}</div>
           <button class="edit-zone-btn" onclick="openZonePicker('${o.orderRowID}','${o.customerName}',true)">Edit Zone</button>
+          <button class="edit-zone-btn" style="margin-left:auto;border-color:var(--warn);color:var(--warn)" onclick="openDamagePanel('${o.orderRowID}','${o.customerName}')">⚠ Damage</button>
         </div>` : `
-        ${os.status === 'received' ? '<div style="color:var(--accent2);font-size:13px;font-weight:700;margin-top:6px">✓ Marked as received — assign zone below</div>' : `
+        ${os.status === 'received' ? `
+        <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+          <div style="color:var(--accent2);font-size:13px;font-weight:700;flex:1">✓ Marked as received — assign zone below</div>
+          <button class="edit-zone-btn" style="border-color:var(--text3);color:var(--text2)" onclick="undoReceived('${o.orderRowID}')">Undo</button>
+        </div>` : `
         <div class="order-check-row">
           <button class="check-btn complete" onclick="markComplete('${o.orderRowID}')">✓ Received</button>
-          <button class="check-btn partial" onclick="togglePartial('${o.orderRowID}')">⚠ Partial</button>
+          <button class="check-btn partial" onclick="togglePartial('${o.orderRowID}')">⚠ Partial / Issue</button>
         </div>`}
-        <div id="partial-${o.orderRowID}" style="display:none">
+        <div id="partial-${o.orderRowID}" style="display:${os.status === 'partial' ? 'block' : 'none'}">
           <div class="partial-area">
             <div class="partial-row">
               <div class="partial-label">Boxes actually received</div>
               <input class="num-input" type="number" id="partial-boxes-${o.orderRowID}" placeholder="${o.boxesShipped}" min="0" max="${o.boxesShipped}" onchange="setPartialBoxes('${o.orderRowID}',this.value)">
             </div>
-            <textarea class="notes-input" placeholder="Note reason — e.g. 1 box missing on delivery" style="min-height:50px" id="partial-note-${o.orderRowID}"></textarea>
+            <textarea class="notes-input" placeholder="Note reason — e.g. 1 box missing, damaged goods, wrong item" style="min-height:50px" id="partial-note-${o.orderRowID}"></textarea>
+            <div style="display:flex;gap:8px;margin-top:4px">
+              <button class="check-btn" style="border-color:var(--warn);color:var(--warn);flex:1" onclick="openDamagePanel('${o.orderRowID}','${o.customerName}')">⚠ Flag as Damaged / Missing</button>
+            </div>
           </div>
         </div>
         <button class="assign-zone-btn" style="margin-top:8px;width:100%" onclick="openZonePicker('${o.orderRowID}','${o.customerName}',false)">📍 Assign Zone</button>`}
@@ -872,9 +892,126 @@ function markComplete(orderRowID) {
   const row = document.getElementById('orow-' + orderRowID);
   if (row) {
     const checkRow = row.querySelector('.order-check-row');
-    if (checkRow) checkRow.innerHTML = '<div style="color:var(--accent2);font-size:13px;font-weight:700">✓ Marked as received — assign zone below</div>';
+    if (checkRow) checkRow.outerHTML = `
+      <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+        <div style="color:var(--accent2);font-size:13px;font-weight:700;flex:1">✓ Marked as received — assign zone below</div>
+        <button class="edit-zone-btn" style="border-color:var(--text3);color:var(--text2)" onclick="undoReceived('${orderRowID}')">Undo</button>
+      </div>`;
+    row.className = 'order-row selected-order';
   }
   checkConfirmReady();
+}
+
+function undoReceived(orderRowID) {
+  const os = state.orderStates[orderRowID];
+  if (!os) return;
+  os.status = 'pending';
+  // Re-render orders to restore the Received/Partial buttons
+  const container = state.deliveries.find(d => d.containerID === state.currentContainer) || {};
+  apiFetch('getOrders', { containerID: state.currentContainer }).then(data => {
+    renderOrders(data.orders || []);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// NOTES OVERLAY
+// ═══════════════════════════════════════════════════════════
+let notesTarget = null; // { orderRowID, containerID }
+
+function openNotesOverlay(orderRowID, containerID, currentNotes) {
+  notesTarget = { orderRowID, containerID };
+  document.getElementById('notesSub').textContent = 'Notes will be saved to the order record';
+  document.getElementById('notesInput').value = currentNotes || '';
+  document.getElementById('notesOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('notesInput').focus(), 150);
+}
+
+function closeNotesOverlay() {
+  document.getElementById('notesOverlay').classList.remove('open');
+  notesTarget = null;
+}
+
+async function saveNotesOverlay() {
+  if (!notesTarget) return;
+  const notes = document.getElementById('notesInput').value;
+  try {
+    const r = await apiPost('updateOrderNotes', {
+      orderRowID: notesTarget.orderRowID,
+      containerID: notesTarget.containerID,
+      notes,
+      fitterName: state.user
+    });
+    closeNotesOverlay();
+    if (r && r.success) {
+      showToast('Notes saved ✅', 'success');
+      // Refresh search if on search screen
+      const q = document.getElementById('searchInput')?.value;
+      if (q) doSearch(q);
+    } else showToast('Save failed', 'error');
+  } catch(e) { showToast('Save failed — check connection', 'error'); }
+}
+
+// Replace searchEditNotes to use overlay instead of prompt
+function searchEditNotes(orderRowID, containerID) {
+  // Get current notes from the displayed card
+  const card = document.getElementById('srow-' + orderRowID);
+  const noteEl = card ? card.querySelector('.order-notes-text') : null;
+  const current = noteEl ? noteEl.textContent : '';
+  openNotesOverlay(orderRowID, containerID, current);
+}
+
+// ═══════════════════════════════════════════════════════════
+// DAMAGE PANEL
+// ═══════════════════════════════════════════════════════════
+let damageTarget = null;
+
+function openDamagePanel(orderRowID, customerName) {
+  damageTarget = { orderRowID, containerID: state.currentContainer };
+  // Show inline damage panel on the order row
+  const row = document.getElementById('orow-' + orderRowID);
+  if (!row) return;
+  let damagePanel = row.querySelector('.damage-panel');
+  if (damagePanel) { damagePanel.style.display = damagePanel.style.display === 'none' ? 'block' : 'none'; return; }
+  const panel = document.createElement('div');
+  panel.className = 'damage-panel';
+  panel.style.cssText = 'margin-top:10px;padding:12px;background:rgba(255,112,67,.08);border:1.5px solid var(--warn);border-radius:10px';
+  panel.innerHTML = `
+    <div style="font-size:13px;font-weight:700;color:var(--warn);margin-bottom:10px">⚠ Flag Damage / Issue for ${customerName}</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">
+      <button class="check-btn" style="border-color:var(--warn);color:var(--warn);flex:none;padding:8px 14px" onclick="saveDamage('${orderRowID}','MISSING')">📦 Missing Boxes</button>
+      <button class="check-btn" style="border-color:var(--warn);color:var(--warn);flex:none;padding:8px 14px" onclick="saveDamage('${orderRowID}','DAMAGED')">💥 Damaged Goods</button>
+      <button class="check-btn" style="border-color:var(--warn);color:var(--warn);flex:none;padding:8px 14px" onclick="saveDamage('${orderRowID}','WRONG ITEM')">❌ Wrong Item</button>
+    </div>
+    <button class="edit-zone-btn" style="margin-top:10px;width:100%;text-align:center" onclick="this.closest('.damage-panel').style.display='none'">Cancel</button>`;
+  row.appendChild(panel);
+}
+
+async function saveDamage(orderRowID, damageType) {
+  const containerID = state.currentContainer || (damageTarget && damageTarget.containerID) || '';
+  try {
+    const r = await apiPost('flagDamage', { orderRowID, containerID, damageType, fitterName: state.user });
+    if (r && r.success) {
+      showToast('⚠ ' + damageType + ' flagged — office notified', 'error');
+      // Hide the damage panel
+      const row = document.getElementById('orow-' + orderRowID);
+      if (row) { const p = row.querySelector('.damage-panel'); if(p) p.style.display = 'none'; }
+      // Add visual indicator to the order row
+      const row2 = document.getElementById('orow-' + orderRowID);
+      if (row2) {
+        const existing = row2.querySelector('.damage-indicator');
+        if (!existing) {
+          const ind = document.createElement('div');
+          ind.className = 'damage-indicator';
+          ind.style.cssText = 'margin-top:8px;font-size:12px;color:var(--warn);font-weight:700';
+          ind.textContent = '⚠ ' + damageType + ' flagged';
+          row2.appendChild(ind);
+        }
+      }
+      // Refresh search if on search screen
+      const q = document.getElementById('searchInput')?.value;
+      if (q) doSearch(q);
+    } else showToast('Save failed', 'error');
+  } catch(e) { showToast('Save failed', 'error'); }
 }
 
 function togglePartial(orderRowID) {
@@ -1141,7 +1278,7 @@ async function runSearch(query) {
           ${o.damageFlag === 'Y' ? `<div style="font-size:12px;color:var(--warn);font-weight:700">⚠ DAMAGE FLAGGED</div>` : ''}
         </div>
         ${zoneInfo}
-        ${o.notes ? `<div style="font-size:12px;color:var(--text2);margin-top:8px;padding:8px;background:var(--surface2);border-radius:8px">📝 ${o.notes}</div>` : ''}
+        ${o.notes ? `<div class="order-notes-text" style="font-size:12px;color:var(--text2);margin-top:8px;padding:8px;background:var(--surface2);border-radius:8px">📝 ${o.notes}</div>` : `<div class="order-notes-text" style="display:none"></div>`}
         <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:8px">
           <button class="edit-zone-btn" onclick="searchEditZone('${o.orderRowID}','${o.customerName}','${o.containerID}')">${o.zoneAssigned ? '📍 Edit Zone' : '📍 Assign Zone'}</button>
           <button class="edit-zone-btn" style="background:rgba(156,111,255,.12);border-color:var(--info);color:var(--info)" onclick="searchEditNotes('${o.orderRowID}','${o.containerID}')">📝 Notes</button>
