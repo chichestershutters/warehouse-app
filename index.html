@@ -211,15 +211,24 @@
   /* ZONE PICKER */
   .zone-overlay{display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);align-items:flex-end;justify-content:center;}
   .zone-overlay.open{display:flex;}
-  .zone-sheet{background:var(--surface);border-radius:20px 20px 0 0;padding:20px 16px max(20px,env(safe-area-inset-bottom));width:100%;max-width:480px;}
+  .zone-sheet{background:var(--surface);border-radius:20px 20px 0 0;padding:16px 16px max(16px,env(safe-area-inset-bottom));width:100%;max-width:480px;max-height:88dvh;overflow-y:auto;}
   .zone-sheet-title{font-size:16px;font-weight:700;text-align:center;margin-bottom:4px;}
   .zone-sheet-sub{font-size:13px;color:var(--text2);text-align:center;margin-bottom:16px;}
-  .zone-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:10px;}
-  .z-btn{padding:15px 4px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-family:var(--font);font-size:17px;font-weight:700;cursor:pointer;transition:all .12s;text-align:center;}
+  .zone-grid{margin-bottom:10px;}
+  /* Warehouse layout labels */
+  .wh-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-transform:uppercase;margin:8px 0 4px;text-align:center;}
+  .wh-section{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px;margin-bottom:6px;}
+  .wh-row{display:grid;gap:6px;margin-bottom:6px;}
+  .wh-row:last-child{margin-bottom:0;}
+  .wh-divider{height:4px;background:var(--border);border-radius:2px;margin:4px 0;position:relative;}
+  .wh-divider::before{content:'RACKING';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:9px;color:var(--text3);background:var(--surface2);padding:0 6px;white-space:nowrap;}
+  .wh-two-col{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+  .z-btn{padding:13px 4px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-family:var(--font);font-size:16px;font-weight:700;cursor:pointer;transition:all .12s;text-align:center;}
   .z-btn:active{transform:scale(.88);}
   .z-btn.z-sel{background:var(--accent);border-color:var(--accent);color:#fff;}
-  .z-edr{grid-column:1/-1;background:rgba(255,112,67,.1);border-color:rgba(255,112,67,.3);color:var(--warn);font-size:15px;}
-  .z-edr.z-sel{background:var(--warn);border-color:var(--warn);color:#fff;}
+  .z-btn.z-edr{background:rgba(255,112,67,.1);border-color:rgba(255,112,67,.3);color:var(--warn);font-size:13px;}
+  .z-btn.z-edr.z-sel{background:var(--warn);border-color:var(--warn);color:#fff;}
+  .z-btn.z-wall{background:rgba(156,111,255,.1);border-color:rgba(156,111,255,.3);color:var(--info);}
   .zone-cancel{width:100%;padding:14px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-family:var(--font);font-size:15px;font-weight:600;cursor:pointer;margin-top:8px;}
   .zone-cancel:active{transform:scale(.97);}
 
@@ -1110,19 +1119,76 @@ function checkConfirmReady() {
 function openZonePicker(orderRowID, customerName, isEdit) {
   state.zoneTarget = { orderRowID, isEdit };
   document.getElementById('zoneSub').textContent = (isEdit ? 'Editing zone for ' : 'Assign zone for ') + customerName;
-
-  const grid = document.getElementById('zoneGrid');
   const currentZone = state.orderStates[orderRowID]?.zone || '';
-
-  // Build zones 1-25
-  let html = '';
-  for (let i = 1; i <= 25; i++) {
-    html += `<button class="z-btn ${currentZone == i ? 'z-sel' : ''}" onclick="selectZone('${i}')">${i}</button>`;
-  }
-  html += `<button class="z-btn z-edr ${currentZone === 'EDR' ? 'z-sel' : ''}" onclick="selectZone('EDR')">EDR</button>`;
-  grid.innerHTML = html;
-
+  document.getElementById('zoneGrid').innerHTML = buildWarehouseGrid(currentZone);
   document.getElementById('zoneOverlay').classList.add('open');
+}
+
+function buildWarehouseGrid(currentZone) {
+  function btn(n, extraClass) {
+    const sel = String(currentZone) === String(n) ? 'z-sel' : '';
+    return `<button class="z-btn ${extraClass||''} ${sel}" onclick="selectZone('${n}')">${n}</button>`;
+  }
+  // ── MAIN WAREHOUSE (13.38 x 6.85m) ──────────────────────
+  // Row 1: 1 2 3 4  |  office corner (right)
+  // Middle: 5 6 7 / racking / 8 9 10  |  zone 11 on left wall
+  // Row bottom: 12 13 14
+  // ── EDR ROOM (4.49 x 6.55m) ─────────────────────────────
+  // Right col: 15 16 17 (top→bottom)
+  // Left col:  20 19 18 (top→bottom)
+
+  return `
+  <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-transform:uppercase;text-align:center;margin-bottom:6px">MAIN WAREHOUSE — 13.4 × 6.8m</div>
+
+  <div class="wh-section">
+    <!-- Top row: 1 2 3 4 + office space -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1.2fr;gap:6px;margin-bottom:6px">
+      ${btn(1)} ${btn(2)} ${btn(3)} ${btn(4)}
+      <div style="background:rgba(255,255,255,.03);border:1px dashed var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--text3);text-align:center;padding:4px">OFFICE<br>AREA</div>
+    </div>
+
+    <!-- Racking divider -->
+    <div style="height:3px;background:var(--border);border-radius:2px;margin:2px 0 6px;position:relative">
+      <span style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:9px;color:var(--text3);background:var(--surface);padding:0 8px;white-space:nowrap">— RACKING —</span>
+    </div>
+
+    <!-- Middle: zone 11 on left wall + 5/6/7 top, 8/9/10 bottom -->
+    <div style="display:grid;grid-template-columns:auto 1fr;gap:6px;margin-bottom:6px">
+      <div style="display:flex;align-items:center">${btn(11, 'z-wall')}</div>
+      <div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:4px">
+          ${btn(5)} ${btn(6)} ${btn(7)}
+        </div>
+        <div style="height:3px;background:var(--border);border-radius:2px;margin:2px 0 4px;position:relative">
+          <span style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:9px;color:var(--text3);background:var(--surface);padding:0 8px;white-space:nowrap">— RACKING —</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+          ${btn(8)} ${btn(9)} ${btn(10)}
+        </div>
+      </div>
+    </div>
+
+    <!-- Racking divider -->
+    <div style="height:3px;background:var(--border);border-radius:2px;margin:2px 0 6px;position:relative">
+      <span style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:9px;color:var(--text3);background:var(--surface);padding:0 8px;white-space:nowrap">— RACKING —</span>
+    </div>
+
+    <!-- Bottom row: 12 13 14 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+      ${btn(12)} ${btn(13)} ${btn(14)}
+    </div>
+  </div>
+
+  <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-transform:uppercase;text-align:center;margin:8px 0 6px">EDR ROOM — 4.5 × 6.6m</div>
+
+  <div class="wh-section">
+    <div style="text-align:center;font-size:10px;color:var(--warn);font-weight:700;letter-spacing:.5px;margin-bottom:6px">EDR</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+      <!-- Left col: 20 19 18 top→bottom, Right col: 15 16 17 -->
+      <div style="display:grid;gap:6px">${btn(20)} ${btn(19)} ${btn(18)}</div>
+      <div style="display:grid;gap:6px">${btn(15)} ${btn(16)} ${btn(17)}</div>
+    </div>
+  </div>`;
 }
 
 function selectZone(zone) {
@@ -1513,11 +1579,8 @@ function searchEditZone(orderRowID, customerName, containerID) {
   if (!state.orderStates[orderRowID]) state.orderStates[orderRowID] = { zone: '', status: 'pending' };
   state.zoneTarget = { orderRowID, isEdit: true, fromSearch: true };
   document.getElementById('zoneSub').textContent = 'Editing zone for ' + customerName;
-  const grid = document.getElementById('zoneGrid');
-  let html = '';
-  for (let i = 1; i <= 25; i++) html += `<button class="z-btn" onclick="selectZone('${i}')">${i}</button>`;
-  html += `<button class="z-btn z-edr" onclick="selectZone('EDR')">EDR</button>`;
-  grid.innerHTML = html;
+  const currentZone = state.orderStates[orderRowID]?.zone || '';
+  document.getElementById('zoneGrid').innerHTML = buildWarehouseGrid(currentZone);
   document.getElementById('zoneOverlay').classList.add('open');
 }
 
