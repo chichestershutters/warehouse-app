@@ -223,10 +223,12 @@
   .zone-cancel:active{transform:scale(.97);}
 
   /* TOAST */
-  .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface);border:1px solid var(--border);color:var(--text);padding:12px 20px;border-radius:10px;font-size:14px;font-weight:600;opacity:0;transition:all .3s;z-index:200;white-space:nowrap;pointer-events:none;}
+  .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface);border:1px solid var(--border);color:var(--text);padding:12px 20px;border-radius:10px;font-size:14px;font-weight:600;opacity:0;transition:all .3s;z-index:200;white-space:nowrap;pointer-events:none;max-width:90vw;text-align:center;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-  .toast.success{border-color:var(--accent2);color:var(--accent2);}
-  .toast.error{border-color:var(--warn);color:var(--warn);}
+  .toast.success{border-color:var(--accent2);color:var(--accent2);background:rgba(0,200,150,.08);}
+  .toast.error{border-color:var(--warn);color:var(--warn);background:rgba(255,112,67,.08);}
+  /* Global button press feedback */
+  button:active{transform:scale(.94)!important;}
 
   /* PIPELINE / COMING SOON */
   .pipeline-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:8px;}
@@ -302,6 +304,7 @@
       <div class="topbar-sub" id="homeDate"></div>
     </div>
     <div class="topbar-right">
+      <div class="icon-btn" onclick="loadStats()" title="Refresh">🔄</div>
       <div class="icon-btn" onclick="doLogout()" title="Switch user">👤</div>
     </div>
   </div>
@@ -311,10 +314,10 @@
     <div style="font-size:11px;color:var(--text3);margin-top:2px;margin-bottom:12px">v2 · 10 Apr 2026</div>
 
     <div class="stats-grid" id="statsGrid">
-      <div class="stat-card blue" onclick="showDeliveries()"><div class="stat-value" id="statDeliveries">—</div><div class="stat-label">Deliveries needing action</div></div>
+      <div class="stat-card blue" onclick="showDeliveries()"><div class="stat-value" id="statDeliveries">—</div><div class="stat-label">Containers needing check-in</div></div>
       <div class="stat-card green"><div class="stat-value" id="statBoxes">—</div><div class="stat-label">Boxes in warehouse</div></div>
       <div class="stat-card orange" onclick="showDeliveries()"><div class="stat-value" id="statUnzoned">—</div><div class="stat-label">Orders awaiting zone</div></div>
-      <div class="stat-card purple" onclick="showPipeline()"><div class="stat-value" id="statPipeline">—</div><div class="stat-label">Containers in pipeline</div></div>
+      <div class="stat-card purple" onclick="showPipeline()"><div class="stat-value" id="statPipeline">—</div><div class="stat-label">Containers in transit</div></div>
     </div>
 
     <div class="section-title">Quick Actions</div>
@@ -1372,11 +1375,20 @@ async function showContainerDetail(containerID, context) {
 // DRIVER DROP-OFF
 // ═══════════════════════════════════════════════════════════
 async function driverDropoff(supplier) {
+  // Find the button and show loading state
+  const btns = document.querySelectorAll('.driver-btn');
+  let activeBtn = null;
+  btns.forEach(b => { if (b.textContent.trim() === supplier) activeBtn = b; });
+  if (activeBtn) {
+    activeBtn.textContent = '⏳ Notifying...';
+    activeBtn.disabled = true;
+    activeBtn.style.opacity = '0.7';
+  }
+
   const time = new Date().toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'});
   const date = new Date().toLocaleDateString('en-GB', {weekday:'long',day:'numeric',month:'long',year:'numeric'});
   const loggedBy = state.user || 'Unknown';
   try {
-    // Send both as JSON blob and as individual params for reliability
     const url = new URL(CONFIG.WEB_APP_URL);
     url.searchParams.set('action', 'driverDropoff');
     url.searchParams.set('supplier', supplier);
@@ -1385,8 +1397,28 @@ async function driverDropoff(supplier) {
     url.searchParams.set('date', date);
     url.searchParams.set('data', JSON.stringify({ supplier, time, date, loggedBy }));
     await fetch(url.toString());
-    showToast('📣 ' + supplier + ' delivery logged — office notified', 'success');
+    if (activeBtn) {
+      activeBtn.textContent = '✓ Notified!';
+      activeBtn.style.opacity = '1';
+      activeBtn.style.background = 'rgba(0,200,150,.15)';
+      activeBtn.style.borderColor = 'var(--accent2)';
+      activeBtn.style.color = 'var(--accent2)';
+    }
+    showToast('✓ ' + supplier + ' logged — office notified', 'success');
+    // Reset button after 3 seconds
+    setTimeout(() => {
+      if (activeBtn) {
+        activeBtn.textContent = supplier;
+        activeBtn.disabled = false;
+        activeBtn.style.cssText = '';
+      }
+    }, 3000);
   } catch(e) {
+    if (activeBtn) {
+      activeBtn.textContent = supplier;
+      activeBtn.disabled = false;
+      activeBtn.style.opacity = '1';
+    }
     showToast('Logged locally (offline)', '');
   }
 }
@@ -1529,7 +1561,7 @@ function showToast(msg, type) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.className = 'toast show ' + (type || '');
-  setTimeout(() => t.className = 'toast', 2800);
+  setTimeout(() => t.className = 'toast', 4000);
 }
 </script>
 </body>
