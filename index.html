@@ -390,6 +390,7 @@
     <div class="nav-item" onclick="showHome()"><div class="nav-icon">🏠</div><div class="nav-label">HOME</div></div>
     <div class="nav-item" onclick="showDeliveries()"><div class="nav-icon">🚛</div><div class="nav-label">DELIVERIES</div></div>
     <div class="nav-item active" onclick="showPipeline()"><div class="nav-icon">🚢</div><div class="nav-label">PIPELINE</div></div>
+    <div class="nav-item" onclick="showSearch()"><div class="nav-icon">🔍</div><div class="nav-label">SEARCH</div></div>
   </div>
 </div>
 
@@ -579,14 +580,13 @@ async function apiFetch(action, params = {}) {
 }
 
 async function apiPost(action, body = {}) {
-  if (CONFIG.WEB_APP_URL === 'https://script.google.com/macros/s/AKfycbyrw58W6C0cFyzc5cBghIecsypyiw1DrIeuI-sh_yU85IVkKyKlHZaDdh4kuYqZtlyH/exec') {
+  if (!CONFIG.WEB_APP_URL || CONFIG.WEB_APP_URL.indexOf('script.google.com') === -1) {
     return { success: true, mock: true };
   }
-  const res = await fetch(CONFIG.WEB_APP_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action, ...body })
-  });
+  const url = new URL(CONFIG.WEB_APP_URL);
+  url.searchParams.set('action', action);
+  url.searchParams.set('data', JSON.stringify(body));
+  const res = await fetch(url.toString());
   return res.json();
 }
 
@@ -672,27 +672,72 @@ function renderDeliveriesList() {
     return;
   }
 
+  // Sort: ARRIVED first, then by confirmedDelDate soonest first
+  items = [...items].sort((a, b) => {
+    if (a.status === 'ARRIVED' && b.status !== 'ARRIVED') return -1;
+    if (b.status === 'ARRIVED' && a.status !== 'ARRIVED') return 1;
+    const da = a.confirmedDelDate ? a.confirmedDelDate.split('/').reverse().join('') : '99999999';
+    const db = b.confirmedDelDate ? b.confirmedDelDate.split('/').reverse().join('') : '99999999';
+    return da.localeCompare(db);
+  });
+
+  const today = new Date(); today.setHours(0,0,0,0);
+  const tomorrow = new Date(today); tomorrow.setDate(today.getDate()+1);
+  const weekEnd = new Date(today); weekEnd.setDate(today.getDate()+7);
+
+  function dueBadge(dateStr, status) {
+    if (status === 'ARRIVED') return '<span style="font-size:11px;background:rgba(0,200,150,.15);color:var(--accent2);padding:2px 8px;border-radius:6px;font-weight:700">IN WAREHOUSE</span>';
+    if (!dateStr) return '';
+    const parts = dateStr.split('/');
+    if (parts.length !== 3) return '';
+    const d = new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]));
+    d.setHours(0,0,0,0);
+    if (d < today) return '<span style="font-size:11px;background:rgba(255,112,67,.2);color:var(--warn);padding:2px 8px;border-radius:6px;font-weight:700">OVERDUE</span>';
+    if (d.getTime() === today.getTime()) return '<span style="font-size:11px;background:rgba(255,112,67,.15);color:var(--warn);padding:2px 8px;border-radius:6px;font-weight:700">DUE TODAY</span>';
+    if (d.getTime() === tomorrow.getTime()) return '<span style="font-size:11px;background:rgba(255,159,67,.15);color:var(--myt);padding:2px 8px;border-radius:6px;font-weight:700">DUE TOMORROW</span>';
+    if (d <= weekEnd) return '<span style="font-size:11px;background:rgba(61,127,255,.12);color:var(--accent);padding:2px 8px;border-radius:6px;font-weight:700">THIS WEEK</span>';
+    return '';
+  }
+
   list.innerHTML = items.map(d => {
     const pct = d.orderCount > 0 ? Math.round((d.zonedCount / d.orderCount) * 100) : 0;
     const supClass = d.supplier === 'S:CRAFT' ? 'sb-sc' : d.supplier === 'TROPICAL' ? 'sb-tr' : 'sb-my';
-    const dotClass = d.status === 'ARRIVED' ? 'dot-arrived' : 'dot-confirmed';
+    const badge = dueBadge(d.confirmedDelDate, d.status);
+    // Progress steps: ARRIVED = step 1 done, any zoned = step 2 in progress, all zoned = done
+    const step1done = d.status === 'ARRIVED' || d.zonedCount > 0;
+    const step2done = d.zonedCount > 0;
+    const allZoned = d.orderCount > 0 && d.zonedCount >= d.orderCount;
+    const stepColor = (done) => done ? 'var(--accent2)' : 'var(--border)';
     return `
     <div class="container-card" onclick="showDetail('${d.containerID}')">
       <div class="cc-top">
-        <div class="cc-id">${d.containerID}</div>
-        <div class="sup-badge ${supClass}">${d.supplier}</div>
+        <div>
+          <div style="font-size:11px;color:var(--text3);font-weight:600;letter-spacing:.3px">${d.supplier}</div>
+          <div class="cc-id">Container ${d.containerID}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="sup-badge ${supClass}" style="margin-bottom:4px">${d.supplier}</div>
+          ${badge}
+        </div>
       </div>
       <div class="cc-stats">
         <div><div class="cc-stat-val">${d.expectedBoxes}</div><div class="cc-stat-lbl">Boxes</div></div>
         <div><div class="cc-stat-val">${d.orderCount}</div><div class="cc-stat-lbl">Orders</div></div>
         <div><div class="cc-stat-val">${d.zonedCount}/${d.orderCount}</div><div class="cc-stat-lbl">Zoned</div></div>
+        <div><div class="cc-stat-val">${d.confirmedDelDate || '—'}</div><div class="cc-stat-lbl">Del. Date</div></div>
       </div>
-      <div class="cc-footer">
-        <div class="status-dot ${dotClass}"></div>
-        <div class="cc-status">${d.status}</div>
-        <div class="cc-date">${d.confirmedDelDate || ''}</div>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+        <div style="display:flex;align-items:center;gap:4px;flex:1">
+          <div style="width:20px;height:20px;border-radius:50%;background:${step1done?'var(--accent2)':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0">${step1done?'✓':''}</div>
+          <div style="font-size:11px;color:${step1done?'var(--accent2)':'var(--text3)'};font-weight:600">Arrived</div>
+          <div style="flex:1;height:2px;background:${step2done?'var(--accent2)':'var(--border)'};border-radius:1px;margin:0 4px"></div>
+          <div style="width:20px;height:20px;border-radius:50%;background:${step2done?'var(--accent2)':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0">${step2done?'✓':''}</div>
+          <div style="font-size:11px;color:${step2done?'var(--accent2)':'var(--text3)'};font-weight:600">Zoned</div>
+          <div style="flex:1;height:2px;background:${allZoned?'var(--accent2)':'var(--border)'};border-radius:1px;margin:0 4px"></div>
+          <div style="width:20px;height:20px;border-radius:50%;background:${allZoned?'var(--accent2)':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0">${allZoned?'✓':''}</div>
+          <div style="font-size:11px;color:${allZoned?'var(--accent2)':'var(--text3)'};font-weight:600">Ready</div>
+        </div>
       </div>
-      <div class="progress-bar"><div class="progress-fill ${pct===100?'done':''}" style="width:${pct}%"></div></div>
     </div>`;
   }).join('');
 }
@@ -891,38 +936,44 @@ function openZonePicker(orderRowID, customerName, isEdit) {
 }
 
 function selectZone(zone) {
-  const { orderRowID } = state.zoneTarget;
+  const { orderRowID, fromSearch } = state.zoneTarget;
   const os = state.orderStates[orderRowID];
-  if (os) {
-    os.zone = zone;
-    os.status = 'zoned';
-  }
+  if (os) { os.zone = zone; os.status = 'zoned'; }
   closeZonePicker();
-  // Save zone immediately to backend
+
+  // Save zone to backend
   const container = state.currentContainer;
   apiPost('assignZone', {
-    orderRowID: orderRowID,
-    zone: zone,
+    orderRowID,
+    zone,
     fitterName: state.user || 'Unknown',
     containerID: container
   }).then(r => {
-    if (r && r.success) showToast('Zone ' + zone + ' saved ✅', 'success');
-    else showToast('Zone ' + zone + ' assigned (save pending)', '');
+    if (r && r.success) {
+      showToast('Zone ' + zone + ' saved ✅', 'success');
+      // If triggered from search, re-run search to refresh card
+      if (fromSearch) {
+        const q = document.getElementById('searchInput')?.value;
+        if (q) doSearch(q);
+      }
+    } else showToast('Zone ' + zone + ' assigned (save pending)', '');
   }).catch(() => showToast('Zone ' + zone + ' assigned (offline)', ''));
 
-  // Update the row UI
-  const row = document.getElementById('orow-' + orderRowID);
-  if (row) {
-    let zoneRow = row.querySelector('.order-zone-row');
-    if (zoneRow) {
-      zoneRow.innerHTML = `<div class="zone-tag">📍 Zone ${zone}</div><button class="edit-zone-btn" onclick="openZonePicker('${orderRowID}','',true)">Edit Zone</button>`;
-    } else {
-      const assignBtn = row.querySelector('.assign-zone-btn');
-      if (assignBtn) {
-        assignBtn.outerHTML = `<div class="order-zone-row"><div class="zone-tag">📍 Zone ${zone}</div><button class="edit-zone-btn" onclick="openZonePicker('${orderRowID}','',true)">Edit Zone</button></div>`;
+  // Update the row UI if on delivery detail screen
+  if (!fromSearch) {
+    const row = document.getElementById('orow-' + orderRowID);
+    if (row) {
+      let zoneRow = row.querySelector('.order-zone-row');
+      if (zoneRow) {
+        zoneRow.innerHTML = `<div class="zone-tag">📍 Zone ${zone}</div><button class="edit-zone-btn" onclick="openZonePicker('${orderRowID}','',true)">Edit Zone</button>`;
+      } else {
+        const assignBtn = row.querySelector('.assign-zone-btn');
+        if (assignBtn) {
+          assignBtn.outerHTML = `<div class="order-zone-row"><div class="zone-tag">📍 Zone ${zone}</div><button class="edit-zone-btn" onclick="openZonePicker('${orderRowID}','',true)">Edit Zone</button></div>`;
+        }
       }
+      row.className = 'order-row order-zoned';
     }
-    row.className = 'order-row order-zoned';
   }
   showToast('Zone ' + zone + ' assigned', 'success');
   checkConfirmReady();
@@ -968,6 +1019,7 @@ async function confirmDelivery() {
     await apiPost('confirmDelivery', {
       containerID: state.currentContainer,
       boxesReceived: received,
+      expectedBoxes: expected,
       wasPresent,
       notes,
       fitterName: state.user,
@@ -1026,9 +1078,10 @@ async function loadPipeline() {
 // ═══════════════════════════════════════════════════════════
 async function driverDropoff(supplier) {
   const time = new Date().toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'});
+  const date = new Date().toLocaleDateString('en-GB', {weekday:'long',day:'numeric',month:'long',year:'numeric'});
   try {
-    await apiPost('driverDropoff', { supplier, time, loggedBy: state.user || 'Unknown' });
-    showToast('📣 ' + supplier + ' drop-off logged — Becky notified', 'success');
+    await apiPost('driverDropoff', { supplier, time, date, loggedBy: state.user || 'Unknown' });
+    showToast('📣 ' + supplier + ' delivery logged — office notified', 'success');
   } catch(e) {
     showToast('Logged locally (offline)', '');
   }
@@ -1065,27 +1118,36 @@ async function runSearch(query) {
     }
     results.innerHTML = orders.map(o => {
       const supClass = o.supplier === 'S:CRAFT' ? 'sb-sc' : o.supplier === 'TROPICAL' ? 'sb-tr' : 'sb-my';
-      const zoneInfo = o.zoneAssigned ? `<div class="zone-tag" style="margin-top:8px">📍 Zone ${o.zoneAssigned}</div>` : '<div style="font-size:12px;color:var(--text3);margin-top:6px">No zone assigned</div>';
+      const zoneInfo = o.zoneAssigned
+        ? `<div class="zone-tag" style="margin-top:8px;display:inline-block">📍 Zone ${o.zoneAssigned}</div>`
+        : '<div style="font-size:12px;color:var(--text3);margin-top:6px">No zone assigned</div>';
       const statusColor = o.status === 'ZONED' ? 'var(--accent2)' : o.status === 'ARRIVED' ? 'var(--warn)' : 'var(--text3)';
-      return `<div class="order-row" style="margin-bottom:10px">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+      const damageColor = o.damageFlag === 'Y' ? 'var(--warn)' : 'var(--text3)';
+      return `<div class="order-row" style="margin-bottom:12px" id="srow-${o.orderRowID}">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px">
           <div>
             <div class="order-ref">${o.customerRef}</div>
             <div class="order-name" style="font-size:16px;font-weight:700">${o.customerName}</div>
           </div>
           <div style="text-align:right">
             <div class="sup-badge ${supClass}">${o.supplier}</div>
-            <div style="font-size:11px;color:var(--text3);margin-top:4px">${o.containerID}</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:4px">Container ${o.containerID}</div>
           </div>
         </div>
-        <div style="display:flex;gap:16px;margin-bottom:6px">
+        <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px">
           <div style="font-size:12px;color:var(--text2)">Boxes: <span style="color:var(--text);font-weight:700">${o.boxesShipped}</span></div>
           <div style="font-size:12px;color:var(--text2)">Status: <span style="color:${statusColor};font-weight:700">${o.status}</span></div>
-          ${o.bookingStatus ? `<div style="font-size:12px;color:var(--text2)">${o.bookingStatus}</div>` : ''}
+          <div style="font-size:12px;color:var(--text2)">Booking: <span style="color:var(--text)">${o.bookingStatus || '—'}</span></div>
+          ${o.damageFlag === 'Y' ? `<div style="font-size:12px;color:var(--warn);font-weight:700">⚠ DAMAGE FLAGGED</div>` : ''}
         </div>
         ${zoneInfo}
-        ${o.notes ? `<div style="font-size:12px;color:var(--text2);margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">📝 ${o.notes}</div>` : ''}
-        ${o.zoneAssigned ? `<button class="edit-zone-btn" style="margin-top:8px" onclick="searchEditZone('${o.orderRowID}','${o.customerName}','${o.containerID}')">Edit Zone</button>` : ''}
+        ${o.notes ? `<div style="font-size:12px;color:var(--text2);margin-top:8px;padding:8px;background:var(--surface2);border-radius:8px">📝 ${o.notes}</div>` : ''}
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:8px">
+          <button class="edit-zone-btn" onclick="searchEditZone('${o.orderRowID}','${o.customerName}','${o.containerID}')">${o.zoneAssigned ? '📍 Edit Zone' : '📍 Assign Zone'}</button>
+          <button class="edit-zone-btn" style="background:rgba(156,111,255,.12);border-color:var(--info);color:var(--info)" onclick="searchEditNotes('${o.orderRowID}','${o.containerID}')">📝 Edit Notes</button>
+          <button class="edit-zone-btn" style="background:rgba(0,200,150,.08);border-color:var(--accent2);color:var(--accent2)" onclick="searchEditBoxes('${o.orderRowID}','${o.containerID}','${o.boxesShipped}')">📦 Edit Boxes</button>
+          <button class="edit-zone-btn" style="background:rgba(255,112,67,.1);border-color:var(--warn);color:var(--warn)" onclick="searchToggleDamage('${o.orderRowID}','${o.containerID}','${o.damageFlag}')">${o.damageFlag === 'Y' ? '✓ Damage Flagged' : '⚠ Flag Damage'}</button>
+        </div>
       </div>`;
     }).join('');
   } catch(e) {
@@ -1095,19 +1157,65 @@ async function runSearch(query) {
 
 function searchEditZone(orderRowID, customerName, containerID) {
   state.currentContainer = containerID;
-  if (!state.orderStates[orderRowID]) {
-    state.orderStates[orderRowID] = { zone: '', status: 'pending' };
-  }
-  state.zoneTarget = { orderRowID, isEdit: true };
+  if (!state.orderStates[orderRowID]) state.orderStates[orderRowID] = { zone: '', status: 'pending' };
+  state.zoneTarget = { orderRowID, isEdit: true, fromSearch: true };
   document.getElementById('zoneSub').textContent = 'Editing zone for ' + customerName;
   const grid = document.getElementById('zoneGrid');
   let html = '';
-  for (let i = 1; i <= 25; i++) {
-    html += `<button class="z-btn" onclick="selectZone('${i}')">${i}</button>`;
-  }
+  for (let i = 1; i <= 25; i++) html += `<button class="z-btn" onclick="selectZone('${i}')">${i}</button>`;
   html += `<button class="z-btn z-edr" onclick="selectZone('EDR')">EDR</button>`;
   grid.innerHTML = html;
   document.getElementById('zoneOverlay').classList.add('open');
+}
+
+async function searchEditNotes(orderRowID, containerID) {
+  const current = prompt('Enter notes for this order (leave blank to clear):');
+  if (current === null) return; // cancelled
+  try {
+    const r = await apiPost('updateOrderNotes', { orderRowID, containerID, notes: current, fitterName: state.user });
+    if (r && r.success) {
+      showToast('Notes saved ✅', 'success');
+      doSearch(document.getElementById('searchInput').value);
+    } else showToast('Save failed', 'error');
+  } catch(e) { showToast('Save failed — check connection', 'error'); }
+}
+
+async function searchEditBoxes(orderRowID, containerID, currentBoxes) {
+  const val = prompt('Enter correct boxes received (currently ' + currentBoxes + '):');
+  if (val === null) return;
+  const num = parseInt(val);
+  if (isNaN(num) || num < 0) { showToast('Invalid number', 'error'); return; }
+  try {
+    const r = await apiPost('updateBoxesReceived', { orderRowID, containerID, boxesReceived: num, fitterName: state.user });
+    if (r && r.success) {
+      showToast('Boxes updated ✅', 'success');
+      doSearch(document.getElementById('searchInput').value);
+    } else showToast('Save failed', 'error');
+  } catch(e) { showToast('Save failed — check connection', 'error'); }
+}
+
+async function searchToggleDamage(orderRowID, containerID, currentFlag) {
+  const isDamaged = currentFlag === 'Y';
+  if (isDamaged) {
+    if (!confirm('Remove damage flag from this order?')) return;
+  } else {
+    const type = prompt('Select damage type:\n1 = Missing boxes\n2 = Damaged goods\n3 = Wrong item\n\nType 1, 2 or 3:');
+    if (!type) return;
+    const typeMap = {'1':'MISSING','2':'DAMAGED','3':'WRONG ITEM'};
+    const damageType = typeMap[type.trim()] || 'DAMAGED';
+    try {
+      const r = await apiPost('flagDamage', { orderRowID, containerID, damageType, fitterName: state.user });
+      if (r && r.success) {
+        showToast('⚠ Damage flagged — office notified', 'error');
+        doSearch(document.getElementById('searchInput').value);
+      } else showToast('Save failed', 'error');
+    } catch(e) { showToast('Save failed', 'error'); }
+    return;
+  }
+  try {
+    const r = await apiPost('flagDamage', { orderRowID, containerID, damageType: 'RESOLVED', fitterName: state.user });
+    if (r && r.success) { showToast('Damage flag removed', 'success'); doSearch(document.getElementById('searchInput').value); }
+  } catch(e) { showToast('Save failed', 'error'); }
 }
 
 // ═══════════════════════════════════════════════════════════
