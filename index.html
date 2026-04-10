@@ -546,14 +546,14 @@ async function apiFetch(action, params = {}) {
 }
 
 async function apiPost(action, body = {}) {
-  if (CONFIG.WEB_APP_URL === 'https://script.google.com/macros/s/AKfycbyrw58W6C0cFyzc5cBghIecsypyiw1DrIeuI-sh_yU85IVkKyKlHZaDdh4kuYqZtlyH/exec') {
+  if (CONFIG.WEB_APP_URL === 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
     return { success: true, mock: true };
   }
-  const res = await fetch(CONFIG.WEB_APP_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action, ...body })
-  });
+  // Use GET with encoded data to avoid CORS issues
+  const url = new URL(CONFIG.WEB_APP_URL);
+  url.searchParams.set('action', action);
+  url.searchParams.set('data', JSON.stringify(body));
+  const res = await fetch(url.toString());
   return res.json();
 }
 
