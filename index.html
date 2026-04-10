@@ -151,9 +151,11 @@
   .num-input{width:80px;padding:10px;border-radius:10px;background:var(--bg);border:1.5px solid var(--border);color:var(--text);font-family:var(--font);font-size:18px;font-weight:700;text-align:center;}
   .num-input:focus{outline:none;border-color:var(--accent);}
   .toggle-row{display:flex;gap:8px;margin-bottom:10px;}
-  .toggle-btn{flex:1;padding:11px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text2);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;}
-  .toggle-btn.yes{border-color:var(--accent2);background:rgba(0,200,150,.12);color:var(--accent2);}
-  .toggle-btn.no{border-color:var(--warn);background:rgba(255,112,67,.12);color:var(--warn);}
+  /* Present/absent buttons — solid filled so they look like real buttons */
+  .toggle-btn{flex:1;padding:13px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text2);font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;}
+  .toggle-btn.yes{border-color:var(--accent2);background:rgba(0,200,150,.18);color:var(--accent2);}
+  /* Driver left it — also green, just confirming receipt method not an issue */
+  .toggle-btn.no{border-color:var(--accent2);background:rgba(0,200,150,.18);color:var(--accent2);}
   .toggle-btn:active{transform:scale(.96);}
   .notes-input{width:100%;padding:12px;border-radius:10px;background:var(--bg);border:1.5px solid var(--border);color:var(--text);font-family:var(--font);font-size:14px;resize:none;min-height:70px;margin-bottom:10px;}
   .notes-input:focus{outline:none;border-color:var(--accent);}
@@ -162,11 +164,11 @@
   /* ORDER ROWS */
   .orders-section{margin-bottom:14px;}
   .orders-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-  .select-all-btn{padding:8px 14px;border-radius:8px;background:rgba(61,127,255,.15);border:1px solid rgba(61,127,255,.3);color:var(--accent);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;}
+  .select-all-btn{padding:8px 14px;border-radius:8px;background:rgba(0,200,150,.15);border:1px solid rgba(0,200,150,.3);color:var(--accent2);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;}
   .select-all-btn:active{transform:scale(.95);}
 
   .order-row{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;transition:all .15s;}
-  .order-row.selected-order{border-color:var(--accent);background:rgba(61,127,255,.05);}
+  .order-row.selected-order{border-color:var(--accent2);background:rgba(0,200,150,.05);}
   .order-row.order-zoned{border-color:var(--accent2);background:rgba(0,200,150,.05);}
   .order-row.order-partial{border-color:var(--warn);background:rgba(255,112,67,.05);}
 
@@ -180,9 +182,10 @@
 
   .order-zone-row{display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
   .zone-tag{display:inline-flex;align-items:center;gap:4px;background:rgba(0,200,150,.15);border:1px solid rgba(0,200,150,.3);color:var(--accent2);font-size:12px;font-weight:700;padding:5px 10px;border-radius:6px;}
-  .edit-zone-btn{padding:6px 12px;border-radius:8px;background:var(--surface2);border:1.5px solid var(--text3);color:var(--text2);font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;}
+  /* Edit Zone — bright blue like Assign Zone, clearly an action button */
+  .edit-zone-btn{padding:6px 12px;border-radius:8px;background:rgba(61,127,255,.12);border:1.5px solid var(--accent);color:var(--accent);font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;}
   .edit-zone-btn:active{transform:scale(.95);}
-  .assign-zone-btn{padding:8px 14px;border-radius:8px;background:rgba(61,127,255,.15);border:1px solid rgba(61,127,255,.3);color:var(--accent);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;}
+  .assign-zone-btn{padding:8px 14px;border-radius:8px;background:rgba(61,127,255,.15);border:1.5px solid rgba(61,127,255,.4);color:var(--accent);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;}
   .assign-zone-btn:active{transform:scale(.95);}
 
   .partial-area{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
@@ -190,11 +193,12 @@
   .partial-label{font-size:13px;color:var(--text2);flex:1;}
 
   .order-check-row{display:flex;gap:8px;margin-top:10px;}
+  /* Received — green outline = invitation to confirm */
   .check-btn{flex:1;padding:10px;border-radius:9px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text2);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;}
-  .check-btn.complete{border-color:var(--accent2);color:var(--accent2);}
-  .check-btn.partial{border-color:var(--warn);color:var(--warn);}
+  .check-btn.complete{border-color:var(--accent2);background:rgba(0,200,150,.08);color:var(--accent2);}
+  .check-btn.partial{border-color:var(--warn);background:rgba(255,112,67,.08);color:var(--warn);}
   .check-btn:active{transform:scale(.95);}
-  .check-btn.active-complete{background:rgba(0,200,150,.2);border-color:var(--accent2);color:var(--accent2);}
+  .check-btn.active-complete{background:rgba(0,200,150,.25);border-color:var(--accent2);color:var(--accent2);}
   .check-btn.active-partial{background:rgba(255,112,67,.2);border-color:var(--warn);color:var(--warn);}
 
   /* CONFIRM BTN */
@@ -770,14 +774,14 @@ function renderDeliveriesList() {
       </div>
       <div style="display:flex;align-items:center;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
         <div style="display:flex;align-items:center;gap:4px;flex:1">
-          <div style="width:20px;height:20px;border-radius:50%;background:${step1done?'var(--accent2)':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0">${step1done?'✓':''}</div>
-          <div style="font-size:11px;color:${step1done?'var(--accent2)':'var(--text3)'};font-weight:600">Arrived</div>
-          <div style="flex:1;height:2px;background:${step2done?'var(--accent2)':'var(--border)'};border-radius:1px;margin:0 4px"></div>
-          <div style="width:20px;height:20px;border-radius:50%;background:${step2done?'var(--accent2)':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0">${step2done?'✓':''}</div>
-          <div style="font-size:11px;color:${step2done?'var(--accent2)':'var(--text3)'};font-weight:600">Zoned</div>
-          <div style="flex:1;height:2px;background:${allZoned?'var(--accent2)':'var(--border)'};border-radius:1px;margin:0 4px"></div>
-          <div style="width:20px;height:20px;border-radius:50%;background:${allZoned?'var(--accent2)':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0">${allZoned?'✓':''}</div>
-          <div style="font-size:11px;color:${allZoned?'var(--accent2)':'var(--text3)'};font-weight:600">Ready</div>
+          <div style="width:22px;height:22px;border-radius:50%;background:${step1done?'var(--accent2)':'var(--border)'};border:2px solid ${step1done?'var(--accent2)':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;color:#fff">${step1done?'✓':''}</div>
+          <div style="font-size:11px;color:${step1done?'var(--accent2)':'var(--text3)'};font-weight:700">Arrived</div>
+          <div style="flex:1;height:3px;background:${step2done?'var(--accent2)':'var(--border)'};border-radius:2px;margin:0 4px"></div>
+          <div style="width:22px;height:22px;border-radius:50%;background:${step2done?'var(--accent2)':'var(--border)'};border:2px solid ${step2done?'var(--accent2)':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;color:#fff">${step2done?'✓':''}</div>
+          <div style="font-size:11px;color:${step2done?'var(--accent2)':'var(--text3)'};font-weight:700">Zoned</div>
+          <div style="flex:1;height:3px;background:${allZoned?'var(--accent2)':'var(--border)'};border-radius:2px;margin:0 4px"></div>
+          <div style="width:22px;height:22px;border-radius:50%;background:${allZoned?'var(--accent2)':'var(--border)'};border:2px solid ${allZoned?'var(--accent2)':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;color:#fff">${allZoned?'✓':''}</div>
+          <div style="font-size:11px;color:${allZoned?'var(--accent2)':'var(--text3)'};font-weight:700">Ready</div>
         </div>
       </div>
     </div>`;
@@ -1157,8 +1161,9 @@ async function confirmDelivery() {
   const notes = document.getElementById('arrivalNotes')?.value || '';
   const wasPresent = state.wasPresent !== false;
 
-  if (!boxesReceived) {
-    showToast('Please enter boxes received', 'error');
+  // Allow save even with 0 boxes (some containers have no expected count)
+  if (boxesReceived === '' || boxesReceived === null || boxesReceived === undefined) {
+    showToast('Please enter boxes received (enter 0 if none)', 'error');
     return;
   }
 
@@ -1429,9 +1434,9 @@ async function runSearch(query) {
           </div>
         </div>
         <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px">
-          <div style="font-size:12px;color:var(--text2)">Boxes: <span style="color:var(--text);font-weight:700">${o.boxesShipped}</span></div>
+          <div style="font-size:12px;color:var(--text2)">Boxes: <span style="color:${o.status==='ZONED'?'var(--accent2)':'var(--text)'};font-weight:700">${o.boxesShipped}</span></div>
           <div style="font-size:12px;color:var(--text2)">Status: <span style="color:${statusColor};font-weight:700">${o.status}</span></div>
-          <div style="font-size:12px;color:var(--text2)">Booking: <span style="color:var(--text)">${o.bookingStatus || '—'}</span></div>
+          <div style="font-size:12px;color:var(--text2)">Booking: <span style="color:${o.bookingStatus==='READY TO BOOK'?'var(--accent2)':o.bookingStatus==='BOOKED'?'var(--accent)':'var(--text)'};font-weight:700">${o.bookingStatus || '—'}</span></div>
           ${o.damageFlag === 'Y' ? `<div style="font-size:12px;color:var(--warn);font-weight:700">⚠ DAMAGE FLAGGED</div>` : ''}
         </div>
         ${zoneInfo}
@@ -1439,7 +1444,7 @@ async function runSearch(query) {
         <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:8px">
           <button class="edit-zone-btn" onclick="searchEditZone('${o.orderRowID}','${o.customerName}','${o.containerID}')">${o.zoneAssigned ? '📍 Edit Zone' : '📍 Assign Zone'}</button>
           <button class="edit-zone-btn" style="background:rgba(156,111,255,.12);border-color:var(--info);color:var(--info)" onclick="searchEditNotes('${o.orderRowID}','${o.containerID}')">📝 Notes</button>
-          <button class="edit-zone-btn" style="background:rgba(61,127,255,.1);border-color:var(--accent);color:var(--accent)" onclick="searchEditBoxes('${o.orderRowID}','${o.containerID}','${o.boxesShipped}')">📦 Edit Boxes</button>
+          <button class="edit-zone-btn" style="background:rgba(255,159,67,.1);border-color:var(--myt);color:var(--myt)" onclick="searchEditBoxes('${o.orderRowID}','${o.containerID}','${o.boxesShipped}')">📦 Edit Boxes</button>
           <button class="edit-zone-btn" style="background:rgba(255,112,67,.1);border-color:var(--warn);color:var(--warn)" onclick="searchToggleDamage('${o.orderRowID}','${o.containerID}','${o.damageFlag}')">${o.damageFlag === 'Y' ? '✓ Damage Flagged' : '⚠ Flag Damage'}</button>
         </div>
       </div>`;
