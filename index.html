@@ -324,6 +324,7 @@
     <div class="nav-item active" onclick="showHome()"><div class="nav-icon">🏠</div><div class="nav-label">HOME</div></div>
     <div class="nav-item" onclick="showDeliveries()"><div class="nav-icon">🚛</div><div class="nav-label">DELIVERIES</div><div class="nav-badge" id="navBadge" style="display:none">0</div></div>
     <div class="nav-item" onclick="showPipeline()"><div class="nav-icon">🚢</div><div class="nav-label">PIPELINE</div></div>
+    <div class="nav-item" onclick="showSearch()"><div class="nav-icon">🔍</div><div class="nav-label">SEARCH</div></div>
   </div>
 </div>
 
@@ -351,6 +352,7 @@
     <div class="nav-item" onclick="showHome()"><div class="nav-icon">🏠</div><div class="nav-label">HOME</div></div>
     <div class="nav-item active" onclick="showDeliveries()"><div class="nav-icon">🚛</div><div class="nav-label">DELIVERIES</div></div>
     <div class="nav-item" onclick="showPipeline()"><div class="nav-icon">🚢</div><div class="nav-label">PIPELINE</div></div>
+    <div class="nav-item" onclick="showSearch()"><div class="nav-icon">🔍</div><div class="nav-label">SEARCH</div></div>
   </div>
 </div>
 
@@ -387,6 +389,36 @@
     <div class="nav-item" onclick="showHome()"><div class="nav-icon">🏠</div><div class="nav-label">HOME</div></div>
     <div class="nav-item" onclick="showDeliveries()"><div class="nav-icon">🚛</div><div class="nav-label">DELIVERIES</div></div>
     <div class="nav-item active" onclick="showPipeline()"><div class="nav-icon">🚢</div><div class="nav-label">PIPELINE</div></div>
+  </div>
+</div>
+
+
+<!-- ═══ SEARCH ═══ -->
+<div class="screen" id="screen-search">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-title">Search</div>
+      <div class="topbar-sub">Find any order or container</div>
+    </div>
+    <div class="topbar-right">
+      <div class="icon-btn" onclick="showHome()">🏠</div>
+    </div>
+  </div>
+  <div class="scroll-body">
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      <input type="text" id="searchInput" placeholder="SM8 number, name or container..." 
+        style="flex:1;padding:13px 14px;border-radius:12px;background:var(--surface);border:1.5px solid var(--border);color:var(--text);font-family:var(--font);font-size:15px;"
+        oninput="doSearch(this.value)">
+      <button onclick="doSearch(document.getElementById('searchInput').value)" 
+        style="padding:13px 16px;border-radius:12px;background:var(--accent);border:none;color:#fff;font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;">🔍</button>
+    </div>
+    <div id="searchResults"></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="showHome()"><div class="nav-icon">🏠</div><div class="nav-label">HOME</div></div>
+    <div class="nav-item" onclick="showDeliveries()"><div class="nav-icon">🚛</div><div class="nav-label">DELIVERIES</div></div>
+    <div class="nav-item" onclick="showPipeline()"><div class="nav-icon">🚢</div><div class="nav-label">PIPELINE</div></div>
+    <div class="nav-item active" onclick="showSearch()"><div class="nav-icon">🔍</div><div class="nav-label">SEARCH</div></div>
   </div>
 </div>
 
@@ -546,13 +578,14 @@ async function apiFetch(action, params = {}) {
 }
 
 async function apiPost(action, body = {}) {
-  if (!CONFIG.WEB_APP_URL || CONFIG.WEB_APP_URL.indexOf('script.google.com') === -1) {
+  if (CONFIG.WEB_APP_URL === 'https://script.google.com/macros/s/AKfycbyrw58W6C0cFyzc5cBghIecsypyiw1DrIeuI-sh_yU85IVkKyKlHZaDdh4kuYqZtlyH/exec') {
     return { success: true, mock: true };
   }
-  const url = new URL(CONFIG.WEB_APP_URL);
-  url.searchParams.set('action', action);
-  url.searchParams.set('data', JSON.stringify(body));
-  const res = await fetch(url.toString());
+  const res = await fetch(CONFIG.WEB_APP_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action, ...body })
+  });
   return res.json();
 }
 
@@ -944,7 +977,7 @@ async function confirmDelivery() {
     showToast(hasDiscrepancy ? '⚠ Saved — Becky alerted about missing boxes' : '✅ Delivery confirmed!', hasDiscrepancy ? 'error' : 'success');
     setTimeout(() => showDeliveries(), 1500);
   } catch(e) {
-    btn.textContent = 'Confirm Delivery';
+    btn.textContent = 'Save — Confirm Delivery Received';
     btn.disabled = false;
     showToast('Save failed — check connection', 'error');
   }
@@ -998,6 +1031,82 @@ async function driverDropoff(supplier) {
   } catch(e) {
     showToast('Logged locally (offline)', '');
   }
+}
+
+
+// ═══════════════════════════════════════════════════════════
+// SEARCH
+// ═══════════════════════════════════════════════════════════
+function showSearch() {
+  showScreen('search');
+  setTimeout(() => document.getElementById('searchInput')?.focus(), 100);
+}
+
+let searchTimer = null;
+function doSearch(query) {
+  clearTimeout(searchTimer);
+  if (!query || query.length < 2) {
+    document.getElementById('searchResults').innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">Type to search</div><div class="empty-sub">SM8 number, customer name, or container ID</div></div>';
+    return;
+  }
+  searchTimer = setTimeout(() => runSearch(query), 400);
+}
+
+async function runSearch(query) {
+  const results = document.getElementById('searchResults');
+  results.innerHTML = '<div class="loading"><div class="spinner"></div>Searching...</div>';
+  try {
+    const data = await apiFetch('searchOrders', { q: query });
+    const orders = data.orders || [];
+    if (!orders.length) {
+      results.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">No results found</div><div class="empty-sub">Try a different search term</div></div>';
+      return;
+    }
+    results.innerHTML = orders.map(o => {
+      const supClass = o.supplier === 'S:CRAFT' ? 'sb-sc' : o.supplier === 'TROPICAL' ? 'sb-tr' : 'sb-my';
+      const zoneInfo = o.zoneAssigned ? `<div class="zone-tag" style="margin-top:8px">📍 Zone ${o.zoneAssigned}</div>` : '<div style="font-size:12px;color:var(--text3);margin-top:6px">No zone assigned</div>';
+      const statusColor = o.status === 'ZONED' ? 'var(--accent2)' : o.status === 'ARRIVED' ? 'var(--warn)' : 'var(--text3)';
+      return `<div class="order-row" style="margin-bottom:10px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <div>
+            <div class="order-ref">${o.customerRef}</div>
+            <div class="order-name" style="font-size:16px;font-weight:700">${o.customerName}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="sup-badge ${supClass}">${o.supplier}</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:4px">${o.containerID}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:16px;margin-bottom:6px">
+          <div style="font-size:12px;color:var(--text2)">Boxes: <span style="color:var(--text);font-weight:700">${o.boxesShipped}</span></div>
+          <div style="font-size:12px;color:var(--text2)">Status: <span style="color:${statusColor};font-weight:700">${o.status}</span></div>
+          ${o.bookingStatus ? `<div style="font-size:12px;color:var(--text2)">${o.bookingStatus}</div>` : ''}
+        </div>
+        ${zoneInfo}
+        ${o.notes ? `<div style="font-size:12px;color:var(--text2);margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">📝 ${o.notes}</div>` : ''}
+        ${o.zoneAssigned ? `<button class="edit-zone-btn" style="margin-top:8px" onclick="searchEditZone('${o.orderRowID}','${o.customerName}','${o.containerID}')">Edit Zone</button>` : ''}
+      </div>`;
+    }).join('');
+  } catch(e) {
+    results.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Search failed</div></div>';
+  }
+}
+
+function searchEditZone(orderRowID, customerName, containerID) {
+  state.currentContainer = containerID;
+  if (!state.orderStates[orderRowID]) {
+    state.orderStates[orderRowID] = { zone: '', status: 'pending' };
+  }
+  state.zoneTarget = { orderRowID, isEdit: true };
+  document.getElementById('zoneSub').textContent = 'Editing zone for ' + customerName;
+  const grid = document.getElementById('zoneGrid');
+  let html = '';
+  for (let i = 1; i <= 25; i++) {
+    html += `<button class="z-btn" onclick="selectZone('${i}')">${i}</button>`;
+  }
+  html += `<button class="z-btn z-edr" onclick="selectZone('EDR')">EDR</button>`;
+  grid.innerHTML = html;
+  document.getElementById('zoneOverlay').classList.add('open');
 }
 
 // ═══════════════════════════════════════════════════════════
