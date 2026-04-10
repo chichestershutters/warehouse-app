@@ -535,7 +535,7 @@ function getGreeting() {
 // DATA — calls Apps Script Web App
 // ═══════════════════════════════════════════════════════════
 async function apiFetch(action, params = {}) {
-  if (CONFIG.WEB_APP_URL === 'https://script.google.com/macros/s/AKfycbyrw58W6C0cFyzc5cBghIecsypyiw1DrIeuI-sh_yU85IVkKyKlHZaDdh4kuYqZtlyH/exec') {
+  if (!CONFIG.WEB_APP_URL || CONFIG.WEB_APP_URL.indexOf('script.google.com') === -1) {
     return getMockData(action, params);
   }
   const url = new URL(CONFIG.WEB_APP_URL);
@@ -546,7 +546,7 @@ async function apiFetch(action, params = {}) {
 }
 
 async function apiPost(action, body = {}) {
-  if (CONFIG.WEB_APP_URL === 'https://script.google.com/macros/s/AKfycbyrw58W6C0cFyzc5cBghIecsypyiw1DrIeuI-sh_yU85IVkKyKlHZaDdh4kuYqZtlyH/exec') {
+  if (!CONFIG.WEB_APP_URL || CONFIG.WEB_APP_URL.indexOf('script.google.com') === -1) {
     return { success: true, mock: true };
   }
   const res = await fetch(CONFIG.WEB_APP_URL, {
