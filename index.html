@@ -217,11 +217,11 @@
   .zone-sheet-sub{font-size:13px;color:var(--text2);text-align:center;margin-bottom:16px;}
   .zone-grid{margin-bottom:10px;}
   .wh-section{background:rgba(61,127,255,.04);border:2px solid rgba(61,127,255,.2);border-radius:12px;padding:10px;margin-bottom:8px;}
-  .z-btn{padding:0;height:48px;width:100%;border-radius:8px;border:1.5px solid rgba(61,127,255,.3);background:rgba(61,127,255,.07);color:var(--text);font-family:var(--font);font-size:16px;font-weight:700;cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center;}
+  .z-btn{width:54px;height:54px;flex-shrink:0;border-radius:8px;border:1.5px solid rgba(61,127,255,.3);background:rgba(61,127,255,.07);color:var(--text);font-family:var(--font);font-size:16px;font-weight:700;cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center;}
   .z-btn:active{transform:scale(.88);}
   .z-btn.z-sel{background:var(--accent);border-color:var(--accent);color:#fff;}
   .z-btn.z-office{background:rgba(255,255,255,.02);border:1.5px dashed rgba(61,127,255,.12);color:var(--text3);font-size:9px;font-weight:600;cursor:default;}
-  .z-btn.z-edr{background:rgba(255,112,67,.08);border-color:rgba(255,112,67,.35);color:var(--warn);}
+  .z-btn.z-edr{width:100%;height:48px;background:rgba(255,112,67,.08);border-color:rgba(255,112,67,.35);color:var(--warn);font-size:14px;}
   .z-btn.z-edr.z-sel{background:var(--warn);border-color:var(--warn);color:#fff;}
   .zone-cancel{width:100%;padding:14px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-family:var(--font);font-size:15px;font-weight:600;cursor:pointer;margin-top:8px;}
   .zone-cancel:active{transform:scale(.97);}
@@ -1123,60 +1123,72 @@ function buildWarehouseGrid(currentZone) {
     return `<button class="z-btn ${cls||''} ${sel}" onclick="selectZone('${n}')">${n}</button>`;
   }
 
-  // Thick outer wall, thinner internal racking — all visual, no text
   const wall = `<div style="height:8px;background:rgba(61,127,255,.6);border-radius:4px;margin:8px 0"></div>`;
-  const rack = `<div style="height:4px;background:rgba(61,127,255,.28);border-radius:3px;margin:6px 8px"></div>`;
+  const rack = `<div style="height:4px;background:rgba(61,127,255,.28);border-radius:3px;margin:6px 0"></div>`;
 
-  // 4-col grid — matches sketch: 1 2 3 4 across top, spaced evenly
-  // Middle: 11 left | 5 6 7 | (empty col right)
-  //         (empty) | 8 9 10 | (empty)
-  // Bottom: (empty) | 12 13 14 | (empty) — centred
-  const g4 = `display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px`;
+  // btn size — fixed so all identical
+  const bs = 'style="width:54px;height:54px;flex-shrink:0"';
 
   return `
   <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-align:center;text-transform:uppercase;margin-bottom:8px">Main Warehouse — 13.4 × 6.8m</div>
   <div class="wh-section">
     ${wall}
 
-    <div style="${g4}">
+    <!-- Row 1: 1 2 3 4 spread full width -->
+    <div style="display:flex;justify-content:space-between;padding:0 4px">
       ${btn(1)} ${btn(2)} ${btn(3)} ${btn(4)}
     </div>
 
     ${rack}
 
-    <div style="${g4}">
-      ${btn(11)} ${btn(5)} ${btn(6)} ${btn(7)}
-    </div>
-    ${wall.replace('8px','4px').replace('.6','.28')}
-    <div style="${g4}">
-      <div></div> ${btn(8)} ${btn(9)} ${btn(10)}
+    <!-- Middle block: zone 11 on left wall, 5 6 7 offset right -->
+    <div style="display:flex;align-items:center;gap:0">
+      <!-- Zone 11 on left wall — spans both sub-rows -->
+      <div style="display:flex;flex-direction:column;justify-content:center;margin-right:10px">
+        ${btn(11)}
+      </div>
+      <!-- Sub-rows 5/6/7 and 8/9/10 stacked -->
+      <div style="flex:1">
+        <div style="display:flex;justify-content:space-around">
+          ${btn(5)} ${btn(6)} ${btn(7)}
+        </div>
+        <!-- Internal racking between 5/6/7 and 8/9/10 -->
+        <div style="height:4px;background:rgba(61,127,255,.28);border-radius:3px;margin:6px 0"></div>
+        <div style="display:flex;justify-content:space-around">
+          ${btn(8)} ${btn(9)} ${btn(10)}
+        </div>
+      </div>
     </div>
 
     ${rack}
 
-    <div style="${g4}">
-      <div></div> ${btn(12)} ${btn(13)} ${btn(14)}
+    <!-- Row 4: 12 13 14 offset right, matching 5/6/7 position -->
+    <div style="display:flex;align-items:center;gap:0">
+      <div style="width:64px;flex-shrink:0"></div><!-- spacer matching zone 11 width -->
+      <div style="flex:1;display:flex;justify-content:space-around">
+        ${btn(12)} ${btn(13)} ${btn(14)}
+      </div>
     </div>
 
     ${wall}
   </div>
 
   <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-align:center;text-transform:uppercase;margin:10px 0 6px">EDR Room — 4.5 × 6.6m</div>
-  <div class="wh-section" style="max-width:220px;margin-left:auto;margin-right:auto">
+  <div class="wh-section" style="max-width:200px;margin-left:auto;margin-right:auto">
     ${wall}
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div style="display:flex;justify-content:space-between">
       ${btn(20)} ${btn(15)}
     </div>
-    ${rack}
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div style="height:4px;background:rgba(61,127,255,.28);border-radius:3px;margin:6px 0"></div>
+    <div style="display:flex;justify-content:space-between">
       ${btn(19)} ${btn(16)}
     </div>
-    ${rack}
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div style="height:4px;background:rgba(61,127,255,.28);border-radius:3px;margin:6px 0"></div>
+    <div style="display:flex;justify-content:space-between">
       ${btn(18)} ${btn(17)}
     </div>
-    ${rack}
-    <div style="display:grid;grid-template-columns:1fr;gap:10px">
+    <div style="height:4px;background:rgba(61,127,255,.28);border-radius:3px;margin:6px 0"></div>
+    <div>
       ${btn('EDR','z-edr')}
     </div>
     ${wall}
