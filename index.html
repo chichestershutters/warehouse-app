@@ -1123,54 +1123,64 @@ function buildWarehouseGrid(currentZone) {
     return `<button class="z-btn ${cls||''} ${sel}" onclick="selectZone('${n}')">${n}</button>`;
   }
 
-  const wall = `<div style="height:7px;background:rgba(61,127,255,.55);border-radius:4px;margin:6px 0"></div>`;
-  const rack = `<div style="height:5px;background:rgba(61,127,255,.3);border-radius:3px;margin:5px 0"></div>`;
-  const g    = `style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:0"`;
+  // Thick outer wall, thinner internal racking — all visual, no text
+  const wall = `<div style="height:8px;background:rgba(61,127,255,.6);border-radius:4px;margin:8px 0"></div>`;
+  const rack = `<div style="height:4px;background:rgba(61,127,255,.28);border-radius:3px;margin:6px 8px"></div>`;
+
+  // 4-col grid — matches sketch: 1 2 3 4 across top, spaced evenly
+  // Middle: 11 left | 5 6 7 | (empty col right)
+  //         (empty) | 8 9 10 | (empty)
+  // Bottom: (empty) | 12 13 14 | (empty) — centred
+  const g4 = `display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px`;
 
   return `
-  <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-align:center;text-transform:uppercase;margin-bottom:6px">Main Warehouse — 13.4 × 6.8m</div>
+  <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-align:center;text-transform:uppercase;margin-bottom:8px">Main Warehouse — 13.4 × 6.8m</div>
   <div class="wh-section">
     ${wall}
-    <div ${g}>
+
+    <div style="${g4}">
       ${btn(1)} ${btn(2)} ${btn(3)} ${btn(4)}
-      <div class="z-btn z-office">OFFICE</div>
     </div>
+
     ${rack}
-    <div ${g}>
-      ${btn(11)} ${btn(5)} ${btn(6)} ${btn(7)} <div></div>
+
+    <div style="${g4}">
+      ${btn(11)} ${btn(5)} ${btn(6)} ${btn(7)}
     </div>
+    ${wall.replace('8px','4px').replace('.6','.28')}
+    <div style="${g4}">
+      <div></div> ${btn(8)} ${btn(9)} ${btn(10)}
+    </div>
+
     ${rack}
-    <div ${g}>
-      <div></div> ${btn(8)} ${btn(9)} ${btn(10)} <div></div>
+
+    <div style="${g4}">
+      <div></div> ${btn(12)} ${btn(13)} ${btn(14)}
     </div>
-    ${rack}
-    <div ${g}>
-      ${btn(12)} ${btn(13)} ${btn(14)} <div></div> <div></div>
-    </div>
+
     ${wall}
   </div>
 
-  <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-align:center;text-transform:uppercase;margin:8px 0 6px">EDR Room — 4.5 × 6.6m</div>
-  <div class="wh-section" style="max-width:240px;margin-left:auto;margin-right:auto">
+  <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-align:center;text-transform:uppercase;margin:10px 0 6px">EDR Room — 4.5 × 6.6m</div>
+  <div class="wh-section" style="max-width:220px;margin-left:auto;margin-right:auto">
     ${wall}
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       ${btn(20)} ${btn(15)}
     </div>
     ${rack}
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       ${btn(19)} ${btn(16)}
     </div>
     ${rack}
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       ${btn(18)} ${btn(17)}
     </div>
     ${rack}
-    <div style="display:grid;grid-template-columns:1fr;gap:6px">
+    <div style="display:grid;grid-template-columns:1fr;gap:10px">
       ${btn('EDR','z-edr')}
     </div>
     ${wall}
   </div>`;
-}
 }
 
 function selectZone(zone) {
