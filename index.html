@@ -546,14 +546,14 @@ async function apiFetch(action, params = {}) {
 }
 
 async function apiPost(action, body = {}) {
-  if (CONFIG.WEB_APP_URL === 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
+  if (CONFIG.WEB_APP_URL === 'https://script.google.com/macros/s/AKfycbyrw58W6C0cFyzc5cBghIecsypyiw1DrIeuI-sh_yU85IVkKyKlHZaDdh4kuYqZtlyH/exec') {
     return { success: true, mock: true };
   }
-  // Use GET with encoded data to avoid CORS issues
-  const url = new URL(CONFIG.WEB_APP_URL);
-  url.searchParams.set('action', action);
-  url.searchParams.set('data', JSON.stringify(body));
-  const res = await fetch(url.toString());
+  const res = await fetch(CONFIG.WEB_APP_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action, ...body })
+  });
   return res.json();
 }
 
@@ -692,7 +692,7 @@ async function showDetail(containerID) {
         <div class="panel-title"><span class="panel-title-icon">📋</span> Arrival Confirmation</div>
         <div class="input-row">
           <div class="input-label">Boxes received</div>
-          <input class="num-input" type="number" id="boxesReceived" value="${container.expectedBoxes || '?'}" min="0">
+          <input class="num-input" type="number" id="boxesReceived" value="${container.expectedBoxes || ''}" min="0">
         </div>
         <div class="panel-title" style="margin-top:4px;font-size:12px;color:var(--text2)">Was someone present?</div>
         <div class="toggle-row">
@@ -747,10 +747,10 @@ function renderOrders(orders) {
 
   list.innerHTML = orders.map(o => {
     const os = state.orderStates[o.orderRowID];
-    const rowClass = os.zone ? 'order-zoned' : '';
+    const rowClass = os.zone ? 'order-zoned' : (os.status === 'received' ? 'selected-order' : '');
     const remakeTag = o.isRemake === 'Y' ? '<span style="font-size:10px;background:rgba(255,112,67,.15);color:var(--warn);padding:2px 6px;border-radius:4px;font-weight:700;margin-left:4px">REMAKE</span>' : '';
     return `
-    <div class="order-row ${rowClass}" id="orow-${o.orderRowID}">
+    <div class="order-row ${os.zone || o.zoneAssigned ? 'order-zoned' : (os.status === 'received' ? 'selected-order' : '')}" id="orow-${o.orderRowID}">
       <div class="order-main">
         <div class="order-ref-name">
           <div class="order-ref">${o.customerRef}</div>
@@ -761,15 +761,16 @@ function renderOrders(orders) {
           <div class="order-box-lbl">BOXES</div>
         </div>
       </div>
-      ${os.zone ? `
+      ${(os.zone || o.zoneAssigned) ? `
         <div class="order-zone-row">
-          <div class="zone-tag">📍 Zone ${os.zone}</div>
+          <div class="zone-tag">📍 Zone ${os.zone || o.zoneAssigned}</div>
           <button class="edit-zone-btn" onclick="openZonePicker('${o.orderRowID}','${o.customerName}',true)">Edit Zone</button>
         </div>` : `
+        ${os.status === 'received' ? '<div style="color:var(--accent2);font-size:13px;font-weight:700;margin-top:6px">✓ Marked as received — assign zone below</div>' : `
         <div class="order-check-row">
           <button class="check-btn complete" onclick="markComplete('${o.orderRowID}')">✓ Received</button>
           <button class="check-btn partial" onclick="togglePartial('${o.orderRowID}')">⚠ Partial</button>
-        </div>
+        </div>`}
         <div id="partial-${o.orderRowID}" style="display:none">
           <div class="partial-area">
             <div class="partial-row">
@@ -778,8 +779,8 @@ function renderOrders(orders) {
             </div>
             <textarea class="notes-input" placeholder="Note reason — e.g. 1 box missing on delivery" style="min-height:50px" id="partial-note-${o.orderRowID}"></textarea>
           </div>
-        </div>`}
-      ${!os.zone ? `<button class="assign-zone-btn" style="margin-top:8px;width:100%" onclick="openZonePicker('${o.orderRowID}','${o.customerName}',false)">📍 Assign Zone</button>` : ''}
+        </div>
+        <button class="assign-zone-btn" style="margin-top:8px;width:100%" onclick="openZonePicker('${o.orderRowID}','${o.customerName}',false)">📍 Assign Zone</button>`}
     </div>`;
   }).join('');
 
@@ -864,6 +865,17 @@ function selectZone(zone) {
     os.status = 'zoned';
   }
   closeZonePicker();
+  // Save zone immediately to backend
+  const container = state.currentContainer;
+  apiPost('assignZone', {
+    orderRowID: orderRowID,
+    zone: zone,
+    fitterName: state.user || 'Unknown',
+    containerID: container
+  }).then(r => {
+    if (r && r.success) showToast('Zone ' + zone + ' saved ✅', 'success');
+    else showToast('Zone ' + zone + ' assigned (save pending)', '');
+  }).catch(() => showToast('Zone ' + zone + ' assigned (offline)', ''));
 
   // Update the row UI
   const row = document.getElementById('orow-' + orderRowID);
