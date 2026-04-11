@@ -211,8 +211,8 @@
   .picker-svg{width:100%;height:auto;border-radius:12px;background:var(--bg);border:1px solid var(--border);}
   .picker-wall{stroke:var(--accent);stroke-width:5;stroke-linecap:round;}
   .picker-divider{stroke:var(--border);stroke-width:1;stroke-dasharray:2 2;}
-  .picker-bay-box{fill:var(--surface2);stroke:var(--border);stroke-width:1.5;cursor:pointer;transition:all .2s;}
-  .picker-bay-number{font-size:12px;font-weight:700;fill:var(--text);text-anchor:middle;dominant-baseline:middle;pointer-events:none;font-family:var(--mono);}
+  .picker-bay-box{fill:rgba(61,127,255,.07);stroke:rgba(61,127,255,.3);stroke-width:1.5;cursor:pointer;transition:all .2s;rx:8;}
+  .picker-bay-number{font-size:13px;font-weight:700;fill:var(--text);text-anchor:middle;dominant-baseline:middle;pointer-events:none;font-family:var(--font);}
   .picker-zone-clickable{cursor:pointer;}
   .picker-zone-clickable:active .picker-bay-box{fill:var(--accent);stroke:var(--accent);}
   .picker-zone-clickable:active text{fill:#fff;}
@@ -912,13 +912,13 @@ async function showDetail(containerID) {
           <div class="input-label">Boxes received</div>
           <input class="num-input" type="number" id="boxesReceived" value="${container.expectedBoxes || ''}" min="0">
         </div>
-        <div class="panel-title" style="margin-top:4px;font-size:12px;color:var(--text2)">Was someone present?</div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:600">Was someone present?</div>
         <div class="toggle-row">
           <button class="toggle-btn" id="presentYes" onclick="setPresent(true)">✓ Yes — I was here</button>
           <button class="toggle-btn" id="presentNo" onclick="setPresent(false)">Driver left it</button>
         </div>
-        <textarea class="notes-input" id="arrivalNotes" placeholder="Notes — missing boxes, unexpected items, damage etc."></textarea>
         <button class="select-all-btn" id="allReceivedBtn" onclick="markAllComplete()">✓ Mark All Orders as Received</button>
+        <textarea class="notes-input" id="arrivalNotes" placeholder="Notes — missing boxes, unexpected items, damage etc." style="margin-top:10px;margin-bottom:0"></textarea>
       </div>
 
       <div class="orders-section">
