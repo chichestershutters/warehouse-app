@@ -207,7 +207,15 @@
   .confirm-btn:disabled{background:var(--surface2);color:var(--text3);cursor:not-allowed;transform:none;}
   .confirm-btn.green{background:var(--accent2);}
 
-  /* ZONE PICKER */
+  /* ZONE PICKER SVG */
+  .picker-svg{width:100%;height:auto;border-radius:12px;background:var(--surface);border:1px solid var(--border);}
+  .picker-wall{stroke:var(--accent);stroke-width:4;stroke-linecap:round;}
+  .picker-divider{stroke:var(--border);stroke-width:1;stroke-dasharray:3 3;}
+  .picker-bay-box{fill:var(--surface2);stroke:var(--border);stroke-width:1.5;cursor:pointer;transition:all .15s;}
+  .picker-bay-number{font-size:12px;font-weight:700;fill:var(--text);text-anchor:middle;dominant-baseline:middle;pointer-events:none;font-family:var(--mono);}
+  .picker-zone-clickable{cursor:pointer;}
+  .picker-zone-clickable:active .picker-bay-box{filter:brightness(1.3);}
+  /* ZONE PICKER OVERLAY */
   .zone-overlay{display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);align-items:flex-end;justify-content:center;}
   .zone-overlay.open{display:flex;}
   .zone-sheet{background:var(--surface);border-radius:20px 20px 0 0;padding:16px 16px max(16px,env(safe-area-inset-bottom));width:100%;max-width:480px;max-height:88dvh;overflow-y:auto;}
@@ -1183,111 +1191,97 @@ function openZonePicker(orderRowID, customerName, isEdit) {
 }
 
 function buildWarehouseGrid(currentZone) {
-  function btn(n, cls) {
-    const sel = String(currentZone) === String(n) ? 'z-sel' : '';
-    return `<button class="z-btn ${cls||''} ${sel}" onclick="selectZone('${n}')">${n}</button>`;
-  }
-  function wbtn(val, label, cls) {
-    const sel = String(currentZone) === String(val) ? 'z-sel' : '';
-    return `<button class="z-btn z-wide ${cls||''} ${sel}" onclick="selectZone('${val}')">${label}</button>`;
+  function bay(n, x, y, w, h) {
+    w = w || 32; h = h || 26;
+    const sel = String(currentZone) === String(n);
+    const fill = sel ? 'var(--accent)' : 'var(--surface2)';
+    const textFill = sel ? '#fff' : 'var(--text)';
+    return `<g class="picker-zone-clickable" onclick="selectZone('${n}')">
+      <rect x="${x - w/2}" y="${y - h/2}" width="${w}" height="${h}" rx="6" class="picker-bay-box" style="fill:${fill};stroke:${sel?'var(--accent)':'var(--border)'}"/>
+      <text x="${x}" y="${y}" class="picker-bay-number" style="fill:${textFill}">${n}</text>
+    </g>`;
   }
 
-  // Colours matching SVG #1e40af walls
-  const W = '#1e40af';
-  const wallFull  = `<div style="height:5px;background:${W};border-radius:2px;margin:4px 0"></div>`;
-  // Partial wall — starts after col1 width. Col1 = 54px btn + 7px gap = 61px
-  const wallRight = `<div style="height:5px;background:${W};border-radius:2px;margin:4px 0;margin-left:61px"></div>`;
+  const deliverySel = String(currentZone) === 'DELIVERY';
+  const edrSel      = String(currentZone) === 'EDR';
+  const vanSel      = String(currentZone) === 'VAN';
+  const rackSel     = String(currentZone) === 'RACK';
+  const storeSel    = String(currentZone) === 'STORE';
+  const otherSel    = String(currentZone) === 'OTHER';
 
-  // SVG has 4 equal columns. In our layout col1=fixed 54px, cols2-4=flex equal
-  // So we use: left section (col1) fixed, right section (cols2-4) flex with 3-col grid
+  function specialBay(val, label, x, y, w, h, sel, col) {
+    const fill = sel ? col : 'var(--surface2)';
+    const stroke = sel ? col : col;
+    const textFill = sel ? '#fff' : col;
+    return `<g class="picker-zone-clickable" onclick="selectZone('${val}')">
+      <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" class="picker-bay-box" style="fill:${fill};stroke:${stroke}"/>
+      <text x="${x + w/2}" y="${y + h/2}" class="picker-bay-number" style="fill:${textFill};font-size:10px">${label}</text>
+    </g>`;
+  }
 
   return `
-<div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-align:center;text-transform:uppercase;margin-bottom:4px">Main Warehouse</div>
-<div class="wh-section" style="padding:6px 8px">
+<svg viewBox="0 0 420 560" class="picker-svg">
 
-  ${wallFull}
+  <!-- ═══ MAIN WAREHOUSE ═══ -->
+  <g transform="translate(10,20)">
 
-  <!-- Row 1: zone 1 (col1) + zones 2,3,4 (cols 2-4) all same row -->
-  <div style="display:flex;gap:7px;margin:4px 0">
-    ${btn(1)}
-    <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:7px">
-      ${btn(2)} ${btn(3)} ${btn(4)}
-    </div>
-  </div>
+    <!-- Grid dividers -->
+    <line x1="100" y1="0"   x2="100" y2="200" class="picker-divider"/>
+    <line x1="200" y1="0"   x2="200" y2="200" class="picker-divider"/>
+    <line x1="300" y1="0"   x2="300" y2="200" class="picker-divider"/>
+    <line x1="0"   y1="50"  x2="400" y2="50"  class="picker-divider"/>
+    <line x1="100" y1="100" x2="400" y2="100" class="picker-divider"/>
+    <line x1="100" y1="150" x2="400" y2="150" class="picker-divider"/>
 
-  <!-- Rows 2-4: left wall + DELIVERY (col1) + zones 5-13 (cols 2-4) -->
-  <div style="display:flex;gap:0">
-    <!-- Left wall line, only rows 2-4 -->
-    <div style="width:5px;flex-shrink:0;background:${W};border-radius:2px;margin-right:2px"></div>
-    <!-- DELIVERY: fixed width = same as btn (54px), tall -->
-    <button class="z-btn z-delivery ${String(currentZone)==='DELIVERY'?'z-sel':''}"
-      onclick="selectZone('DELIVERY')"
-      style="width:54px;flex-shrink:0;writing-mode:vertical-lr;transform:rotate(180deg);height:auto;min-height:168px;font-size:11px;letter-spacing:2px;padding:8px 0;margin-right:7px">
-      🚛 Delivery
-    </button>
-    <!-- Cols 2-4: rows 5,6,7 / racking / 8,9,10 / gap / 11,12,13 -->
-    <div style="flex:1">
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:4px 0">
-        ${btn(5)} ${btn(6)} ${btn(7)}
-      </div>
-      <div style="height:5px;background:${W};border-radius:2px;margin:4px 0"></div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:4px 0">
-        ${btn(8)} ${btn(9)} ${btn(10)}
-      </div>
-      <div style="height:6px"></div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:4px 0">
-        ${btn(11)} ${btn(12)} ${btn(13)}
-      </div>
-    </div>
-  </div>
+    <!-- Walls -->
+    <line x1="0"   y1="0"   x2="400" y2="0"   class="picker-wall"/>
+    <line x1="0"   y1="50"  x2="0"   y2="200" class="picker-wall"/>
+    <line x1="100" y1="200" x2="400" y2="200" class="picker-wall"/>
+    <line x1="100" y1="100" x2="400" y2="100" class="picker-wall"/>
 
-  ${wallRight}
+    <!-- Zone 1 -->
+    ${bay(1, 50, 25)}
 
-</div>
+    <!-- DELIVERY — tall vertical -->
+    <g class="picker-zone-clickable" onclick="selectZone('DELIVERY')">
+      <rect x="15" y="60" width="32" height="130" rx="6" class="picker-bay-box"
+        style="fill:${deliverySel?'var(--accent2)':'var(--surface2)'};stroke:var(--accent2)"/>
+      <text x="31" y="125" class="picker-bay-number"
+        transform="rotate(-90,31,125)"
+        style="fill:${deliverySel?'#fff':'var(--accent2)'};font-size:10px;letter-spacing:1px">DELIVERY</text>
+    </g>
 
-<div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-align:center;text-transform:uppercase;margin:8px 0 4px">EDR Room &amp; Other</div>
+    <!-- Zones 2-13 in 3 columns -->
+    ${bay(2,150,25)}  ${bay(5,150,75)}  ${bay(8,150,125)}  ${bay(11,150,175)}
+    ${bay(3,250,25)}  ${bay(6,250,75)}  ${bay(9,250,125)}  ${bay(12,250,175)}
+    ${bay(4,350,25)}  ${bay(7,350,75)}  ${bay(10,350,125)} ${bay(13,350,175)}
 
-<!-- Bottom: small warehouse (left) + VAN/RACK/STORE/OTHER (right) -->
-<div style="display:flex;gap:10px;align-items:flex-start">
+  </g>
 
-  <!-- Small warehouse — walls on left, top (partial), right between 16/17 col, bottom -->
-  <div style="flex-shrink:0">
-    <!-- Top wall — partial, same width as EDR+14-16 col -->
-    <div style="height:5px;background:${W};border-radius:2px;width:120px;margin-bottom:0"></div>
-    <div style="display:flex;gap:0;align-items:stretch">
-      <!-- Left wall -->
-      <div style="width:5px;background:${W};border-radius:2px;flex-shrink:0"></div>
-      <div style="padding:4px 4px 4px 4px">
-        <!-- EDR wide button -->
-        <div style="width:110px;margin-bottom:6px">${wbtn('EDR','EDR','z-edr')}</div>
-        <!-- 14/15/16 left, wall, 17/18/19 right -->
-        <div style="display:flex;gap:0;align-items:stretch">
-          <div style="display:grid;gap:6px;margin-right:3px">
-            ${btn(14)} ${btn(15)} ${btn(16)}
-          </div>
-          <!-- Wall between left and right cols -->
-          <div style="width:5px;background:${W};border-radius:2px;margin:0 3px;align-self:stretch"></div>
-          <div style="display:grid;gap:6px;margin-left:3px">
-            ${btn(17)} ${btn(18)} ${btn(19)}
-          </div>
-        </div>
-      </div>
-      <!-- Right wall -->
-      <div style="width:5px;background:${W};border-radius:2px;flex-shrink:0"></div>
-    </div>
-    <!-- Bottom wall -->
-    <div style="height:5px;background:${W};border-radius:2px;width:120px;margin-top:0"></div>
-  </div>
+  <!-- ═══ SMALL WAREHOUSE + OTHER ═══ -->
+  <g transform="translate(10,300)">
 
-  <!-- VAN/RACK/STORE/OTHER — same width, stacked, aligned with 17/18/19 rows -->
-  <div style="display:grid;gap:6px;align-content:start;margin-top:30px;flex:1">
-    ${wbtn('VAN','🚐 Van','z-special')}
-    ${wbtn('RACK','📦 Rack','z-special')}
-    ${wbtn('STORE','🚪 Store','z-special')}
-    ${wbtn('OTHER','❓ Other','z-special')}
-  </div>
+    <!-- Walls -->
+    <line x1="0"   y1="10"  x2="80"  y2="10"  class="picker-wall"/>
+    <line x1="0"   y1="10"  x2="0"   y2="210" class="picker-wall"/>
+    <line x1="180" y1="60"  x2="180" y2="210" class="picker-wall"/>
 
-</div>`;
+    <!-- EDR -->
+    ${specialBay('EDR','EDR',15,25,65,32,edrSel,'var(--warn)')}
+
+    <!-- Zones 14-19 -->
+    ${bay(14,32,85)}  ${bay(15,32,135)}  ${bay(16,32,185)}
+    ${bay(17,148,85)} ${bay(18,148,135)} ${bay(19,148,185)}
+
+    <!-- VAN RACK STORE OTHER -->
+    ${specialBay('VAN',  '🚐 VAN',  230, 50,  110, 30, vanSel,   'var(--info)')}
+    ${specialBay('RACK', '📦 RACK', 230, 90,  110, 30, rackSel,  'var(--info)')}
+    ${specialBay('STORE','🚪 STORE',230, 130, 110, 30, storeSel, 'var(--info)')}
+    ${specialBay('OTHER','❓ OTHER',230, 170, 110, 30, otherSel, 'var(--info)')}
+
+  </g>
+
+</svg>`;
 }
 
 function selectZone(zone) {
