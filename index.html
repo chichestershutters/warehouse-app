@@ -143,8 +143,8 @@
   .detail-meta-val{font-size:18px;font-weight:800;}
   .detail-meta-lbl{font-size:10px;color:var(--text2);font-weight:500;margin-top:1px;}
 
-  /* ARRIVAL PANEL — blue tint to distinguish from order section */
-  .arrival-panel{background:rgba(61,127,255,.05);border:1.5px solid rgba(61,127,255,.2);border-radius:var(--r);padding:16px;margin-bottom:14px;}
+  /* ARRIVAL PANEL — distinct warm-dark background */
+  .arrival-panel{background:rgba(61,127,255,.08);border:1.5px solid rgba(61,127,255,.3);border-radius:var(--r);padding:16px;margin-bottom:14px;}
   .panel-title{font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px;color:var(--accent);}
   .panel-title-icon{font-size:16px;}
   .input-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
@@ -152,16 +152,14 @@
   .num-input{width:80px;padding:10px;border-radius:10px;background:var(--bg);border:1.5px solid rgba(61,127,255,.3);color:var(--text);font-family:var(--font);font-size:18px;font-weight:700;text-align:center;}
   .num-input:focus{outline:none;border-color:var(--accent);}
   .toggle-row{display:flex;gap:8px;margin-bottom:10px;}
-  /* Yes/Driver buttons — match blue outlined style */
-  .toggle-btn{flex:1;padding:13px;border-radius:10px;border:1.5px solid rgba(61,127,255,.35);background:rgba(61,127,255,.06);color:var(--text2);font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;}
+  .toggle-btn{flex:1;padding:13px;border-radius:10px;border:1.5px solid rgba(61,127,255,.35);background:rgba(61,127,255,.08);color:var(--text);font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;}
   .toggle-btn.yes{border-color:var(--accent2);background:rgba(0,200,150,.15);color:var(--accent2);}
   .toggle-btn.no{border-color:var(--accent2);background:rgba(0,200,150,.15);color:var(--accent2);}
   .toggle-btn:active{transform:scale(.96);}
-  .notes-input{width:100%;padding:12px;border-radius:10px;background:var(--bg);border:1.5px solid rgba(61,127,255,.2);color:var(--text);font-family:var(--font);font-size:14px;resize:none;min-height:60px;margin-bottom:0;}
+  .notes-input{width:100%;padding:12px;border-radius:10px;background:var(--bg);border:1.5px solid rgba(61,127,255,.2);color:var(--text);font-family:var(--font);font-size:14px;resize:none;min-height:60px;margin-bottom:10px;}
   .notes-input:focus{outline:none;border-color:var(--accent);}
   .notes-input::placeholder{color:var(--text3);}
-  /* All Received — below the order list, neutral until pressed */
-  .select-all-btn{width:100%;padding:12px;border-radius:10px;background:rgba(61,127,255,.06);border:1.5px solid rgba(61,127,255,.35);color:var(--text2);font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;margin-top:10px;}
+  .select-all-btn{width:100%;padding:12px;border-radius:10px;background:rgba(61,127,255,.08);border:1.5px solid rgba(61,127,255,.35);color:var(--text);font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;}
   .select-all-btn:active{transform:scale(.97);}
   .select-all-btn.done{background:rgba(0,200,150,.15);border-color:var(--accent2);color:var(--accent2);}
 
@@ -221,8 +219,13 @@
   .z-btn:active{transform:scale(.88);}
   .z-btn.z-sel{background:var(--accent);border-color:var(--accent);color:#fff;}
   .z-btn.z-office{background:rgba(255,255,255,.02);border:1.5px dashed rgba(61,127,255,.12);color:var(--text3);font-size:9px;font-weight:600;cursor:default;}
-  .z-btn.z-edr{width:100%;height:48px;background:rgba(255,112,67,.08);border-color:rgba(255,112,67,.35);color:var(--warn);font-size:14px;}
+  .z-btn.z-edr{background:rgba(255,112,67,.08);border-color:rgba(255,112,67,.35);color:var(--warn);}
   .z-btn.z-edr.z-sel{background:var(--warn);border-color:var(--warn);color:#fff;}
+  .z-btn.z-wide{width:100%;height:48px;font-size:14px;}
+  .z-btn.z-delivery{background:rgba(0,200,150,.07);border-color:rgba(0,200,150,.3);color:var(--accent2);writing-mode:vertical-rl;height:auto;min-height:120px;font-size:13px;padding:10px 8px;}
+  .z-btn.z-delivery.z-sel{background:var(--accent2);border-color:var(--accent2);color:#fff;}
+  .z-btn.z-special{background:rgba(156,111,255,.07);border-color:rgba(156,111,255,.3);color:var(--info);height:48px;font-size:14px;}
+  .z-btn.z-special.z-sel{background:var(--info);border-color:var(--info);color:#fff;}
   .zone-cancel{width:100%;padding:14px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-family:var(--font);font-size:15px;font-weight:600;cursor:pointer;margin-top:8px;}
   .zone-cancel:active{transform:scale(.97);}
 
@@ -392,10 +395,33 @@
       <div class="topbar-sub" id="detailSub"></div>
     </div>
     <div class="topbar-right">
-      <div class="icon-btn" onclick="showDeliveries()">←</div>
+      <div class="icon-btn" onclick="showDeliveries()" style="background:rgba(61,127,255,.15);border-color:var(--accent);color:var(--accent);width:auto;padding:0 14px;font-size:14px;font-weight:700;gap:4px">← Back</div>
     </div>
   </div>
   <div class="scroll-body" id="detailBody">
+  </div>
+</div>
+
+<!-- ═══ UNZONED JOBS ═══ -->
+<div class="screen" id="screen-unzoned">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-title">Needs Zoning</div>
+      <div class="topbar-sub">All orders awaiting a zone</div>
+    </div>
+    <div class="topbar-right">
+      <div class="icon-btn" onclick="showHome()" style="background:rgba(61,127,255,.15);border-color:var(--accent);color:var(--accent);width:auto;padding:0 14px;font-size:14px;font-weight:700">← Home</div>
+    </div>
+  </div>
+  <div class="scroll-body">
+    <div id="unzonedList"><div class="loading"><div class="spinner"></div>Loading...</div></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="showHome()"><div class="nav-icon">🏠</div><div class="nav-label">HOME</div></div>
+    <div class="nav-item" onclick="showDeliveries()"><div class="nav-icon">🚛</div><div class="nav-label">DELIVERIES</div></div>
+    <div class="nav-item" onclick="showPipeline()"><div class="nav-icon">🚢</div><div class="nav-label">PIPELINE</div></div>
+    <div class="nav-item" onclick="showHistory()"><div class="nav-icon">📋</div><div class="nav-label">HISTORY</div></div>
+    <div class="nav-item" onclick="showSearch()"><div class="nav-icon">🔍</div><div class="nav-label">SEARCH</div></div>
   </div>
 </div>
 
@@ -607,12 +633,52 @@ function showDeliveries() {
 }
 
 function showDeliveriesFiltered(status) {
-  showScreen('deliveries');
-  // Load then filter to only show containers with matching status
-  loadDeliveries().then(() => {
-    state.filterStatus = status;
-    renderDeliveriesList();
-  });
+  showScreen('unzoned');
+  loadUnzonedJobs();
+}
+
+async function loadUnzonedJobs() {
+  const list = document.getElementById('unzonedList');
+  list.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+  try {
+    const data = await apiFetch('getUnzonedOrders');
+    const orders = data.orders || [];
+    if (!orders.length) {
+      list.innerHTML = '<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-text">All orders zoned!</div><div class="empty-sub">Nothing needs zoning right now</div></div>';
+      return;
+    }
+    list.innerHTML = orders.map(o => {
+      const supClass = o.supplier === 'S:CRAFT' ? 'sb-sc' : o.supplier === 'TROPICAL' ? 'sb-tr' : 'sb-my';
+      return `<div class="order-row" style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+          <div>
+            <div class="order-ref">${o.customerRef}</div>
+            <div class="order-name" style="font-size:16px;font-weight:700">${o.customerName}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="sup-badge ${supClass}">${o.supplier}</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:3px">Container ${o.containerID}</div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:10px">
+          Boxes: <span style="color:var(--text);font-weight:700">${o.boxesShipped}</span>
+          &nbsp;·&nbsp; Arrived: <span style="color:var(--text)">${o.arrivedDate || '—'}</span>
+        </div>
+        <button class="assign-zone-btn" style="width:100%" onclick="openZonePickerForUnzoned('${o.orderRowID}','${o.customerName}','${o.containerID}')">📍 Assign Zone</button>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Could not load orders</div></div>';
+  }
+}
+
+function openZonePickerForUnzoned(orderRowID, customerName, containerID) {
+  state.currentContainer = containerID;
+  if (!state.orderStates[orderRowID]) state.orderStates[orderRowID] = { zone: '', status: 'pending' };
+  state.zoneTarget = { orderRowID, isEdit: false, fromUnzoned: true };
+  document.getElementById('zoneSub').textContent = 'Assign zone for ' + customerName;
+  document.getElementById('zoneGrid').innerHTML = buildWarehouseGrid('');
+  document.getElementById('zoneOverlay').classList.add('open');
 }
 
 function showPipeline() {
@@ -843,14 +909,13 @@ async function showDetail(containerID) {
           <button class="toggle-btn" id="presentNo" onclick="setPresent(false)">Driver left it</button>
         </div>
         <textarea class="notes-input" id="arrivalNotes" placeholder="Notes — missing boxes, unexpected items, damage etc."></textarea>
+        <button class="select-all-btn" id="allReceivedBtn" onclick="markAllComplete()">✓ Mark All Orders as Received</button>
       </div>
 
       <div class="orders-section">
         <div class="orders-header">
           <div class="section-title">${container.supplier || 'SUPPLIER'} ORDERS</div>
         </div>
-        <button class="select-all-btn" id="allReceivedBtn" onclick="markAllComplete()">Mark All Orders as Received</button>
-        <div style="height:8px"></div>
         <div id="ordersList"><div class="loading"><div class="spinner"></div>Loading orders...</div></div>
       </div>
 
@@ -1122,105 +1187,89 @@ function buildWarehouseGrid(currentZone) {
     const sel = String(currentZone) === String(n) ? 'z-sel' : '';
     return `<button class="z-btn ${cls||''} ${sel}" onclick="selectZone('${n}')">${n}</button>`;
   }
+  function wbtn(val, label, cls) {
+    const sel = String(currentZone) === String(val) ? 'z-sel' : '';
+    return `<button class="z-btn z-wide ${cls||''} ${sel}" onclick="selectZone('${val}')">${label}</button>`;
+  }
 
   const wall = `<div style="height:8px;background:rgba(61,127,255,.6);border-radius:4px;margin:8px 0"></div>`;
   const rack = `<div style="height:4px;background:rgba(61,127,255,.28);border-radius:3px;margin:6px 0"></div>`;
-
-  // btn size — fixed so all identical
-  const bs = 'style="width:54px;height:54px;flex-shrink:0"';
 
   return `
   <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-align:center;text-transform:uppercase;margin-bottom:8px">Main Warehouse — 13.4 × 6.8m</div>
   <div class="wh-section">
     ${wall}
-
-    <!-- Row 1: 1 2 3 4 spread full width -->
-    <div style="display:flex;justify-content:space-between;padding:0 4px">
+    <div style="display:flex;justify-content:space-between;gap:8px">
       ${btn(1)} ${btn(2)} ${btn(3)} ${btn(4)}
     </div>
-
-    ${rack}
-
-    <!-- Middle block: zone 11 on left wall, 5 6 7 offset right -->
-    <div style="display:flex;align-items:center;gap:0">
-      <!-- Zone 11 on left wall — spans both sub-rows -->
-      <div style="display:flex;flex-direction:column;justify-content:center;margin-right:10px">
-        ${btn(11)}
-      </div>
-      <!-- Sub-rows 5/6/7 and 8/9/10 stacked -->
+    <div style="height:10px"></div>
+    <div style="display:flex;gap:8px;align-items:stretch">
+      ${wbtn('DELIVERY','🚛 Delivery','z-delivery')}
       <div style="flex:1">
-        <div style="display:flex;justify-content:space-around">
+        <div style="display:flex;justify-content:space-between;gap:8px">
           ${btn(5)} ${btn(6)} ${btn(7)}
         </div>
-        <!-- Internal racking between 5/6/7 and 8/9/10 -->
-        <div style="height:4px;background:rgba(61,127,255,.28);border-radius:3px;margin:6px 0"></div>
-        <div style="display:flex;justify-content:space-around">
+        ${rack}
+        <div style="display:flex;justify-content:space-between;gap:8px">
           ${btn(8)} ${btn(9)} ${btn(10)}
+        </div>
+        <div style="height:10px"></div>
+        <div style="display:flex;justify-content:space-between;gap:8px">
+          ${btn(11)} ${btn(12)} ${btn(13)}
         </div>
       </div>
     </div>
-
-    ${rack}
-
-    <!-- Row 4: 12 13 14 offset right, matching 5/6/7 position -->
-    <div style="display:flex;align-items:center;gap:0">
-      <div style="width:64px;flex-shrink:0"></div><!-- spacer matching zone 11 width -->
-      <div style="flex:1;display:flex;justify-content:space-around">
-        ${btn(12)} ${btn(13)} ${btn(14)}
-      </div>
-    </div>
-
     ${wall}
   </div>
 
   <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-align:center;text-transform:uppercase;margin:10px 0 6px">EDR Room — 4.5 × 6.6m</div>
-  <div class="wh-section" style="max-width:200px;margin-left:auto;margin-right:auto">
+  <div class="wh-section" style="max-width:260px;margin:0 auto 10px">
     ${wall}
-    <div style="display:flex;justify-content:space-between">
-      ${btn(20)} ${btn(15)}
+    ${wbtn('EDR','EDR','z-edr')}
+    ${rack}
+    <div style="display:flex;justify-content:space-between;gap:8px">
+      ${btn(14)} ${btn(17)}
     </div>
-    <div style="height:4px;background:rgba(61,127,255,.28);border-radius:3px;margin:6px 0"></div>
-    <div style="display:flex;justify-content:space-between">
-      ${btn(19)} ${btn(16)}
+    ${rack}
+    <div style="display:flex;justify-content:space-between;gap:8px">
+      ${btn(15)} ${btn(18)}
     </div>
-    <div style="height:4px;background:rgba(61,127,255,.28);border-radius:3px;margin:6px 0"></div>
-    <div style="display:flex;justify-content:space-between">
-      ${btn(18)} ${btn(17)}
-    </div>
-    <div style="height:4px;background:rgba(61,127,255,.28);border-radius:3px;margin:6px 0"></div>
-    <div>
-      ${btn('EDR','z-edr')}
+    ${rack}
+    <div style="display:flex;justify-content:space-between;gap:8px">
+      ${btn(16)} ${btn(19)}
     </div>
     ${wall}
+  </div>
+
+  <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-align:center;text-transform:uppercase;margin-bottom:6px">Other Locations</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+    ${wbtn('VAN','🚐 Van','z-special')}
+    ${wbtn('RACK','📦 Rack','z-special')}
+    ${wbtn('STORE','🚪 Store','z-special')}
+    ${wbtn('OTHER','❓ Other','z-special')}
   </div>`;
 }
 
 function selectZone(zone) {
-  const { orderRowID, fromSearch } = state.zoneTarget;
+  const { orderRowID, fromSearch, fromUnzoned } = state.zoneTarget;
   const os = state.orderStates[orderRowID];
   if (os) { os.zone = zone; os.status = 'zoned'; }
   closeZonePicker();
 
-  // Save zone to backend
   const container = state.currentContainer;
   apiPost('assignZone', {
-    orderRowID,
-    zone,
+    orderRowID, zone,
     fitterName: state.user || 'Unknown',
     containerID: container
   }).then(r => {
     if (r && r.success) {
       showToast('Zone ' + zone + ' saved ✅', 'success');
-      // If triggered from search, re-run search to refresh card
-      if (fromSearch) {
-        const q = document.getElementById('searchInput')?.value;
-        if (q) doSearch(q);
-      }
+      if (fromSearch) { const q = document.getElementById('searchInput')?.value; if (q) doSearch(q); }
+      if (fromUnzoned) loadUnzonedJobs();
     } else showToast('Zone ' + zone + ' assigned (save pending)', '');
   }).catch(() => showToast('Zone ' + zone + ' assigned (offline)', ''));
 
-  // Update the row UI if on delivery detail screen
-  if (!fromSearch) {
+  if (!fromSearch && !fromUnzoned) {
     const row = document.getElementById('orow-' + orderRowID);
     if (row) {
       let zoneRow = row.querySelector('.order-zone-row');
