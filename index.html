@@ -222,7 +222,7 @@
   .z-btn.z-edr{background:rgba(255,112,67,.08);border-color:rgba(255,112,67,.35);color:var(--warn);}
   .z-btn.z-edr.z-sel{background:var(--warn);border-color:var(--warn);color:#fff;}
   .z-btn.z-wide{width:100%;height:46px;font-size:14px;}
-  .z-btn.z-delivery{width:100%;height:46px;background:rgba(0,200,150,.07);border-color:rgba(0,200,150,.3);color:var(--accent2);font-size:14px;}
+  .z-btn.z-delivery{background:rgba(0,200,150,.07);border-color:rgba(0,200,150,.3);color:var(--accent2);}
   .z-btn.z-delivery.z-sel{background:var(--accent2);border-color:var(--accent2);color:#fff;}
   .z-btn.z-special{width:100%;height:46px;background:rgba(156,111,255,.07);border-color:rgba(156,111,255,.3);color:var(--info);font-size:14px;}
   .z-btn.z-special.z-sel{background:var(--info);border-color:var(--info);color:#fff;}
@@ -1192,70 +1192,98 @@ function buildWarehouseGrid(currentZone) {
     return `<button class="z-btn z-wide ${cls||''} ${sel}" onclick="selectZone('${val}')">${label}</button>`;
   }
 
-  const wall = `<div style="height:7px;background:rgba(61,127,255,.55);border-radius:4px;margin:7px 0"></div>`;
-  const rack = `<div style="height:4px;background:rgba(61,127,255,.25);border-radius:3px;margin:5px 0"></div>`;
-  const gap  = `<div style="height:8px"></div>`;
+  // Wall colours matching the SVG blue
+  const wallH  = `<div style="height:5px;background:#1e40af;border-radius:2px"></div>`;
+  const wallHShort = `<div style="height:5px;background:#1e40af;border-radius:2px;margin-left:70px"></div>`; // skips col 1 width
+  const rackH  = `<div style="height:5px;background:#1e40af;border-radius:2px;margin-left:70px"></div>`; // racking only over cols 2-4
 
+  // col 1 width = ~70px (DELIVERY col), rest fills flex:1
   return `
-  <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-align:center;text-transform:uppercase;margin-bottom:6px">Main Warehouse — 13.4 × 6.8m</div>
-  <div class="wh-section">
-    ${wall}
+  <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-align:center;text-transform:uppercase;margin-bottom:6px">Main Warehouse</div>
+  <div class="wh-section" style="padding:8px">
 
-    <!-- Row 1: 1 2 3 4 -->
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px">
-      ${btn(1)} ${btn(2)} ${btn(3)} ${btn(4)}
+    ${wallH}
+
+    <!-- Row 1: zone 1 left, then 2 3 4 -->
+    <div style="display:flex;gap:7px;margin:5px 0">
+      ${btn(1)}
+      <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:7px">
+        ${btn(2)} ${btn(3)} ${btn(4)}
+      </div>
     </div>
 
-    ${gap}
-
-    <!-- DELIVERY wide button -->
-    ${wbtn('DELIVERY','🚛  Delivery Area','z-delivery')}
-
-    ${rack}
-
-    <!-- Row 5 6 7 -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px">
-      ${btn(5)} ${btn(6)} ${btn(7)}
+    <!-- Left wall starts here (short — only rows 2-4) -->
+    <!-- Row 2: DELIVERY tall (spans rows 2-4) + zones 5 6 7 -->
+    <div style="display:flex;gap:0;position:relative">
+      <!-- Left wall line -->
+      <div style="width:5px;background:#1e40af;border-radius:2px;flex-shrink:0;margin-right:5px;border-radius:2px"></div>
+      <!-- DELIVERY button — tall, vertical text -->
+      <button class="z-btn z-delivery ${String(currentZone)==='DELIVERY'?'z-sel':''}"
+        onclick="selectZone('DELIVERY')"
+        style="width:54px;flex-shrink:0;writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);height:auto;min-height:160px;font-size:12px;letter-spacing:1px;margin-right:7px">
+        🚛 Delivery
+      </button>
+      <!-- Cols 2-4 stacked rows -->
+      <div style="flex:1">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:5px">
+          ${btn(5)} ${btn(6)} ${btn(7)}
+        </div>
+        ${rackH}
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:5px;margin-bottom:5px">
+          ${btn(8)} ${btn(9)} ${btn(10)}
+        </div>
+        <div style="height:5px"></div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px">
+          ${btn(11)} ${btn(12)} ${btn(13)}
+        </div>
+      </div>
     </div>
 
-    ${rack}
+    ${wallHShort}
 
-    <!-- Row 8 9 10 -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px">
-      ${btn(8)} ${btn(9)} ${btn(10)}
-    </div>
-
-    ${gap}
-
-    <!-- Row 11 12 13 -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px">
-      ${btn(11)} ${btn(12)} ${btn(13)}
-    </div>
-
-    ${wall}
   </div>
 
-  <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-align:center;text-transform:uppercase;margin:8px 0 5px">EDR Room — 4.5 × 6.6m</div>
-  <div class="wh-section">
-    ${wall}
-    ${wbtn('EDR','EDR','z-edr')}
-    ${rack}
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px">
-      ${btn(14)} ${btn(15)} ${btn(16)}
-    </div>
-    ${rack}
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px">
-      ${btn(17)} ${btn(18)} ${btn(19)}
-    </div>
-    ${wall}
-  </div>
+  <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-align:center;text-transform:uppercase;margin:10px 0 6px">EDR Room &amp; Other</div>
 
-  <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-align:center;text-transform:uppercase;margin-bottom:6px">Other Locations</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
-    ${wbtn('VAN','🚐 Van','z-special')}
-    ${wbtn('RACK','📦 Rack','z-special')}
-    ${wbtn('STORE','🚪 Store','z-special')}
-    ${wbtn('OTHER','❓ Other','z-special')}
+  <!-- Bottom section: small warehouse left + VAN/RACK/STORE/OTHER right -->
+  <div style="display:flex;gap:10px;align-items:flex-start">
+
+    <!-- Small warehouse -->
+    <div style="flex:0 0 auto">
+      <!-- Short top wall -->
+      <div style="height:5px;background:#1e40af;border-radius:2px;width:130px;margin-bottom:0"></div>
+      <div style="display:flex;gap:0">
+        <!-- Left wall -->
+        <div style="width:5px;background:#1e40af;border-radius:2px;flex-shrink:0;margin-right:5px"></div>
+        <div>
+          <!-- EDR wide button -->
+          <div style="margin:5px 0 8px">${wbtn('EDR','EDR','z-edr')}</div>
+          <!-- 14/15/16 and 17/18/19 side by side with wall between -->
+          <div style="display:flex;gap:0;align-items:stretch">
+            <div style="display:grid;gap:7px;margin-right:5px">
+              ${btn(14)} ${btn(15)} ${btn(16)}
+            </div>
+            <!-- Wall between left and right col -->
+            <div style="width:5px;background:#1e40af;border-radius:2px;margin:0 5px"></div>
+            <div style="display:grid;gap:7px">
+              ${btn(17)} ${btn(18)} ${btn(19)}
+            </div>
+          </div>
+        </div>
+        <!-- Right wall -->
+        <div style="width:5px;background:#1e40af;border-radius:2px;flex-shrink:0;margin-left:5px"></div>
+      </div>
+      <div style="height:5px;background:#1e40af;border-radius:2px;width:130px;margin-top:0"></div>
+    </div>
+
+    <!-- VAN RACK STORE OTHER stacked to the right -->
+    <div style="flex:1;display:grid;gap:7px;margin-top:5px">
+      ${wbtn('VAN','🚐 Van','z-special')}
+      ${wbtn('RACK','📦 Rack','z-special')}
+      ${wbtn('STORE','🚪 Store','z-special')}
+      ${wbtn('OTHER','❓ Other','z-special')}
+    </div>
+
   </div>`;
 }
 
