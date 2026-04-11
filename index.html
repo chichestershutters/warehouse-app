@@ -1192,99 +1192,102 @@ function buildWarehouseGrid(currentZone) {
     return `<button class="z-btn z-wide ${cls||''} ${sel}" onclick="selectZone('${val}')">${label}</button>`;
   }
 
-  // Wall colours matching the SVG blue
-  const wallH  = `<div style="height:5px;background:#1e40af;border-radius:2px"></div>`;
-  const wallHShort = `<div style="height:5px;background:#1e40af;border-radius:2px;margin-left:70px"></div>`; // skips col 1 width
-  const rackH  = `<div style="height:5px;background:#1e40af;border-radius:2px;margin-left:70px"></div>`; // racking only over cols 2-4
+  // Colours matching SVG #1e40af walls
+  const W = '#1e40af';
+  const wallFull  = `<div style="height:5px;background:${W};border-radius:2px;margin:4px 0"></div>`;
+  // Partial wall — starts after col1 width. Col1 = 54px btn + 7px gap = 61px
+  const wallRight = `<div style="height:5px;background:${W};border-radius:2px;margin:4px 0;margin-left:61px"></div>`;
 
-  // col 1 width = ~70px (DELIVERY col), rest fills flex:1
+  // SVG has 4 equal columns. In our layout col1=fixed 54px, cols2-4=flex equal
+  // So we use: left section (col1) fixed, right section (cols2-4) flex with 3-col grid
+
   return `
-  <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-align:center;text-transform:uppercase;margin-bottom:6px">Main Warehouse</div>
-  <div class="wh-section" style="padding:8px">
+<div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-align:center;text-transform:uppercase;margin-bottom:4px">Main Warehouse</div>
+<div class="wh-section" style="padding:6px 8px">
 
-    ${wallH}
+  ${wallFull}
 
-    <!-- Row 1: zone 1 left, then 2 3 4 -->
-    <div style="display:flex;gap:7px;margin:5px 0">
-      ${btn(1)}
-      <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:7px">
-        ${btn(2)} ${btn(3)} ${btn(4)}
-      </div>
+  <!-- Row 1: zone 1 (col1) + zones 2,3,4 (cols 2-4) all same row -->
+  <div style="display:flex;gap:7px;margin:4px 0">
+    ${btn(1)}
+    <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:7px">
+      ${btn(2)} ${btn(3)} ${btn(4)}
     </div>
-
-    <!-- Left wall starts here (short — only rows 2-4) -->
-    <!-- Row 2: DELIVERY tall (spans rows 2-4) + zones 5 6 7 -->
-    <div style="display:flex;gap:0;position:relative">
-      <!-- Left wall line -->
-      <div style="width:5px;background:#1e40af;border-radius:2px;flex-shrink:0;margin-right:5px;border-radius:2px"></div>
-      <!-- DELIVERY button — tall, vertical text -->
-      <button class="z-btn z-delivery ${String(currentZone)==='DELIVERY'?'z-sel':''}"
-        onclick="selectZone('DELIVERY')"
-        style="width:54px;flex-shrink:0;writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);height:auto;min-height:160px;font-size:12px;letter-spacing:1px;margin-right:7px">
-        🚛 Delivery
-      </button>
-      <!-- Cols 2-4 stacked rows -->
-      <div style="flex:1">
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:5px">
-          ${btn(5)} ${btn(6)} ${btn(7)}
-        </div>
-        ${rackH}
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:5px;margin-bottom:5px">
-          ${btn(8)} ${btn(9)} ${btn(10)}
-        </div>
-        <div style="height:5px"></div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px">
-          ${btn(11)} ${btn(12)} ${btn(13)}
-        </div>
-      </div>
-    </div>
-
-    ${wallHShort}
-
   </div>
 
-  <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-align:center;text-transform:uppercase;margin:10px 0 6px">EDR Room &amp; Other</div>
+  <!-- Rows 2-4: left wall + DELIVERY (col1) + zones 5-13 (cols 2-4) -->
+  <div style="display:flex;gap:0">
+    <!-- Left wall line, only rows 2-4 -->
+    <div style="width:5px;flex-shrink:0;background:${W};border-radius:2px;margin-right:2px"></div>
+    <!-- DELIVERY: fixed width = same as btn (54px), tall -->
+    <button class="z-btn z-delivery ${String(currentZone)==='DELIVERY'?'z-sel':''}"
+      onclick="selectZone('DELIVERY')"
+      style="width:54px;flex-shrink:0;writing-mode:vertical-lr;transform:rotate(180deg);height:auto;min-height:168px;font-size:11px;letter-spacing:2px;padding:8px 0;margin-right:7px">
+      🚛 Delivery
+    </button>
+    <!-- Cols 2-4: rows 5,6,7 / racking / 8,9,10 / gap / 11,12,13 -->
+    <div style="flex:1">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:4px 0">
+        ${btn(5)} ${btn(6)} ${btn(7)}
+      </div>
+      <div style="height:5px;background:${W};border-radius:2px;margin:4px 0"></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:4px 0">
+        ${btn(8)} ${btn(9)} ${btn(10)}
+      </div>
+      <div style="height:6px"></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:4px 0">
+        ${btn(11)} ${btn(12)} ${btn(13)}
+      </div>
+    </div>
+  </div>
 
-  <!-- Bottom section: small warehouse left + VAN/RACK/STORE/OTHER right -->
-  <div style="display:flex;gap:10px;align-items:flex-start">
+  ${wallRight}
 
-    <!-- Small warehouse -->
-    <div style="flex:0 0 auto">
-      <!-- Short top wall -->
-      <div style="height:5px;background:#1e40af;border-radius:2px;width:130px;margin-bottom:0"></div>
-      <div style="display:flex;gap:0">
-        <!-- Left wall -->
-        <div style="width:5px;background:#1e40af;border-radius:2px;flex-shrink:0;margin-right:5px"></div>
-        <div>
-          <!-- EDR wide button -->
-          <div style="margin:5px 0 8px">${wbtn('EDR','EDR','z-edr')}</div>
-          <!-- 14/15/16 and 17/18/19 side by side with wall between -->
-          <div style="display:flex;gap:0;align-items:stretch">
-            <div style="display:grid;gap:7px;margin-right:5px">
-              ${btn(14)} ${btn(15)} ${btn(16)}
-            </div>
-            <!-- Wall between left and right col -->
-            <div style="width:5px;background:#1e40af;border-radius:2px;margin:0 5px"></div>
-            <div style="display:grid;gap:7px">
-              ${btn(17)} ${btn(18)} ${btn(19)}
-            </div>
+</div>
+
+<div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-align:center;text-transform:uppercase;margin:8px 0 4px">EDR Room &amp; Other</div>
+
+<!-- Bottom: small warehouse (left) + VAN/RACK/STORE/OTHER (right) -->
+<div style="display:flex;gap:10px;align-items:flex-start">
+
+  <!-- Small warehouse — walls on left, top (partial), right between 16/17 col, bottom -->
+  <div style="flex-shrink:0">
+    <!-- Top wall — partial, same width as EDR+14-16 col -->
+    <div style="height:5px;background:${W};border-radius:2px;width:120px;margin-bottom:0"></div>
+    <div style="display:flex;gap:0;align-items:stretch">
+      <!-- Left wall -->
+      <div style="width:5px;background:${W};border-radius:2px;flex-shrink:0"></div>
+      <div style="padding:4px 4px 4px 4px">
+        <!-- EDR wide button -->
+        <div style="width:110px;margin-bottom:6px">${wbtn('EDR','EDR','z-edr')}</div>
+        <!-- 14/15/16 left, wall, 17/18/19 right -->
+        <div style="display:flex;gap:0;align-items:stretch">
+          <div style="display:grid;gap:6px;margin-right:3px">
+            ${btn(14)} ${btn(15)} ${btn(16)}
+          </div>
+          <!-- Wall between left and right cols -->
+          <div style="width:5px;background:${W};border-radius:2px;margin:0 3px;align-self:stretch"></div>
+          <div style="display:grid;gap:6px;margin-left:3px">
+            ${btn(17)} ${btn(18)} ${btn(19)}
           </div>
         </div>
-        <!-- Right wall -->
-        <div style="width:5px;background:#1e40af;border-radius:2px;flex-shrink:0;margin-left:5px"></div>
       </div>
-      <div style="height:5px;background:#1e40af;border-radius:2px;width:130px;margin-top:0"></div>
+      <!-- Right wall -->
+      <div style="width:5px;background:${W};border-radius:2px;flex-shrink:0"></div>
     </div>
+    <!-- Bottom wall -->
+    <div style="height:5px;background:${W};border-radius:2px;width:120px;margin-top:0"></div>
+  </div>
 
-    <!-- VAN RACK STORE OTHER stacked to the right -->
-    <div style="flex:1;display:grid;gap:7px;margin-top:5px">
-      ${wbtn('VAN','🚐 Van','z-special')}
-      ${wbtn('RACK','📦 Rack','z-special')}
-      ${wbtn('STORE','🚪 Store','z-special')}
-      ${wbtn('OTHER','❓ Other','z-special')}
-    </div>
+  <!-- VAN/RACK/STORE/OTHER — same width, stacked, aligned with 17/18/19 rows -->
+  <div style="display:grid;gap:6px;align-content:start;margin-top:30px;flex:1">
+    ${wbtn('VAN','🚐 Van','z-special')}
+    ${wbtn('RACK','📦 Rack','z-special')}
+    ${wbtn('STORE','🚪 Store','z-special')}
+    ${wbtn('OTHER','❓ Other','z-special')}
+  </div>
 
-  </div>`;
+</div>`;
 }
 
 function selectZone(zone) {
