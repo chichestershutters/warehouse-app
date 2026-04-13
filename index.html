@@ -15,13 +15,16 @@
     --text:#f0f2ff;--text2:#8890b0;--text3:#555e7a;
     --scraft:#3d7fff;--tropical:#00b8d9;--myt:#ff9f43;--courier:#9c6fff;
     --r:14px;--font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
+    /* Office dashboard extras */
+    --dash-red:#ff4757;--dash-amber:#ffa502;--dash-green:#2ed573;
+    --dash-blue:#3d7fff;--dash-purple:#9c6fff;
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
   body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
   .screen{display:none;min-height:100dvh;flex-direction:column;}
   .screen.active{display:flex;}
 
-  /* TOPBAR */
+  /* ── TOPBAR ── */
   .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;}
   .topbar-left{display:flex;flex-direction:column;}
   .topbar-title{font-size:17px;font-weight:700;letter-spacing:-.3px;}
@@ -30,10 +33,10 @@
   .icon-btn{width:38px;height:38px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;}
   .icon-btn:active{transform:scale(.93);background:var(--border);}
 
-  /* SCROLL BODY */
+  /* ── SCROLL BODY ── */
   .scroll-body{flex:1;overflow-y:auto;padding:16px;padding-bottom:90px;}
 
-  /* BOTTOM NAV */
+  /* ── BOTTOM NAV ── */
   .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);display:flex;padding:8px 0 max(8px,env(safe-area-inset-bottom));z-index:20;}
   .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0;transition:all .15s;position:relative;}
   .nav-item:active{opacity:.7;}
@@ -42,7 +45,9 @@
   .nav-item.active .nav-label{color:var(--accent);}
   .nav-badge{position:absolute;top:0;right:calc(50% - 18px);background:var(--warn);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;}
 
-  /* LOGIN */
+  /* ══════════════════════════════════════
+     LOGIN
+  ══════════════════════════════════════ */
   #screen-login{background:var(--bg);align-items:center;justify-content:flex-start;padding:40px 24px 24px;}
   .login-logo{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,var(--accent),#6a5aff);display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:24px;box-shadow:0 8px 32px rgba(61,127,255,.35);}
   .login-title{font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px;}
@@ -62,7 +67,26 @@
   .login-btn:active{transform:scale(.97);opacity:.9;}
   .login-btn:disabled{background:var(--surface2);color:var(--text3);cursor:not-allowed;transform:none;}
 
-  /* HOME */
+  /* PIN overlay */
+  .pin-overlay{display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);align-items:center;justify-content:center;}
+  .pin-overlay.open{display:flex;}
+  .pin-box{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px 24px;width:min(340px,90vw);text-align:center;}
+  .pin-title{font-size:18px;font-weight:800;margin-bottom:4px;}
+  .pin-sub{font-size:13px;color:var(--text2);margin-bottom:20px;}
+  .pin-dots{display:flex;justify-content:center;gap:12px;margin-bottom:20px;}
+  .pin-dot{width:14px;height:14px;border-radius:50%;background:var(--border);transition:all .15s;}
+  .pin-dot.filled{background:var(--accent);}
+  .pin-dot.error{background:var(--warn);}
+  .pin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+  .pin-key{height:56px;border-radius:12px;background:var(--surface2);border:1.5px solid var(--border);color:var(--text);font-family:var(--font);font-size:20px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;}
+  .pin-key:active{transform:scale(.9);background:var(--border);}
+  .pin-key.zero{grid-column:2;}
+  .pin-key.del{background:rgba(255,112,67,.08);border-color:rgba(255,112,67,.3);color:var(--warn);}
+  .pin-cancel{width:100%;padding:13px;border-radius:10px;background:transparent;border:1px solid var(--border);color:var(--text2);font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;}
+
+  /* ══════════════════════════════════════
+     HOME (FITTER)
+  ══════════════════════════════════════ */
   .greeting{font-size:20px;font-weight:800;letter-spacing:-.4px;margin-bottom:2px;}
   .greeting-sub{font-size:12px;color:var(--text2);margin-bottom:0;}
   .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
@@ -88,8 +112,6 @@
   .action-badge.blue{background:var(--accent);}
   .action-badge.green{background:var(--accent2);}
   .action-badge.orange{background:var(--warn);}
-
-  /* DRIVER DROP-OFF */
   .driver-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-top:8px;}
   .driver-title{font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;}
   .driver-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
@@ -100,13 +122,166 @@
   .driver-btn.co{border-color:var(--courier);color:var(--courier);background:rgba(156,111,255,.08);}
   .driver-btn:active{transform:scale(.94);}
 
-  /* FILTER CHIPS */
+  /* ══════════════════════════════════════
+     OFFICE DASHBOARD
+  ══════════════════════════════════════ */
+
+  /* Office top nav tabs */
+  .office-tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0;}
+  .office-tab{padding:12px 16px;font-size:13px;font-weight:700;color:var(--text3);cursor:pointer;white-space:nowrap;border-bottom:2.5px solid transparent;transition:all .2s;letter-spacing:.2px;}
+  .office-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+  .office-tab:active{opacity:.7;}
+
+  /* KPI strip */
+  .kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:16px;}
+  .kpi-cell{background:var(--surface);padding:12px 10px;text-align:center;}
+  .kpi-val{font-size:22px;font-weight:800;letter-spacing:-1px;line-height:1;}
+  .kpi-lbl{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-top:3px;}
+  .kpi-cell.red .kpi-val{color:var(--dash-red);}
+  .kpi-cell.amber .kpi-val{color:var(--dash-amber);}
+  .kpi-cell.green .kpi-val{color:var(--dash-green);}
+  .kpi-cell.blue .kpi-val{color:var(--dash-blue);}
+  .kpi-cell.purple .kpi-val{color:var(--dash-purple);}
+
+  /* Alert banner */
+  .alert-banner{border-radius:10px;padding:12px 14px;margin-bottom:10px;display:flex;align-items:flex-start;gap:10px;animation:slideIn .3s ease;}
+  @keyframes slideIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+  .alert-banner.red{background:rgba(255,71,87,.1);border:1.5px solid rgba(255,71,87,.35);}
+  .alert-banner.amber{background:rgba(255,165,2,.1);border:1.5px solid rgba(255,165,2,.35);}
+  .alert-banner.green{background:rgba(46,213,115,.1);border:1.5px solid rgba(46,213,115,.35);}
+  .alert-banner.blue{background:rgba(61,127,255,.1);border:1.5px solid rgba(61,127,255,.35);}
+  .alert-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+  .alert-text{flex:1;}
+  .alert-title{font-size:13px;font-weight:700;margin-bottom:2px;}
+  .alert-sub{font-size:12px;color:var(--text2);}
+  .alert-banner.red .alert-title{color:var(--dash-red);}
+  .alert-banner.amber .alert-title{color:var(--dash-amber);}
+  .alert-banner.green .alert-title{color:var(--dash-green);}
+  .alert-banner.blue .alert-title{color:var(--dash-blue);}
+  .alert-dismiss{font-size:16px;color:var(--text3);cursor:pointer;padding:2px 4px;flex-shrink:0;}
+
+  /* Status board cards */
+  .status-board{display:flex;flex-direction:column;gap:8px;}
+  .sb-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:all .15s;}
+  .sb-card:active{transform:scale(.99);background:var(--surface2);}
+  .sb-card-top{padding:12px 14px;display:flex;align-items:center;gap:10px;}
+  .sb-card-left{flex:1;}
+  .sb-card-id{font-size:16px;font-weight:800;letter-spacing:-.3px;}
+  .sb-card-meta{font-size:11px;color:var(--text2);margin-top:2px;}
+  .sb-card-right{text-align:right;flex-shrink:0;}
+  .sb-status-pill{font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.3px;display:inline-block;margin-bottom:4px;}
+  .pill-transit{background:rgba(61,127,255,.15);color:var(--accent);}
+  .pill-confirmed{background:rgba(255,165,2,.15);color:var(--dash-amber);}
+  .pill-arrived{background:rgba(46,213,115,.15);color:var(--dash-green);}
+  .pill-zoned{background:rgba(156,111,255,.15);color:var(--info);}
+  .pill-risk{background:rgba(255,71,87,.2);color:var(--dash-red);}
+  .sb-card-progress{padding:0 14px 12px;}
+  .prog-row{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+  .prog-bar-bg{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+  .prog-bar-fill{height:100%;border-radius:3px;transition:width .4s ease;}
+  .prog-bar-fill.green{background:var(--accent2);}
+  .prog-bar-fill.amber{background:var(--dash-amber);}
+  .prog-bar-fill.red{background:var(--dash-red);}
+  .prog-label{font-size:10px;color:var(--text3);font-weight:700;min-width:32px;text-align:right;}
+  .sb-card-flags{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 12px;}
+  .flag-chip{font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px;letter-spacing:.2px;}
+  .flag-chip.damage{background:rgba(255,71,87,.15);color:var(--dash-red);}
+  .flag-chip.risk{background:rgba(255,165,2,.15);color:var(--dash-amber);}
+  .flag-chip.overnight{background:rgba(156,111,255,.15);color:var(--info);}
+  .flag-chip.dead{background:rgba(255,71,87,.1);color:var(--text2);}
+
+  /* Office order table */
+  .office-order-row{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:all .15s;}
+  .office-order-row:active{background:var(--surface2);}
+  .oor-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;}
+  .oor-ref{font-size:12px;font-weight:700;color:var(--accent);font-family:var(--mono);}
+  .oor-name{font-size:15px;font-weight:700;margin-top:1px;}
+  .oor-right{text-align:right;}
+  .oor-container{font-size:10px;color:var(--text3);}
+  .oor-meta{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--text2);}
+  .oor-meta span{font-weight:600;}
+  .oor-meta .green{color:var(--dash-green);}
+  .oor-meta .red{color:var(--dash-red);}
+  .oor-meta .amber{color:var(--dash-amber);}
+  .oor-meta .blue{color:var(--accent);}
+
+  /* Fit date calendar strip */
+  .fit-date-strip{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;}
+  .fdc{flex-shrink:0;width:52px;text-align:center;padding:8px 4px;border-radius:10px;background:var(--surface);border:1.5px solid var(--border);cursor:pointer;transition:all .15s;}
+  .fdc.today{border-color:var(--accent);background:rgba(61,127,255,.1);}
+  .fdc.has-jobs{border-color:var(--accent2);}
+  .fdc.overdue{border-color:var(--dash-red);background:rgba(255,71,87,.08);}
+  .fdc-day{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;}
+  .fdc-date{font-size:18px;font-weight:800;line-height:1.2;}
+  .fdc-count{font-size:10px;font-weight:700;color:var(--accent2);}
+  .fdc.overdue .fdc-count{color:var(--dash-red);}
+
+  /* Damage alerts panel */
+  .damage-item{background:var(--surface);border:1.5px solid rgba(255,71,87,.35);border-radius:var(--r);padding:14px;margin-bottom:10px;}
+  .damage-item-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;}
+  .damage-item-name{font-size:15px;font-weight:700;}
+  .damage-item-ref{font-size:12px;color:var(--accent);font-family:var(--mono);margin-top:2px;}
+  .damage-type-badge{font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;background:rgba(255,71,87,.15);color:var(--dash-red);letter-spacing:.3px;}
+  .damage-item-meta{font-size:12px;color:var(--text2);margin-bottom:10px;}
+  .damage-actions{display:flex;gap:8px;}
+  .da-btn{flex:1;padding:10px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;text-align:center;}
+  .da-btn.primary{background:rgba(61,127,255,.15);border-color:var(--accent);color:var(--accent);}
+  .da-btn.danger{background:rgba(255,71,87,.1);border-color:var(--dash-red);color:var(--dash-red);}
+  .da-btn:active{transform:scale(.95);}
+
+  /* Search */
+  .search-input-wrap{display:flex;gap:8px;margin-bottom:16px;}
+  .search-input{flex:1;padding:13px 14px;border-radius:12px;background:var(--surface);border:1.5px solid var(--border);color:var(--text);font-family:var(--font);font-size:15px;}
+  .search-input:focus{outline:none;border-color:var(--accent);}
+  .search-btn{padding:13px 16px;border-radius:12px;background:var(--accent);border:none;color:#fff;font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;}
+
+  /* Archive / history detail */
+  .timeline-item{display:flex;gap:12px;margin-bottom:0;}
+  .timeline-line{display:flex;flex-direction:column;align-items:center;}
+  .tl-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:4px;}
+  .tl-line{width:2px;flex:1;background:var(--border);margin:4px 0;}
+  .tl-content{flex:1;padding-bottom:16px;}
+  .tl-event{font-size:13px;font-weight:700;margin-bottom:2px;}
+  .tl-time{font-size:11px;color:var(--text3);font-family:var(--mono);}
+  .tl-note{font-size:12px;color:var(--text2);margin-top:4px;}
+
+  /* ══════════════════════════════════════
+     ADMIN PANEL
+  ══════════════════════════════════════ */
+  .admin-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px;}
+  .admin-section-title{font-size:13px;font-weight:800;color:var(--text);letter-spacing:.2px;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+  .admin-section-icon{font-size:16px;}
+  .user-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+  .user-row:last-child{border-bottom:none;}
+  .user-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+  .user-info{flex:1;}
+  .user-name{font-size:14px;font-weight:700;}
+  .user-role{font-size:11px;color:var(--text2);}
+  .user-toggle{display:flex;gap:8px;align-items:center;}
+  .role-select{padding:6px 10px;border-radius:8px;background:var(--surface2);border:1.5px solid var(--border);color:var(--text);font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;}
+  .toggle-switch{width:44px;height:24px;border-radius:12px;background:var(--border);position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;}
+  .toggle-switch.on{background:var(--accent2);}
+  .toggle-thumb{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.3);}
+  .toggle-switch.on .toggle-thumb{transform:translateX(20px);}
+  .pin-display{font-size:13px;font-weight:700;font-family:var(--mono);color:var(--accent);background:rgba(61,127,255,.1);padding:4px 10px;border-radius:6px;}
+  .admin-btn{width:100%;padding:14px;border-radius:10px;background:var(--surface2);border:1.5px solid var(--border);color:var(--text);font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;margin-bottom:8px;display:flex;align-items:center;gap:10px;}
+  .admin-btn:active{transform:scale(.97);}
+  .admin-btn.danger{border-color:rgba(255,71,87,.4);color:var(--dash-red);background:rgba(255,71,87,.06);}
+  .admin-btn.primary{border-color:rgba(61,127,255,.4);color:var(--accent);background:rgba(61,127,255,.08);}
+  .health-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);}
+  .health-row:last-child{border-bottom:none;}
+  .health-label{font-size:13px;color:var(--text2);}
+  .health-val{font-size:13px;font-weight:700;}
+  .health-val.ok{color:var(--dash-green);}
+  .health-val.warn{color:var(--dash-amber);}
+  .health-val.err{color:var(--dash-red);}
+
+  /* ══════════════════════════════════════
+     SHARED COMPONENTS (unchanged from v2)
+  ══════════════════════════════════════ */
   .filter-row{display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px;}
   .filter-chip{padding:7px 14px;border-radius:20px;font-size:13px;font-weight:600;background:var(--surface);border:1.5px solid var(--border);color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0;}
   .filter-chip.active{background:rgba(61,127,255,.15);border-color:var(--accent);color:var(--accent);}
-  .filter-chip:active{transform:scale(.95);}
-
-  /* CONTAINER CARDS */
   .container-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:10px;cursor:pointer;transition:all .15s;}
   .container-card:active{transform:scale(.99);background:var(--surface2);}
   .cc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
@@ -115,26 +290,9 @@
   .sb-sc{background:rgba(61,127,255,.15);color:var(--scraft);}
   .sb-tr{background:rgba(0,184,217,.15);color:var(--tropical);}
   .sb-my{background:rgba(255,159,67,.15);color:var(--myt);}
-  .sb-co{background:rgba(156,111,255,.15);color:var(--courier);}
   .cc-stats{display:flex;gap:20px;}
   .cc-stat-val{font-size:22px;font-weight:800;letter-spacing:-.5px;}
   .cc-stat-lbl{font-size:10px;color:var(--text2);font-weight:500;margin-top:1px;}
-  .cc-footer{display:flex;align-items:center;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
-  .status-dot{width:7px;height:7px;border-radius:50%;}
-  .dot-confirmed{background:var(--warn);}
-  .dot-arrived{background:var(--accent2);}
-  .dot-zoned{background:var(--info);}
-  .cc-status{font-size:12px;color:var(--text2);font-weight:500;}
-  .cc-date{margin-left:auto;font-size:12px;color:var(--text3);font-family:var(--mono);}
-  .progress-bar{height:4px;background:var(--border);border-radius:2px;margin-top:10px;overflow:hidden;}
-  .progress-fill{height:100%;border-radius:2px;background:var(--accent);transition:width .3s;}
-  .progress-fill.done{background:var(--accent2);}
-  .empty-state{text-align:center;padding:48px 20px;color:var(--text3);}
-  .empty-icon{font-size:48px;margin-bottom:12px;}
-  .empty-text{font-size:15px;font-weight:600;color:var(--text2);margin-bottom:6px;}
-  .empty-sub{font-size:13px;}
-
-  /* DETAIL SCREEN */
   #screen-detail .scroll-body{padding-top:0;}
   .detail-header{padding:16px;background:var(--surface2);border-bottom:1px solid var(--border);}
   .detail-id{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px;}
@@ -142,36 +300,26 @@
   .detail-meta-item{display:flex;flex-direction:column;}
   .detail-meta-val{font-size:18px;font-weight:800;}
   .detail-meta-lbl{font-size:10px;color:var(--text2);font-weight:500;margin-top:1px;}
-
-  /* ARRIVAL PANEL — distinct warm-dark background */
   .arrival-panel{background:rgba(61,127,255,.08);border:1.5px solid rgba(61,127,255,.3);border-radius:var(--r);padding:16px;margin-bottom:14px;}
   .panel-title{font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px;color:var(--accent);}
-  .panel-title-icon{font-size:16px;}
   .input-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
   .input-label{font-size:13px;color:var(--text2);flex:1;}
   .num-input{width:80px;padding:10px;border-radius:10px;background:var(--bg);border:1.5px solid rgba(61,127,255,.3);color:var(--text);font-family:var(--font);font-size:18px;font-weight:700;text-align:center;}
   .num-input:focus{outline:none;border-color:var(--accent);}
   .toggle-row{display:flex;gap:8px;margin-bottom:10px;}
   .toggle-btn{flex:1;padding:13px;border-radius:10px;border:1.5px solid rgba(61,127,255,.35);background:rgba(61,127,255,.08);color:var(--text);font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;}
-  .toggle-btn.yes{border-color:var(--accent2);background:rgba(0,200,150,.15);color:var(--accent2);}
-  .toggle-btn.no{border-color:var(--accent2);background:rgba(0,200,150,.15);color:var(--accent2);}
-  .toggle-btn:active{transform:scale(.96);}
+  .toggle-btn.yes,.toggle-btn.no{border-color:var(--accent2);background:rgba(0,200,150,.15);color:var(--accent2);}
   .notes-input{width:100%;padding:12px;border-radius:10px;background:var(--bg);border:1.5px solid rgba(61,127,255,.2);color:var(--text);font-family:var(--font);font-size:14px;resize:none;min-height:60px;margin-bottom:10px;}
   .notes-input:focus{outline:none;border-color:var(--accent);}
   .notes-input::placeholder{color:var(--text3);}
   .select-all-btn{width:100%;padding:12px;border-radius:10px;background:rgba(61,127,255,.08);border:1.5px solid rgba(61,127,255,.35);color:var(--text);font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;}
-  .select-all-btn:active{transform:scale(.97);}
   .select-all-btn.done{background:rgba(0,200,150,.15);border-color:var(--accent2);color:var(--accent2);}
-
-  /* ORDER ROWS */
   .orders-section{margin-bottom:14px;}
   .orders-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-
   .order-row{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;transition:all .15s;}
   .order-row.selected-order{border-color:var(--accent2);background:rgba(0,200,150,.05);}
   .order-row.order-zoned{border-color:var(--accent2);background:rgba(0,200,150,.05);}
   .order-row.order-partial{border-color:var(--warn);background:rgba(255,112,67,.05);}
-
   .order-main{display:flex;align-items:center;gap:10px;cursor:pointer;}
   .order-ref-name{flex:1;}
   .order-ref{font-size:13px;font-weight:700;font-family:var(--mono);color:var(--accent);margin-bottom:2px;}
@@ -179,55 +327,32 @@
   .order-box-col{text-align:center;flex-shrink:0;min-width:44px;}
   .order-box-num{font-size:22px;font-weight:800;letter-spacing:-.5px;line-height:1;}
   .order-box-lbl{font-size:9px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
-
   .order-zone-row{display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
   .zone-tag{display:inline-flex;align-items:center;gap:4px;background:rgba(0,200,150,.15);border:1px solid rgba(0,200,150,.3);color:var(--accent2);font-size:12px;font-weight:700;padding:5px 10px;border-radius:6px;}
   .edit-zone-btn{padding:6px 12px;border-radius:8px;background:rgba(61,127,255,.12);border:1.5px solid var(--accent);color:var(--accent);font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;}
-  .edit-zone-btn:active{transform:scale(.95);}
   .assign-zone-btn{padding:8px 14px;border-radius:8px;background:rgba(61,127,255,.15);border:1.5px solid rgba(61,127,255,.4);color:var(--accent);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;}
-  .assign-zone-btn:active{transform:scale(.95);}
-
   .partial-area{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
   .partial-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
   .partial-label{font-size:13px;color:var(--text2);flex:1;}
-
   .order-check-row{display:flex;gap:8px;margin-top:10px;}
-  /* Received/Partial — both clearly outlined buttons matching assign zone style */
   .check-btn{flex:1;padding:11px;border-radius:9px;border:2px solid var(--text3);background:var(--surface2);color:var(--text2);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;}
   .check-btn.complete{border-color:rgba(61,127,255,.5);background:rgba(61,127,255,.08);color:var(--accent);}
   .check-btn.partial{border-color:rgba(255,112,67,.5);background:rgba(255,112,67,.08);color:var(--warn);}
-  .check-btn:active{transform:scale(.95);}
-  /* After tapping — solid fill confirms the action */
   .check-btn.active-complete{background:rgba(0,200,150,.2);border-color:var(--accent2);color:var(--accent2);}
   .check-btn.active-partial{background:rgba(255,112,67,.2);border-color:var(--warn);color:var(--warn);}
-
-  /* CONFIRM BTN */
   .confirm-btn{width:100%;padding:17px;border-radius:var(--r);background:var(--accent);border:none;color:#fff;font-family:var(--font);font-size:17px;font-weight:700;cursor:pointer;transition:all .15s;margin-top:8px;}
   .confirm-btn:active{transform:scale(.97);opacity:.9;}
   .confirm-btn:disabled{background:var(--surface2);color:var(--text3);cursor:not-allowed;transform:none;}
   .confirm-btn.green{background:var(--accent2);}
-
-  /* ZONE PICKER SVG */
-  .picker-svg{width:100%;height:auto;border-radius:12px;background:var(--bg);border:1px solid var(--border);}
-  .picker-wall{stroke:var(--accent);stroke-width:5;stroke-linecap:round;}
-  .picker-divider{stroke:var(--border);stroke-width:1;stroke-dasharray:2 2;}
-  .picker-bay-box{fill:rgba(61,127,255,.07);stroke:rgba(61,127,255,.3);stroke-width:1.5;cursor:pointer;transition:all .2s;rx:8;}
-  .picker-bay-number{font-size:13px;font-weight:700;fill:var(--accent);text-anchor:middle;dominant-baseline:middle;pointer-events:none;font-family:var(--font);}
-  .picker-zone-clickable{cursor:pointer;}
-  .picker-zone-clickable:active .picker-bay-box{fill:var(--accent);stroke:var(--accent);}
-  .picker-zone-clickable:active text{fill:#fff;}
-  /* ZONE PICKER OVERLAY */
   .zone-overlay{display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);align-items:flex-end;justify-content:center;}
   .zone-overlay.open{display:flex;}
   .zone-sheet{background:var(--surface);border-radius:20px 20px 0 0;padding:14px 14px max(14px,env(safe-area-inset-bottom));width:100%;max-width:480px;max-height:92dvh;overflow-y:auto;}
   .zone-sheet-title{font-size:16px;font-weight:700;text-align:center;margin-bottom:4px;}
   .zone-sheet-sub{font-size:13px;color:var(--text2);text-align:center;margin-bottom:16px;}
   .zone-grid{margin-bottom:10px;}
-  .wh-section{background:rgba(61,127,255,.04);border:2px solid rgba(61,127,255,.2);border-radius:12px;padding:10px;margin-bottom:8px;}
   .z-btn{width:54px;height:54px;flex-shrink:0;border-radius:8px;border:1.5px solid rgba(61,127,255,.3);background:rgba(61,127,255,.07);color:var(--text);font-family:var(--font);font-size:16px;font-weight:700;cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center;}
   .z-btn:active{transform:scale(.88);}
   .z-btn.z-sel{background:var(--accent);border-color:var(--accent);color:#fff;}
-  .z-btn.z-office{background:rgba(255,255,255,.02);border:1.5px dashed rgba(61,127,255,.12);color:var(--text3);font-size:9px;font-weight:600;cursor:default;}
   .z-btn.z-edr{background:rgba(255,112,67,.08);border-color:rgba(255,112,67,.35);color:var(--warn);}
   .z-btn.z-edr.z-sel{background:var(--warn);border-color:var(--warn);color:#fff;}
   .z-btn.z-wide{width:100%;height:46px;font-size:14px;}
@@ -236,17 +361,6 @@
   .z-btn.z-special{width:100%;height:46px;background:rgba(156,111,255,.07);border-color:rgba(156,111,255,.3);color:var(--info);font-size:14px;}
   .z-btn.z-special.z-sel{background:var(--info);border-color:var(--info);color:#fff;}
   .zone-cancel{width:100%;padding:14px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-family:var(--font);font-size:15px;font-weight:600;cursor:pointer;margin-top:8px;}
-  .zone-cancel:active{transform:scale(.97);}
-
-  /* TOAST */
-  .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface);border:1px solid var(--border);color:var(--text);padding:12px 20px;border-radius:10px;font-size:14px;font-weight:600;opacity:0;transition:all .3s;z-index:200;white-space:nowrap;pointer-events:none;max-width:90vw;text-align:center;}
-  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-  .toast.success{border-color:var(--accent2);color:var(--accent2);background:rgba(0,200,150,.08);}
-  .toast.error{border-color:var(--warn);color:var(--warn);background:rgba(255,112,67,.08);}
-  /* Global button press feedback */
-  button:active{transform:scale(.94)!important;}
-
-  /* PIPELINE / COMING SOON */
   .pipeline-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:8px;}
   .pipe-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
   .pipe-id{font-size:16px;font-weight:800;}
@@ -255,15 +369,18 @@
   .ps-port{background:rgba(156,111,255,.12);color:var(--info);}
   .pipe-meta{display:flex;gap:16px;}
   .pipe-eta{font-size:12px;color:var(--text2);}
-  .pipe-eta span{color:var(--text);font-weight:600;}
-
-  /* DIVIDER */
   .divider{height:1px;background:var(--border);margin:16px 0;}
-
-  /* LOADING */
   .loading{display:flex;align-items:center;justify-content:center;gap:10px;padding:32px;color:var(--text2);font-size:14px;}
   .spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg);}}
+  .empty-state{text-align:center;padding:48px 20px;color:var(--text3);}
+  .empty-icon{font-size:48px;margin-bottom:12px;}
+  .empty-text{font-size:15px;font-weight:600;color:var(--text2);margin-bottom:6px;}
+  .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface);border:1px solid var(--border);color:var(--text);padding:12px 20px;border-radius:10px;font-size:14px;font-weight:600;opacity:0;transition:all .3s;z-index:200;white-space:nowrap;pointer-events:none;max-width:90vw;text-align:center;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .toast.success{border-color:var(--accent2);color:var(--accent2);background:rgba(0,200,150,.08);}
+  .toast.error{border-color:var(--warn);color:var(--warn);background:rgba(255,112,67,.08);}
+  button:active{transform:scale(.94)!important;}
 </style>
 </head>
 <body>
@@ -281,12 +398,12 @@
   </div>
 </div>
 
-<!-- ═══ NOTES OVERLAY ═══ -->
+<!-- NOTES OVERLAY -->
 <div class="zone-overlay" id="notesOverlay">
   <div class="zone-sheet">
     <div class="zone-sheet-title">📝 Edit Notes</div>
     <div class="zone-sheet-sub" id="notesSub">Add or update notes for this order</div>
-    <textarea id="notesInput" class="notes-input" style="width:100%;min-height:100px;margin:14px 0" placeholder="Enter notes — e.g. missing box, damage, query..."></textarea>
+    <textarea id="notesInput" class="notes-input" style="width:100%;min-height:100px;margin:14px 0" placeholder="Enter notes…"></textarea>
     <div style="display:flex;gap:10px">
       <button class="zone-cancel" style="flex:1" onclick="closeNotesOverlay()">Cancel</button>
       <button class="login-btn" style="flex:2;margin-top:0;padding:14px" onclick="saveNotesOverlay()">Save Notes</button>
@@ -294,25 +411,55 @@
   </div>
 </div>
 
-<!-- ═══ LOGIN ═══ -->
+<!-- PIN OVERLAY -->
+<div class="pin-overlay" id="pinOverlay">
+  <div class="pin-box">
+    <div class="pin-title" id="pinTitle">Office Access</div>
+    <div class="pin-sub" id="pinSubText">Enter your PIN to continue</div>
+    <div class="pin-dots">
+      <div class="pin-dot" id="pd0"></div>
+      <div class="pin-dot" id="pd1"></div>
+      <div class="pin-dot" id="pd2"></div>
+      <div class="pin-dot" id="pd3"></div>
+    </div>
+    <div class="pin-grid">
+      <button class="pin-key" onclick="pinKey('1')">1</button>
+      <button class="pin-key" onclick="pinKey('2')">2</button>
+      <button class="pin-key" onclick="pinKey('3')">3</button>
+      <button class="pin-key" onclick="pinKey('4')">4</button>
+      <button class="pin-key" onclick="pinKey('5')">5</button>
+      <button class="pin-key" onclick="pinKey('6')">6</button>
+      <button class="pin-key" onclick="pinKey('7')">7</button>
+      <button class="pin-key" onclick="pinKey('8')">8</button>
+      <button class="pin-key" onclick="pinKey('9')">9</button>
+      <button class="pin-key zero" onclick="pinKey('0')">0</button>
+      <button class="pin-key del" onclick="pinDel()">⌫</button>
+    </div>
+    <button class="pin-cancel" onclick="closePinOverlay()">Cancel</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     LOGIN
+════════════════════════════════════════ -->
 <div class="screen active" id="screen-login">
   <div class="login-logo">📦</div>
   <div class="login-title">CS Warehouse</div>
   <div class="login-sub">Chichester Shutters — Delivery Hub</div>
-
   <div class="role-section" id="loginFitters">
-    <div class="role-label">Fitters</div>
+    <div class="role-label">Fitters &amp; Surveyors</div>
     <div class="name-grid" id="fitterGrid"></div>
   </div>
   <div class="role-section" id="loginOffice">
-    <div class="role-label">Office & Admin</div>
+    <div class="role-label">Office &amp; Admin</div>
     <div class="name-grid" id="officeGrid"></div>
   </div>
-
   <button class="login-btn" id="loginBtn" disabled onclick="doLogin()">Select your name to continue</button>
 </div>
 
-<!-- ═══ HOME ═══ -->
+<!-- ════════════════════════════════════════
+     HOME (FITTER)
+════════════════════════════════════════ -->
 <div class="screen" id="screen-home">
   <div class="topbar">
     <div class="topbar-left">
@@ -320,26 +467,24 @@
       <div class="topbar-sub" id="homeDate"></div>
     </div>
     <div class="topbar-right">
-      <div class="icon-btn" onclick="loadStats()" title="Refresh">🔄</div>
-      <div class="icon-btn" onclick="doLogout()" title="Switch user">👤</div>
+      <div class="icon-btn" onclick="loadStats()">🔄</div>
+      <div class="icon-btn" onclick="doLogout()">👤</div>
     </div>
   </div>
   <div class="scroll-body">
     <div class="greeting" id="homeGreeting">Good morning</div>
     <div class="greeting-sub" id="homeGreetingSub">Here's today's warehouse summary</div>
-    <div style="font-size:11px;color:var(--text3);margin-top:2px;margin-bottom:12px">v2 · 10 Apr 2026</div>
-
+    <div style="font-size:11px;color:var(--text3);margin-top:2px;margin-bottom:12px">v3 · Apr 2026</div>
     <div class="stats-grid" id="statsGrid">
       <div class="stat-card blue" onclick="showDeliveries()"><div class="stat-value" id="statDeliveries">—</div><div class="stat-label">Containers needing check-in</div></div>
       <div class="stat-card green"><div class="stat-value" id="statBoxes">—</div><div class="stat-label">Boxes in warehouse</div></div>
       <div class="stat-card orange" onclick="showDeliveriesFiltered('ARRIVED')"><div class="stat-value" id="statUnzoned">—</div><div class="stat-label">Orders awaiting zone</div></div>
       <div class="stat-card purple" onclick="showPipeline()"><div class="stat-value" id="statPipeline">—</div><div class="stat-label">Containers in transit</div></div>
     </div>
-
     <div class="section-title">Quick Actions</div>
     <div class="action-card" onclick="showDeliveries()">
       <div class="action-icon blue">🚛</div>
-      <div><div class="action-text-main">Check In Delivery</div><div class="action-text-sub">Confirm arrivals & assign zones</div></div>
+      <div><div class="action-text-main">Check In Delivery</div><div class="action-text-sub">Confirm arrivals &amp; assign zones</div></div>
       <div class="action-badge blue" id="deliveryBadge">0</div>
     </div>
     <div class="action-card" onclick="showPipeline()">
@@ -347,7 +492,6 @@
       <div><div class="action-text-main">Coming Soon</div><div class="action-text-sub">Containers in transit</div></div>
       <div class="action-badge" style="background:var(--info)" id="pipelineBadge">0</div>
     </div>
-
     <div class="driver-section">
       <div class="driver-title">🚛 Delivery Just Arrived? Tap to Notify the Office</div>
       <div class="driver-grid">
@@ -358,7 +502,7 @@
       </div>
     </div>
   </div>
-  <div class="bottom-nav">
+  <div class="bottom-nav" id="fitterNav">
     <div class="nav-item active" onclick="showHome()"><div class="nav-icon">🏠</div><div class="nav-label">HOME</div></div>
     <div class="nav-item" onclick="showDeliveries()"><div class="nav-icon">🚛</div><div class="nav-label">DELIVERIES</div><div class="nav-badge" id="navBadge" style="display:none">0</div></div>
     <div class="nav-item" onclick="showPipeline()"><div class="nav-icon">🚢</div><div class="nav-label">PIPELINE</div></div>
@@ -367,16 +511,13 @@
   </div>
 </div>
 
-<!-- ═══ DELIVERIES LIST ═══ -->
+<!-- ════════════════════════════════════════
+     DELIVERIES LIST
+════════════════════════════════════════ -->
 <div class="screen" id="screen-deliveries">
   <div class="topbar">
-    <div class="topbar-left">
-      <div class="topbar-title">Deliveries</div>
-      <div class="topbar-sub">Needing action</div>
-    </div>
-    <div class="topbar-right">
-      <div class="icon-btn" onclick="loadDeliveries()">🔄</div>
-    </div>
+    <div class="topbar-left"><div class="topbar-title">Deliveries</div><div class="topbar-sub">Needing action</div></div>
+    <div class="topbar-right"><div class="icon-btn" onclick="loadDeliveries()">🔄</div></div>
   </div>
   <div class="scroll-body">
     <div class="filter-row" id="deliveryFilters">
@@ -389,14 +530,16 @@
   </div>
   <div class="bottom-nav">
     <div class="nav-item" onclick="showHome()"><div class="nav-icon">🏠</div><div class="nav-label">HOME</div></div>
-    <div class="nav-item active" onclick="showDeliveries()"><div class="nav-icon">🚛</div><div class="nav-label">DELIVERIES</div></div>
+    <div class="nav-item active"><div class="nav-icon">🚛</div><div class="nav-label">DELIVERIES</div></div>
     <div class="nav-item" onclick="showPipeline()"><div class="nav-icon">🚢</div><div class="nav-label">PIPELINE</div></div>
     <div class="nav-item" onclick="showHistory()"><div class="nav-icon">📋</div><div class="nav-label">HISTORY</div></div>
     <div class="nav-item" onclick="showSearch()"><div class="nav-icon">🔍</div><div class="nav-label">SEARCH</div></div>
   </div>
 </div>
 
-<!-- ═══ CONTAINER DETAIL ═══ -->
+<!-- ════════════════════════════════════════
+     CONTAINER DETAIL
+════════════════════════════════════════ -->
 <div class="screen" id="screen-detail">
   <div class="topbar">
     <div class="topbar-left">
@@ -404,27 +547,19 @@
       <div class="topbar-sub" id="detailSub"></div>
     </div>
     <div class="topbar-right">
-      <div class="icon-btn" onclick="showDeliveries()" style="background:rgba(61,127,255,.15);border-color:var(--accent);color:var(--accent);width:auto;padding:0 14px;font-size:14px;font-weight:700;gap:4px">← Back</div>
+      <div class="icon-btn" onclick="showDeliveries()" style="background:rgba(61,127,255,.15);border-color:var(--accent);color:var(--accent);width:auto;padding:0 14px;font-size:14px;font-weight:700">← Back</div>
     </div>
   </div>
-  <div class="scroll-body" id="detailBody">
-  </div>
+  <div class="scroll-body" id="detailBody"></div>
 </div>
 
-<!-- ═══ UNZONED JOBS ═══ -->
+<!-- UNZONED -->
 <div class="screen" id="screen-unzoned">
   <div class="topbar">
-    <div class="topbar-left">
-      <div class="topbar-title">Needs Zoning</div>
-      <div class="topbar-sub">All orders awaiting a zone</div>
-    </div>
-    <div class="topbar-right">
-      <div class="icon-btn" onclick="showHome()" style="background:rgba(61,127,255,.15);border-color:var(--accent);color:var(--accent);width:auto;padding:0 14px;font-size:14px;font-weight:700">← Home</div>
-    </div>
+    <div class="topbar-left"><div class="topbar-title">Needs Zoning</div><div class="topbar-sub">All orders awaiting a zone</div></div>
+    <div class="topbar-right"><div class="icon-btn" onclick="showHome()" style="background:rgba(61,127,255,.15);border-color:var(--accent);color:var(--accent);width:auto;padding:0 14px;font-size:14px;font-weight:700">← Home</div></div>
   </div>
-  <div class="scroll-body">
-    <div id="unzonedList"><div class="loading"><div class="spinner"></div>Loading...</div></div>
-  </div>
+  <div class="scroll-body"><div id="unzonedList"><div class="loading"><div class="spinner"></div>Loading...</div></div></div>
   <div class="bottom-nav">
     <div class="nav-item" onclick="showHome()"><div class="nav-icon">🏠</div><div class="nav-label">HOME</div></div>
     <div class="nav-item" onclick="showDeliveries()"><div class="nav-icon">🚛</div><div class="nav-label">DELIVERIES</div></div>
@@ -434,72 +569,48 @@
   </div>
 </div>
 
-<!-- ═══ PIPELINE ═══ -->
+<!-- PIPELINE -->
 <div class="screen" id="screen-pipeline">
   <div class="topbar">
-    <div class="topbar-left">
-      <div class="topbar-title">Pipeline</div>
-      <div class="topbar-sub">Containers in transit — tap to view orders</div>
-    </div>
-    <div class="topbar-right">
-      <div class="icon-btn" onclick="loadPipeline()">🔄</div>
-    </div>
+    <div class="topbar-left"><div class="topbar-title">Pipeline</div><div class="topbar-sub">Containers in transit</div></div>
+    <div class="topbar-right"><div class="icon-btn" onclick="loadPipeline()">🔄</div></div>
   </div>
-  <div class="scroll-body">
-    <div id="pipelineList"><div class="loading"><div class="spinner"></div>Loading...</div></div>
-  </div>
+  <div class="scroll-body"><div id="pipelineList"><div class="loading"><div class="spinner"></div>Loading...</div></div></div>
   <div class="bottom-nav">
     <div class="nav-item" onclick="showHome()"><div class="nav-icon">🏠</div><div class="nav-label">HOME</div></div>
     <div class="nav-item" onclick="showDeliveries()"><div class="nav-icon">🚛</div><div class="nav-label">DELIVERIES</div></div>
-    <div class="nav-item active" onclick="showPipeline()"><div class="nav-icon">🚢</div><div class="nav-label">PIPELINE</div></div>
+    <div class="nav-item active"><div class="nav-icon">🚢</div><div class="nav-label">PIPELINE</div></div>
     <div class="nav-item" onclick="showHistory()"><div class="nav-icon">📋</div><div class="nav-label">HISTORY</div></div>
     <div class="nav-item" onclick="showSearch()"><div class="nav-icon">🔍</div><div class="nav-label">SEARCH</div></div>
   </div>
 </div>
 
-
-<!-- ═══ HISTORY ═══ -->
+<!-- HISTORY -->
 <div class="screen" id="screen-history">
   <div class="topbar">
-    <div class="topbar-left">
-      <div class="topbar-title">History</div>
-      <div class="topbar-sub">Past deliveries — tap to view orders</div>
-    </div>
-    <div class="topbar-right">
-      <div class="icon-btn" onclick="loadHistory()">🔄</div>
-    </div>
+    <div class="topbar-left"><div class="topbar-title">History</div><div class="topbar-sub">Past deliveries</div></div>
+    <div class="topbar-right"><div class="icon-btn" onclick="loadHistory()">🔄</div></div>
   </div>
-  <div class="scroll-body">
-    <div id="historyList"><div class="loading"><div class="spinner"></div>Loading...</div></div>
-  </div>
+  <div class="scroll-body"><div id="historyList"><div class="loading"><div class="spinner"></div>Loading...</div></div></div>
   <div class="bottom-nav">
     <div class="nav-item" onclick="showHome()"><div class="nav-icon">🏠</div><div class="nav-label">HOME</div></div>
     <div class="nav-item" onclick="showDeliveries()"><div class="nav-icon">🚛</div><div class="nav-label">DELIVERIES</div></div>
     <div class="nav-item" onclick="showPipeline()"><div class="nav-icon">🚢</div><div class="nav-label">PIPELINE</div></div>
-    <div class="nav-item active" onclick="showHistory()"><div class="nav-icon">📋</div><div class="nav-label">HISTORY</div></div>
+    <div class="nav-item active"><div class="nav-icon">📋</div><div class="nav-label">HISTORY</div></div>
     <div class="nav-item" onclick="showSearch()"><div class="nav-icon">🔍</div><div class="nav-label">SEARCH</div></div>
   </div>
 </div>
 
-
-<!-- ═══ SEARCH ═══ -->
+<!-- SEARCH -->
 <div class="screen" id="screen-search">
   <div class="topbar">
-    <div class="topbar-left">
-      <div class="topbar-title">Search</div>
-      <div class="topbar-sub">Find any order or container</div>
-    </div>
-    <div class="topbar-right">
-      <div class="icon-btn" onclick="showHome()">🏠</div>
-    </div>
+    <div class="topbar-left"><div class="topbar-title">Search</div><div class="topbar-sub">Find any order or container</div></div>
+    <div class="topbar-right"><div class="icon-btn" onclick="showHome()">🏠</div></div>
   </div>
   <div class="scroll-body">
-    <div style="display:flex;gap:8px;margin-bottom:16px">
-      <input type="text" id="searchInput" placeholder="SM8 number, name or container..." 
-        style="flex:1;padding:13px 14px;border-radius:12px;background:var(--surface);border:1.5px solid var(--border);color:var(--text);font-family:var(--font);font-size:15px;"
-        oninput="doSearch(this.value)">
-      <button onclick="doSearch(document.getElementById('searchInput').value)" 
-        style="padding:13px 16px;border-radius:12px;background:var(--accent);border:none;color:#fff;font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;">🔍</button>
+    <div class="search-input-wrap">
+      <input type="text" id="searchInput" class="search-input" placeholder="SM8 number, name or container..." oninput="doSearch(this.value)">
+      <button class="search-btn" onclick="doSearch(document.getElementById('searchInput').value)">🔍</button>
     </div>
     <div id="searchResults"></div>
   </div>
@@ -508,86 +619,192 @@
     <div class="nav-item" onclick="showDeliveries()"><div class="nav-icon">🚛</div><div class="nav-label">DELIVERIES</div></div>
     <div class="nav-item" onclick="showPipeline()"><div class="nav-icon">🚢</div><div class="nav-label">PIPELINE</div></div>
     <div class="nav-item" onclick="showHistory()"><div class="nav-icon">📋</div><div class="nav-label">HISTORY</div></div>
-    <div class="nav-item active" onclick="showSearch()"><div class="nav-icon">🔍</div><div class="nav-label">SEARCH</div></div>
+    <div class="nav-item active"><div class="nav-icon">🔍</div><div class="nav-label">SEARCH</div></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     OFFICE DASHBOARD
+════════════════════════════════════════ -->
+<div class="screen" id="screen-office">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-title" id="officeTitle">Dashboard</div>
+      <div class="topbar-sub" id="officeSubtitle">Loading…</div>
+    </div>
+    <div class="topbar-right">
+      <div class="icon-btn" onclick="refreshOfficeDash()">🔄</div>
+      <div class="icon-btn" onclick="doLogout()">👤</div>
+    </div>
+  </div>
+  <!-- Office tab bar -->
+  <div class="office-tabs" id="officeTabs">
+    <div class="office-tab active" onclick="showOfficeTab('overview',this)">📊 Overview</div>
+    <div class="office-tab" onclick="showOfficeTab('status',this)">🏭 Status Board</div>
+    <div class="office-tab" onclick="showOfficeTab('fitdates',this)">📅 Fit Dates</div>
+    <div class="office-tab" onclick="showOfficeTab('damage',this)">⚠️ Damage</div>
+    <div class="office-tab" onclick="showOfficeTab('search',this)">🔍 Search</div>
+    <div class="office-tab" onclick="showOfficeTab('archive',this)">📋 Archive</div>
+  </div>
+  <div class="scroll-body" id="officeDashBody" style="padding-bottom:30px">
+    <div class="loading"><div class="spinner"></div>Loading dashboard…</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     ADMIN PANEL
+════════════════════════════════════════ -->
+<div class="screen" id="screen-admin">
+  <div class="topbar">
+    <div class="topbar-left"><div class="topbar-title">Admin Panel</div><div class="topbar-sub">System configuration</div></div>
+    <div class="topbar-right">
+      <div class="icon-btn" onclick="doLogout()">👤</div>
+    </div>
+  </div>
+  <div class="scroll-body" style="padding-bottom:30px">
+
+    <!-- Users & Access -->
+    <div class="admin-section">
+      <div class="admin-section-title"><span class="admin-section-icon">👥</span> User Access &amp; Roles</div>
+      <div id="adminUserList">Loading users…</div>
+    </div>
+
+    <!-- PINs -->
+    <div class="admin-section">
+      <div class="admin-section-title"><span class="admin-section-icon">🔐</span> Office &amp; Admin PINs</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:12px">PINs protect the Office Dashboard and Admin Panel. Fitters do not use PINs.</div>
+      <div id="adminPinList"></div>
+      <button class="admin-btn primary" onclick="adminResetPin()">🔄 Reset a PIN</button>
+    </div>
+
+    <!-- Token -->
+    <div class="admin-section">
+      <div class="admin-section-title"><span class="admin-section-icon">🔑</span> API Security Token</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:12px">This token is sent with every request to your Apps Script. Must match the SECRET in your Apps Script code.</div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+        <input id="tokenInput" style="flex:1;padding:10px 12px;border-radius:10px;background:var(--bg);border:1.5px solid var(--border);color:var(--text);font-family:var(--mono);font-size:13px" placeholder="Paste your token here" value="">
+        <button class="edit-zone-btn" style="height:40px" onclick="saveToken()">Save</button>
+      </div>
+      <div style="font-size:11px;color:var(--text3)">Token is stored locally on this device only. Each device needs its own token set.</div>
+    </div>
+
+    <!-- System Health -->
+    <div class="admin-section">
+      <div class="admin-section-title"><span class="admin-section-icon">💚</span> System Health</div>
+      <div id="adminHealth">
+        <div class="health-row"><div class="health-label">Apps Script connection</div><div class="health-val" id="healthScript">Checking…</div></div>
+        <div class="health-row"><div class="health-label">Last CS_DATA_LINK sync</div><div class="health-val" id="healthSync">—</div></div>
+        <div class="health-row"><div class="health-label">Active containers</div><div class="health-val" id="healthContainers">—</div></div>
+        <div class="health-row"><div class="health-label">Active orders</div><div class="health-val" id="healthOrders">—</div></div>
+        <div class="health-row"><div class="health-label">Script errors (7 days)</div><div class="health-val" id="healthErrors">—</div></div>
+      </div>
+      <button class="admin-btn" style="margin-top:14px" onclick="runHealthCheck()">🔍 Run Health Check</button>
+    </div>
+
+    <!-- Danger zone -->
+    <div class="admin-section">
+      <div class="admin-section-title"><span class="admin-section-icon">⚠️</span> Danger Zone</div>
+      <button class="admin-btn danger" onclick="adminClearCache()">🗑 Clear Local Cache &amp; Saved Login</button>
+    </div>
+
   </div>
 </div>
 
 <script>
 // ═══════════════════════════════════════════════════════════
-// CONFIGURATION — update WEB_APP_URL after deploying
+// CONFIGURATION
 // ═══════════════════════════════════════════════════════════
 const CONFIG = {
   WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbyrw58W6C0cFyzc5cBghIecsypyiw1DrIeuI-sh_yU85IVkKyKlHZaDdh4kuYqZtlyH/exec',
   APP_NAME: 'CS Warehouse',
-  WAREHOUSE: 'Unit 7, Kingley Centre'
+  APP_VERSION: 'v3',
+};
+
+// ═══════════════════════════════════════════════════════════
+// USER CONFIGURATION
+// Roles: Fitter, Surveyor, Office, Admin
+// officeAccess: true = can see Office Dashboard (PIN required)
+// adminAccess:  true = can see Admin Panel (PIN required, Admin only)
+// pin: 4-digit string — set per user, stored in localStorage
+// ═══════════════════════════════════════════════════════════
+const USERS = [
+  // FITTERS — warehouse only, no PIN needed
+  {name:'Miles',  role:'Fitter',   officeAccess:false, adminAccess:false},
+  {name:'Chris',  role:'Fitter',   officeAccess:false, adminAccess:false},
+  {name:'Matt',   role:'Fitter',   officeAccess:false, adminAccess:false},
+  {name:'Tom',    role:'Fitter',   officeAccess:false, adminAccess:false},
+  {name:'Harley', role:'Fitter',   officeAccess:false, adminAccess:false},
+  // SURVEYORS — warehouse view same as fitters
+  {name:'Dale',   role:'Surveyor', officeAccess:false, adminAccess:false},
+  {name:'Colin',  role:'Surveyor', officeAccess:false, adminAccess:false},
+  // OFFICE — get Office Dashboard, PIN required
+  {name:'Karen',  role:'Office',   officeAccess:true,  adminAccess:false},
+  {name:'Becky',  role:'Office',   officeAccess:true,  adminAccess:false},
+  {name:'Tia',    role:'Office',   officeAccess:true,  adminAccess:false},
+  {name:'Cheryl', role:'Office',   officeAccess:true,  adminAccess:false},
+  {name:'Debbie', role:'Office',   officeAccess:true,  adminAccess:false},
+  {name:'Claire', role:'Office',   officeAccess:true,  adminAccess:false},
+  {name:'Amy',    role:'Office',   officeAccess:true,  adminAccess:false},
+  // ADMIN — gets everything + Admin Panel
+  {name:'Sam',    role:'Admin',    officeAccess:true,  adminAccess:true},
+];
+
+// Default PINs — stored in localStorage so they can be changed per device
+// Format: { 'Becky': '1234', 'Tia': '5678', 'Sam': '0000' }
+const DEFAULT_PINS = {
+  'Karen':'1234','Becky':'1234','Tia':'1234','Cheryl':'1234',
+  'Debbie':'1234','Claire':'1234','Amy':'1234','Sam':'0000'
 };
 
 // ═══════════════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════════════
 let state = {
-  user: null,
-  role: null,
-  deliveries: [],
-  orders: {},       // keyed by containerID
-  pipeline: [],
-  filterSupplier: 'ALL',
-  currentContainer: null,
-  zoneTarget: null, // { containerID, orderRowID }
-  orderStates: {}   // orderRowID -> { status, zone, boxesReceived, partial }
+  user: null, role: null,
+  deliveries:[], orders:{}, pipeline:[],
+  filterSupplier:'ALL', currentContainer:null,
+  zoneTarget:null, orderStates:{},
+  wasPresent:true,
+  officeTab:'overview',
+  officeDashData: null,
+  pinCallback: null,
+  pinBuffer: '',
+  historyItems:[],
 };
-
-// ═══════════════════════════════════════════════════════════
-// USERS — loaded from sheet via API; fallback for demo
-// ═══════════════════════════════════════════════════════════
-const USERS = [
-  {name:'Miles', role:'Fitter'},
-  {name:'Chris', role:'Fitter'},
-  {name:'Matt',  role:'Fitter'},
-  {name:'Tom',   role:'Fitter'},
-  {name:'Harley',role:'Fitter'},
-  {name:'Dale',  role:'Surveyor'},
-  {name:'Colin', role:'Surveyor'},
-  {name:'Karen', role:'Office'},
-  {name:'Becky', role:'Office'},
-  {name:'Tia',   role:'Office'},
-  {name:'Cheryl',role:'Office'},
-  {name:'Debbie',role:'Office'},
-  {name:'Sam',   role:'Admin'},
-  {name:'Claire',role:'Office'},
-  {name:'Amy',   role:'Office'},
-];
 
 // ═══════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════
 window.addEventListener('DOMContentLoaded', () => {
   buildLoginScreen();
-  // Check for saved login
+  document.getElementById('homeDate').textContent =
+    new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+  // Load saved token
+  const savedToken = localStorage.getItem('cs_api_token');
+  if (savedToken) {
+    const inp = document.getElementById('tokenInput');
+    if (inp) inp.value = savedToken;
+  }
+  // Check saved login
   const saved = localStorage.getItem('cs_user');
   if (saved) {
     try {
       const u = JSON.parse(saved);
       state.user = u.name;
       state.role = u.role;
-      showHome();
+      routeAfterLogin(u);
     } catch(e) { buildLoginScreen(); }
   }
-  // Update date
-  document.getElementById('homeDate').textContent = new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
 });
 
 function buildLoginScreen() {
   const fGrid = document.getElementById('fitterGrid');
   const oGrid = document.getElementById('officeGrid');
-  fGrid.innerHTML = '';
-  oGrid.innerHTML = '';
-
+  fGrid.innerHTML = ''; oGrid.innerHTML = '';
   USERS.forEach(u => {
     const btn = document.createElement('button');
     btn.className = 'name-btn';
-    const roleLower = u.role.toLowerCase();
-    btn.innerHTML = `<span class="rdot ${roleLower}"></span>${u.name}`;
+    btn.innerHTML = `<span class="rdot ${u.role.toLowerCase()}"></span>${u.name}`;
     btn.onclick = () => selectUser(u.name, u.role, btn);
     if (['Fitter','Surveyor'].includes(u.role)) fGrid.appendChild(btn);
     else oGrid.appendChild(btn);
@@ -597,23 +814,43 @@ function buildLoginScreen() {
 function selectUser(name, role, btn) {
   document.querySelectorAll('.name-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
-  state.user = name;
-  state.role = role;
+  state.user = name; state.role = role;
   const lb = document.getElementById('loginBtn');
   lb.disabled = false;
   lb.textContent = `Continue as ${name}`;
 }
 
 function doLogin() {
-  localStorage.setItem('cs_user', JSON.stringify({name: state.user, role: state.role}));
-  showHome();
+  const userDef = USERS.find(u => u.name === state.user);
+  if (!userDef) return;
+  // Office/Admin need PIN
+  if (userDef.officeAccess || userDef.adminAccess) {
+    openPinOverlay(`PIN for ${state.user}`, () => {
+      localStorage.setItem('cs_user', JSON.stringify({name:state.user, role:state.role}));
+      routeAfterLogin(userDef);
+    });
+  } else {
+    localStorage.setItem('cs_user', JSON.stringify({name:state.user, role:state.role}));
+    routeAfterLogin(userDef);
+  }
+}
+
+function routeAfterLogin(userDef) {
+  const def = typeof userDef === 'object' ? userDef : USERS.find(u => u.name === userDef.name);
+  if (def && def.adminAccess) {
+    // Admin gets office dash by default, admin panel accessible from there
+    showOfficeDashboard();
+  } else if (def && def.officeAccess) {
+    showOfficeDashboard();
+  } else {
+    showHome();
+  }
 }
 
 function doLogout() {
   if (!confirm('Switch user?')) return;
   localStorage.removeItem('cs_user');
-  state.user = null;
-  state.role = null;
+  state.user = null; state.role = null;
   showScreen('login');
   document.querySelectorAll('.name-btn').forEach(b => b.classList.remove('selected'));
   const lb = document.getElementById('loginBtn');
@@ -622,16 +859,86 @@ function doLogout() {
 }
 
 // ═══════════════════════════════════════════════════════════
+// PIN SYSTEM
+// ═══════════════════════════════════════════════════════════
+function getPins() {
+  try {
+    return JSON.parse(localStorage.getItem('cs_pins') || '{}');
+  } catch(e) { return {}; }
+}
+
+function getUserPin(name) {
+  const stored = getPins();
+  return stored[name] || DEFAULT_PINS[name] || '1234';
+}
+
+function openPinOverlay(title, callback) {
+  state.pinBuffer = '';
+  state.pinCallback = callback;
+  document.getElementById('pinTitle').textContent = title;
+  document.getElementById('pinSubText').textContent = 'Enter your 4-digit PIN';
+  updatePinDots('');
+  document.getElementById('pinOverlay').classList.add('open');
+}
+
+function closePinOverlay() {
+  document.getElementById('pinOverlay').classList.remove('open');
+  state.pinBuffer = '';
+  state.pinCallback = null;
+}
+
+function pinKey(digit) {
+  if (state.pinBuffer.length >= 4) return;
+  state.pinBuffer += digit;
+  updatePinDots(state.pinBuffer);
+  if (state.pinBuffer.length === 4) {
+    setTimeout(() => checkPin(), 150);
+  }
+}
+
+function pinDel() {
+  state.pinBuffer = state.pinBuffer.slice(0,-1);
+  updatePinDots(state.pinBuffer);
+}
+
+function updatePinDots(val, error) {
+  for (let i=0;i<4;i++) {
+    const d = document.getElementById('pd'+i);
+    d.className = 'pin-dot';
+    if (error) d.classList.add('error');
+    else if (i < val.length) d.classList.add('filled');
+  }
+}
+
+function checkPin() {
+  const correct = getUserPin(state.user);
+  if (state.pinBuffer === correct) {
+    document.getElementById('pinOverlay').classList.remove('open');
+    if (state.pinCallback) { state.pinCallback(); state.pinCallback = null; }
+    state.pinBuffer = '';
+  } else {
+    updatePinDots('xxxx', true);
+    state.pinBuffer = '';
+    setTimeout(() => updatePinDots(''), 800);
+    showToast('Incorrect PIN — try again', 'error');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════════════════════
 function showScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + name).classList.add('active');
+  const el = document.getElementById('screen-'+name);
+  if (el) el.classList.add('active');
 }
 
 function showHome() {
+  const userDef = USERS.find(u => u.name === state.user);
+  // If office/admin user tries to go "home", send them to dashboard
+  if (userDef && userDef.officeAccess) { showOfficeDashboard(); return; }
   showScreen('home');
-  document.getElementById('homeGreeting').textContent = getGreeting() + ', ' + state.user;
+  document.getElementById('homeGreeting').textContent = getGreeting()+', '+state.user;
   document.getElementById('homeTitle').textContent = state.user || 'Home';
   loadStats();
 }
@@ -641,53 +948,9 @@ function showDeliveries() {
   loadDeliveries();
 }
 
-function showDeliveriesFiltered(status) {
+function showDeliveriesFiltered() {
   showScreen('unzoned');
   loadUnzonedJobs();
-}
-
-async function loadUnzonedJobs() {
-  const list = document.getElementById('unzonedList');
-  list.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
-  try {
-    const data = await apiFetch('getUnzonedOrders');
-    const orders = data.orders || [];
-    if (!orders.length) {
-      list.innerHTML = '<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-text">All orders zoned!</div><div class="empty-sub">Nothing needs zoning right now</div></div>';
-      return;
-    }
-    list.innerHTML = orders.map(o => {
-      const supClass = o.supplier === 'S:CRAFT' ? 'sb-sc' : o.supplier === 'TROPICAL' ? 'sb-tr' : 'sb-my';
-      return `<div class="order-row" style="margin-bottom:10px">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
-          <div>
-            <div class="order-ref">${o.customerRef}</div>
-            <div class="order-name" style="font-size:16px;font-weight:700">${o.customerName}</div>
-          </div>
-          <div style="text-align:right">
-            <div class="sup-badge ${supClass}">${o.supplier}</div>
-            <div style="font-size:11px;color:var(--text3);margin-top:3px">Container ${o.containerID}</div>
-          </div>
-        </div>
-        <div style="font-size:12px;color:var(--text2);margin-bottom:10px">
-          Boxes: <span style="color:var(--text);font-weight:700">${o.boxesShipped}</span>
-          &nbsp;·&nbsp; Arrived: <span style="color:var(--text)">${o.arrivedDate || '—'}</span>
-        </div>
-        <button class="assign-zone-btn" style="width:100%" onclick="openZonePickerForUnzoned('${o.orderRowID}','${o.customerName}','${o.containerID}')">📍 Assign Zone</button>
-      </div>`;
-    }).join('');
-  } catch(e) {
-    list.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Could not load orders</div></div>';
-  }
-}
-
-function openZonePickerForUnzoned(orderRowID, customerName, containerID) {
-  state.currentContainer = containerID;
-  if (!state.orderStates[orderRowID]) state.orderStates[orderRowID] = { zone: '', status: 'pending' };
-  state.zoneTarget = { orderRowID, isEdit: false, fromUnzoned: true };
-  document.getElementById('zoneSub').textContent = 'Assign zone for ' + customerName;
-  document.getElementById('zoneGrid').innerHTML = buildWarehouseGrid('');
-  document.getElementById('zoneOverlay').classList.add('open');
 }
 
 function showPipeline() {
@@ -697,221 +960,771 @@ function showPipeline() {
 
 function getGreeting() {
   const h = new Date().getHours();
-  if (h < 12) return 'Good morning';
-  if (h < 17) return 'Good afternoon';
+  if (h<12) return 'Good morning';
+  if (h<17) return 'Good afternoon';
   return 'Good evening';
 }
 
 // ═══════════════════════════════════════════════════════════
-// DATA — calls Apps Script Web App
+// API
 // ═══════════════════════════════════════════════════════════
-async function apiFetch(action, params = {}) {
-  if (!CONFIG.WEB_APP_URL || CONFIG.WEB_APP_URL.indexOf('script.google.com') === -1) {
+function getToken() {
+  return localStorage.getItem('cs_api_token') || '';
+}
+
+async function apiFetch(action, params={}) {
+  if (!CONFIG.WEB_APP_URL || CONFIG.WEB_APP_URL.indexOf('script.google.com')===-1) {
     return getMockData(action, params);
   }
   const url = new URL(CONFIG.WEB_APP_URL);
   url.searchParams.set('action', action);
-  Object.entries(params).forEach(([k,v]) => url.searchParams.set(k, v));
+  url.searchParams.set('token', getToken());
+  Object.entries(params).forEach(([k,v])=>url.searchParams.set(k,v));
   const res = await fetch(url.toString());
   return res.json();
 }
 
-async function apiPost(action, body = {}) {
-  if (!CONFIG.WEB_APP_URL || CONFIG.WEB_APP_URL.indexOf('script.google.com') === -1) {
-    return { success: true, mock: true };
+async function apiPost(action, body={}) {
+  if (!CONFIG.WEB_APP_URL || CONFIG.WEB_APP_URL.indexOf('script.google.com')===-1) {
+    return {success:true, mock:true};
   }
   const url = new URL(CONFIG.WEB_APP_URL);
   url.searchParams.set('action', action);
+  url.searchParams.set('token', getToken());
   url.searchParams.set('data', JSON.stringify(body));
   const res = await fetch(url.toString());
   return res.json();
 }
 
-// ── MOCK DATA (used until Apps Script is deployed) ──
-function getMockData(action) {
-  if (action === 'getDeliveries') {
-    return { deliveries: [
-      { containerID:'AOA-29', supplier:'S:CRAFT', status:'CONFIRMED DELIVERY',
-        confirmedDelDate:'09/04/2026', expectedBoxes:3, orderCount:3, zonedCount:0 },
-      { containerID:'AOS-1110', supplier:'S:CRAFT', status:'ARRIVED',
-        confirmedDelDate:'08/04/2026', expectedBoxes:91, orderCount:11, zonedCount:4 },
-      { containerID:'CONT-26023', supplier:'TROPICAL', status:'CONFIRMED DELIVERY',
-        confirmedDelDate:'10/04/2026', expectedBoxes:9, orderCount:1, zonedCount:0 },
-    ]};
+// ═══════════════════════════════════════════════════════════
+// MOCK DATA
+// ═══════════════════════════════════════════════════════════
+function getMockData(action, params={}) {
+  if (action==='getDeliveries') return { deliveries:[
+    {containerID:'AOA-29',supplier:'S:CRAFT',status:'CONFIRMED DELIVERY',confirmedDelDate:'09/04/2026',expectedBoxes:3,orderCount:3,zonedCount:0},
+    {containerID:'AOS-1110',supplier:'S:CRAFT',status:'ARRIVED',confirmedDelDate:'08/04/2026',expectedBoxes:91,orderCount:11,zonedCount:4},
+    {containerID:'CONT-26023',supplier:'TROPICAL',status:'CONFIRMED DELIVERY',confirmedDelDate:'10/04/2026',expectedBoxes:9,orderCount:1,zonedCount:0},
+  ]};
+  if (action==='getOrders') return { orders:[
+    {orderRowID:'ORD-0001',customerRef:'5060',customerName:'Gary Knight',boxesShipped:1,status:'IN TRANSIT',zoneAssigned:'',isRemake:'N'},
+    {orderRowID:'ORD-0002',customerRef:'5970',customerName:'Veronica Dunn',boxesShipped:1,status:'IN TRANSIT',zoneAssigned:'',isRemake:'N'},
+    {orderRowID:'ORD-0003',customerRef:'5952',customerName:'Mark Billington',boxesShipped:1,status:'IN TRANSIT',zoneAssigned:'5',isRemake:'N'},
+  ]};
+  if (action==='getPipeline') return { pipeline:[
+    {containerID:'AOS-1107',supplier:'S:CRAFT',status:'ON VESSEL',etaDate:'11/05/2026',orderCount:13,expectedBoxes:204},
+    {containerID:'AOS-1104',supplier:'S:CRAFT',status:'ON VESSEL',etaDate:'20/04/2026',orderCount:4,expectedBoxes:38},
+    {containerID:'CONT-26021',supplier:'TROPICAL',status:'LEFT PORT',etaDate:'20/05/2026',orderCount:8,expectedBoxes:102},
+  ]};
+  if (action==='getStats') return {deliveriesNeeding:3,boxesInWarehouse:247,unzoned:18,pipeline:8};
+  if (action==='getHistory') return { history:[
+    {containerID:'AOS-1108',supplier:'S:CRAFT',status:'FULLY ZONED',confirmedDelDate:'01/04/2026',actualArrivalDate:'02/04/2026',expectedBoxes:44,orderCount:6,zonedCount:6},
+    {containerID:'CONT-26020',supplier:'TROPICAL',status:'FULLY ZONED',confirmedDelDate:'28/03/2026',actualArrivalDate:'28/03/2026',expectedBoxes:12,orderCount:2,zonedCount:2},
+  ]};
+  if (action==='getOfficeDashboard') return {
+    kpi:{ containersActive:4, ordersInTransit:22, ordersUnzoned:18, fitDatesAtRisk:2, damageOpen:1, overnightStock:0, deadStock:3, pipelineCount:8 },
+    alerts:[
+      {type:'red',icon:'⚠️',title:'2 fit dates at risk',sub:'Stock arriving after confirmed fit date — action needed'},
+      {type:'amber',icon:'📦',title:'3 orders dead stock',sub:'Zoned for 21+ days with no fitting booked'},
+      {type:'blue',icon:'🚢',title:'AOS-1104 arriving 20 Apr',sub:'4 orders, 38 boxes — confirmed delivery'},
+    ],
+    containers:[
+      {containerID:'AOA-29',supplier:'S:CRAFT',status:'CONFIRMED DELIVERY',confirmedDelDate:'09/04/2026',expectedBoxes:3,orderCount:3,zonedCount:0,damageCount:0,fitRisk:0,overnight:false},
+      {containerID:'AOS-1110',supplier:'S:CRAFT',status:'ARRIVED',confirmedDelDate:'08/04/2026',expectedBoxes:91,orderCount:11,zonedCount:4,damageCount:1,fitRisk:1,overnight:false},
+      {containerID:'CONT-26023',supplier:'TROPICAL',status:'CONFIRMED DELIVERY',confirmedDelDate:'10/04/2026',expectedBoxes:9,orderCount:1,zonedCount:0,damageCount:0,fitRisk:1,overnight:false},
+      {containerID:'AOS-1104',supplier:'S:CRAFT',status:'ON VESSEL',etaDate:'20/04/2026',expectedBoxes:38,orderCount:4,zonedCount:0,damageCount:0,fitRisk:0,overnight:false},
+    ],
+    damage:[
+      {orderRowID:'ORD-0042',customerRef:'5800',customerName:'James Holden',containerID:'AOS-1110',damageType:'MISSING',boxesShipped:3,boxesReceived:2,fitterName:'Miles',timestamp:'08/04/2026 09:14',photoURL:''},
+    ],
+    fitOrders:[
+      {orderRowID:'ORD-0010',customerRef:'5890',customerName:'Sarah Phillips',containerID:'AOS-1110',fitDate:'14/04/2026',fitters:2,jobType:'2MF',zone:'B3',bookingStatus:'READY TO BOOK',fitRisk:false},
+      {orderRowID:'ORD-0011',customerRef:'5720',customerName:'David Clarke',containerID:'CONT-26023',fitDate:'10/04/2026',fitters:1,jobType:'1MF',zone:'',bookingStatus:'AWAITING STOCK',fitRisk:true},
+      {orderRowID:'ORD-0012',customerRef:'5650',customerName:'Emma Watson',containerID:'AOS-1110',fitDate:'17/04/2026',fitters:1,jobType:'1MF',zone:'A2',bookingStatus:'BOOKED',fitRisk:false},
+      {orderRowID:'ORD-0013',customerRef:'5501',customerName:'Robert Green',containerID:'AOS-1104',fitDate:'22/04/2026',fitters:2,jobType:'2MF',zone:'',bookingStatus:'AWAITING STOCK',fitRisk:false},
+    ],
+  };
+  if (action==='searchOrders') {
+    const q = (params.q||'').toLowerCase();
+    return { orders:[
+      {orderRowID:'ORD-0042',customerRef:'5800',customerName:'James Holden',supplier:'S:CRAFT',containerID:'AOS-1110',boxesShipped:3,status:'ARRIVED',zoneAssigned:'C2',bookingStatus:'READY TO BOOK',damageFlag:'Y',damageType:'MISSING',notes:'1 box missing on arrival'},
+    ].filter(o=>o.customerName.toLowerCase().includes(q)||o.customerRef.includes(q)||o.containerID.toLowerCase().includes(q))};
   }
-  if (action === 'getOrders') {
-    return { orders: [
-      { orderRowID:'ORD-0001', customerRef:'5060', customerName:'Gary Knight', boxesShipped:1, status:'IN TRANSIT', zoneAssigned:'', isRemake:'N' },
-      { orderRowID:'ORD-0002', customerRef:'5970', customerName:'(A) Veronica Dunn', boxesShipped:1, status:'IN TRANSIT', zoneAssigned:'', isRemake:'N' },
-      { orderRowID:'ORD-0003', customerRef:'5952', customerName:'Mark Billington', boxesShipped:1, status:'IN TRANSIT', zoneAssigned:'5', isRemake:'N' },
-    ]};
-  }
-  if (action === 'getPipeline') {
-    return { pipeline: [
-      { containerID:'AOS-1107', supplier:'S:CRAFT', status:'ON VESSEL', etaDate:'11/05/2026', orderCount:13, expectedBoxes:204 },
-      { containerID:'AOS-1104', supplier:'S:CRAFT', status:'ON VESSEL', etaDate:'20/04/2026', orderCount:4, expectedBoxes:38 },
-      { containerID:'CONT-26021', supplier:'TROPICAL', status:'LEFT PORT', etaDate:'20/05/2026', orderCount:8, expectedBoxes:102 },
-    ]};
-  }
-  if (action === 'getStats') {
-    return { deliveriesNeeding:3, boxesInWarehouse:247, unzoned:18, pipeline:8 };
-  }
+  if (action==='getUnzonedOrders') return { orders:[
+    {orderRowID:'ORD-0001',customerRef:'5060',customerName:'Gary Knight',supplier:'S:CRAFT',containerID:'AOA-29',boxesShipped:1,arrivedDate:'09/04/2026'},
+    {orderRowID:'ORD-0002',customerRef:'5970',customerName:'Veronica Dunn',supplier:'S:CRAFT',containerID:'AOS-1110',boxesShipped:2,arrivedDate:'08/04/2026'},
+  ]};
   return {};
 }
 
 // ═══════════════════════════════════════════════════════════
-// STATS
+// STATS (fitter home)
 // ═══════════════════════════════════════════════════════════
 async function loadStats() {
   try {
     const data = await apiFetch('getStats');
-    document.getElementById('statDeliveries').textContent = data.deliveriesNeeding ?? '—';
-    document.getElementById('statBoxes').textContent = data.boxesInWarehouse ?? '—';
-    document.getElementById('statUnzoned').textContent = data.unzoned ?? '—';
-    document.getElementById('statPipeline').textContent = data.pipeline ?? '—';
-    document.getElementById('deliveryBadge').textContent = data.deliveriesNeeding ?? '0';
-    document.getElementById('pipelineBadge').textContent = data.pipeline ?? '0';
+    document.getElementById('statDeliveries').textContent = data.deliveriesNeeding??'—';
+    document.getElementById('statBoxes').textContent = data.boxesInWarehouse??'—';
+    document.getElementById('statUnzoned').textContent = data.unzoned??'—';
+    document.getElementById('statPipeline').textContent = data.pipeline??'—';
+    document.getElementById('deliveryBadge').textContent = data.deliveriesNeeding??'0';
+    document.getElementById('pipelineBadge').textContent = data.pipeline??'0';
     const nb = document.getElementById('navBadge');
-    if (data.deliveriesNeeding > 0) { nb.textContent = data.deliveriesNeeding; nb.style.display = 'block'; }
-    else { nb.style.display = 'none'; }
-  } catch(e) { console.error('Stats error:', e); }
+    if (data.deliveriesNeeding>0){nb.textContent=data.deliveriesNeeding;nb.style.display='block';}
+    else nb.style.display='none';
+  } catch(e){console.error('Stats error:',e);}
 }
 
 // ═══════════════════════════════════════════════════════════
-// DELIVERIES LIST
+// OFFICE DASHBOARD
 // ═══════════════════════════════════════════════════════════
-async function loadDeliveries() {
-  const list = document.getElementById('deliveriesList');
-  list.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+function showOfficeDashboard() {
+  const userDef = USERS.find(u=>u.name===state.user);
+  document.getElementById('officeTitle').textContent = getGreeting()+', '+state.user;
+  document.getElementById('officeSubtitle').textContent = new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+  // Show admin tab if admin
+  if (userDef && userDef.adminAccess) {
+    const tabs = document.getElementById('officeTabs');
+    if (!tabs.querySelector('[data-admin]')) {
+      const t = document.createElement('div');
+      t.className='office-tab';
+      t.setAttribute('data-admin','1');
+      t.innerHTML='⚙️ Admin';
+      t.onclick=()=>showAdminPanel();
+      tabs.appendChild(t);
+    }
+  }
+  showScreen('office');
+  showOfficeTab('overview', document.querySelector('.office-tab.active'));
+}
+
+function showOfficeTab(tab, el) {
+  state.officeTab = tab;
+  document.querySelectorAll('.office-tab').forEach(t=>t.classList.remove('active'));
+  if (el) el.classList.add('active');
+  refreshOfficeDash();
+}
+
+async function refreshOfficeDash() {
+  const body = document.getElementById('officeDashBody');
+  body.innerHTML='<div class="loading"><div class="spinner"></div>Loading…</div>';
   try {
-    const data = await apiFetch('getDeliveries');
-    state.deliveries = data.deliveries || [];
-    renderDeliveriesList();
-    return state.deliveries;
+    const data = await apiFetch('getOfficeDashboard');
+    state.officeDashData = data;
+    renderOfficeTab(state.officeTab, data);
   } catch(e) {
-    list.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Could not load deliveries</div><div class="empty-sub">Check connection and try again</div></div>';
+    body.innerHTML='<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Could not load dashboard</div><div class="empty-sub">Check connection</div></div>';
   }
 }
 
-function filterDeliveries(supplier, chip) {
-  state.filterSupplier = supplier;
-  state.filterStatus = null; // clear any status filter
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+function renderOfficeTab(tab, data) {
+  const body = document.getElementById('officeDashBody');
+  switch(tab) {
+    case 'overview':  body.innerHTML = renderOfficeOverview(data); break;
+    case 'status':    body.innerHTML = renderOfficeStatus(data); break;
+    case 'fitdates':  body.innerHTML = renderOfficeFitDates(data); break;
+    case 'damage':    body.innerHTML = renderOfficeDamage(data); break;
+    case 'search':    body.innerHTML = renderOfficeSearch(); break;
+    case 'archive':   body.innerHTML = renderOfficeArchive(); break;
+    default: body.innerHTML='';
+  }
+}
+
+// ── OVERVIEW TAB ──────────────────────────────────────────
+function renderOfficeOverview(data) {
+  const k = data.kpi || {};
+  const alerts = data.alerts || [];
+  return `
+  <!-- KPI Strip -->
+  <div class="kpi-strip">
+    <div class="kpi-cell blue"><div class="kpi-val">${k.containersActive??'—'}</div><div class="kpi-lbl">Active Containers</div></div>
+    <div class="kpi-cell amber"><div class="kpi-val">${k.ordersUnzoned??'—'}</div><div class="kpi-lbl">Unzoned</div></div>
+    <div class="kpi-cell ${k.fitDatesAtRisk>0?'red':'green'}"><div class="kpi-val">${k.fitDatesAtRisk??'—'}</div><div class="kpi-lbl">Fit Dates At Risk</div></div>
+    <div class="kpi-cell purple"><div class="kpi-val">${k.pipelineCount??'—'}</div><div class="kpi-lbl">In Transit</div></div>
+  </div>
+  <div class="kpi-strip" style="margin-top:1px">
+    <div class="kpi-cell ${k.damageOpen>0?'red':'green'}"><div class="kpi-val">${k.damageOpen??'0'}</div><div class="kpi-lbl">Open Damage</div></div>
+    <div class="kpi-cell ${k.overnightStock>0?'amber':'green'}"><div class="kpi-val">${k.overnightStock??'0'}</div><div class="kpi-lbl">On Van Overnight</div></div>
+    <div class="kpi-cell ${k.deadStock>0?'amber':'green'}"><div class="kpi-val">${k.deadStock??'0'}</div><div class="kpi-lbl">Dead Stock</div></div>
+    <div class="kpi-cell blue"><div class="kpi-val">${k.ordersInTransit??'—'}</div><div class="kpi-lbl">In Transit</div></div>
+  </div>
+
+  <!-- Alerts -->
+  <div style="margin-top:16px">
+    <div class="section-title">🔔 Alerts Needing Attention</div>
+    ${alerts.length ? alerts.map((a,i)=>`
+    <div class="alert-banner ${a.type}">
+      <div class="alert-icon">${a.icon}</div>
+      <div class="alert-text">
+        <div class="alert-title">${a.title}</div>
+        <div class="alert-sub">${a.sub}</div>
+      </div>
+      <div class="alert-dismiss" onclick="this.closest('.alert-banner').style.display='none'">✕</div>
+    </div>`).join('') : `<div style="font-size:13px;color:var(--text3);padding:12px 0">✅ No alerts — all clear!</div>`}
+  </div>
+
+  <!-- Quick nav to other tabs -->
+  <div style="margin-top:16px">
+    <div class="section-title">Quick Access</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div class="action-card" style="margin-bottom:0" onclick="showOfficeTab('status',document.querySelectorAll('.office-tab')[1])">
+        <div class="action-icon blue">🏭</div>
+        <div><div class="action-text-main">Status Board</div><div class="action-text-sub">All active containers</div></div>
+      </div>
+      <div class="action-card" style="margin-bottom:0" onclick="showOfficeTab('fitdates',document.querySelectorAll('.office-tab')[2])">
+        <div class="action-icon green">📅</div>
+        <div><div class="action-text-main">Fit Dates</div><div class="action-text-sub">Scheduling view</div></div>
+      </div>
+      <div class="action-card" style="margin-bottom:0" onclick="showOfficeTab('damage',document.querySelectorAll('.office-tab')[3])">
+        <div class="action-icon orange">⚠️</div>
+        <div><div class="action-text-main">Damage Alerts</div><div class="action-text-sub">${k.damageOpen??0} open</div></div>
+      </div>
+      <div class="action-card" style="margin-bottom:0" onclick="showOfficeTab('search',document.querySelectorAll('.office-tab')[4])">
+        <div class="action-icon purple">🔍</div>
+        <div><div class="action-text-main">Search</div><div class="action-text-sub">Find any order</div></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── STATUS BOARD TAB ──────────────────────────────────────
+function renderOfficeStatus(data) {
+  const containers = data.containers || [];
+  if (!containers.length) return '<div class="empty-state"><div class="empty-icon">🏭</div><div class="empty-text">No active containers</div></div>';
+
+  const statusOrder = ['ARRIVED','CONFIRMED DELIVERY','ON VESSEL','LEFT PORT','ORDER PLACED'];
+  const sorted = [...containers].sort((a,b)=>statusOrder.indexOf(a.status)-statusOrder.indexOf(b.status));
+
+  return `<div class="section-title">All Active Containers</div>
+  <div class="status-board">
+  ${sorted.map(c=>{
+    const pct = c.orderCount>0 ? Math.round((c.zonedCount/c.orderCount)*100):0;
+    const pillClass = c.status==='ARRIVED'?'pill-arrived':c.status==='CONFIRMED DELIVERY'?'pill-confirmed':c.status==='FULLY ZONED'?'pill-zoned':'pill-transit';
+    const supClass = c.supplier==='S:CRAFT'?'sb-sc':c.supplier==='TROPICAL'?'sb-tr':'sb-my';
+    const dateLabel = ['ARRIVED','CONFIRMED DELIVERY','FULLY ZONED'].includes(c.status)?'Del. Date':'ETA';
+    const dateVal = c.confirmedDelDate||c.etaDate||'TBC';
+    const progColor = pct===100?'green':pct>50?'amber':'red';
+    return `<div class="sb-card" onclick="officeShowContainerOrders('${c.containerID}')">
+      <div class="sb-card-top">
+        <div class="sb-card-left">
+          <div class="sb-card-id">Container ${c.containerID}</div>
+          <div class="sb-card-meta">${c.supplier} · ${c.orderCount} orders · ${c.expectedBoxes} boxes · ${dateLabel}: ${dateVal}</div>
+        </div>
+        <div class="sb-card-right">
+          <div class="sb-status-pill ${pillClass}">${c.status}</div><br>
+          <div class="sup-badge ${supClass}" style="font-size:10px">${c.supplier}</div>
+        </div>
+      </div>
+      ${c.orderCount>0?`<div class="sb-card-progress">
+        <div class="prog-row">
+          <div style="font-size:11px;color:var(--text2);min-width:50px">Zoned</div>
+          <div class="prog-bar-bg"><div class="prog-bar-fill ${progColor}" style="width:${pct}%"></div></div>
+          <div class="prog-label">${c.zonedCount}/${c.orderCount}</div>
+        </div>
+      </div>`:''}
+      ${(c.damageCount>0||c.fitRisk>0||c.overnight)?`<div class="sb-card-flags">
+        ${c.damageCount>0?`<div class="flag-chip damage">⚠ ${c.damageCount} damage</div>`:''}
+        ${c.fitRisk>0?`<div class="flag-chip risk">📅 ${c.fitRisk} fit risk</div>`:''}
+        ${c.overnight?`<div class="flag-chip overnight">🚐 Overnight on van</div>`:''}
+      </div>`:''}
+    </div>`;
+  }).join('')}
+  </div>`;
+}
+
+// ── FIT DATES TAB ─────────────────────────────────────────
+function renderOfficeFitDates(data) {
+  const orders = data.fitOrders || [];
+  if (!orders.length) return '<div class="empty-state"><div class="empty-icon">📅</div><div class="empty-text">No fit dates loaded</div><div class="empty-sub">CS_DATA_LINK sync needed</div></div>';
+
+  // Build date strip from orders
+  const today = new Date(); today.setHours(0,0,0,0);
+  const dates = {};
+  orders.forEach(o=>{
+    if (!o.fitDate) return;
+    const [d,m,y] = o.fitDate.split('/');
+    const key = `${y}-${m}-${d}`;
+    dates[key] = (dates[key]||0)+1;
+  });
+
+  // Generate 14-day strip
+  const stripDays = [];
+  for(let i=-2;i<12;i++){
+    const d = new Date(today);
+    d.setDate(today.getDate()+i);
+    const key = d.toISOString().slice(0,10);
+    const isToday = i===0;
+    const isPast = i<0;
+    const count = dates[key]||0;
+    stripDays.push({d,key,isToday,isPast,count});
+  }
+
+  // Sort orders by fit date
+  const sorted = [...orders].sort((a,b)=>{
+    const da = a.fitDate?a.fitDate.split('/').reverse().join(''):'99999999';
+    const db = b.fitDate?b.fitDate.split('/').reverse().join(''):'99999999';
+    return da.localeCompare(db);
+  });
+
+  return `
+  <!-- Date strip -->
+  <div class="fit-date-strip">
+    ${stripDays.map(s=>{
+      const isPast = s.isPast;
+      const cls = s.isToday?'today':isPast?'':s.count>0?'has-jobs':'';
+      const isOverdue = isPast && s.count>0;
+      return `<div class="fdc ${cls} ${isOverdue?'overdue':''}">
+        <div class="fdc-day">${s.d.toLocaleDateString('en-GB',{weekday:'short'})}</div>
+        <div class="fdc-date" style="color:${s.isToday?'var(--accent)':isOverdue?'var(--dash-red)':'var(--text)'}">${s.d.getDate()}</div>
+        <div class="fdc-count">${s.count>0?s.count+' job'+(s.count>1?'s':''):''}</div>
+      </div>`;
+    }).join('')}
+  </div>
+
+  <div class="section-title">All Active Fit Dates</div>
+  ${sorted.map(o=>{
+    const today2 = new Date(); today2.setHours(0,0,0,0);
+    let fitD = null;
+    if (o.fitDate) { const [dd,mm,yy]=o.fitDate.split('/'); fitD=new Date(yy,mm-1,dd); }
+    const isRisk = o.fitRisk;
+    const isPast = fitD && fitD < today2;
+    const bookColor = o.bookingStatus==='BOOKED'?'green':o.bookingStatus==='READY TO BOOK'?'blue':o.bookingStatus==='AWAITING STOCK'?'':o.bookingStatus==='ON HOLD — DAMAGED'?'red':'';
+    return `<div class="office-order-row" style="${isRisk?'border-color:rgba(255,71,87,.4);background:rgba(255,71,87,.04)':''}">
+      <div class="oor-top">
+        <div>
+          <div class="oor-ref">${o.customerRef}</div>
+          <div class="oor-name">${o.customerName}</div>
+        </div>
+        <div class="oor-right">
+          <div class="oor-container">Container ${o.containerID}</div>
+          <div style="font-size:12px;font-weight:700;color:${isPast?'var(--dash-red)':isRisk?'var(--dash-amber)':'var(--accent2)'}">📅 ${o.fitDate||'TBC'}</div>
+        </div>
+      </div>
+      <div class="oor-meta">
+        <div>Fitters: <span>${o.fitters||'—'}</span></div>
+        <div>Type: <span>${o.jobType||'—'}</span></div>
+        <div>Zone: <span>${o.zone||'Not zoned'}</span></div>
+        <div>Booking: <span class="${bookColor}">${o.bookingStatus||'—'}</span></div>
+        ${isRisk?'<div><span class="red">⚠ FIT DATE AT RISK</span></div>':''}
+        ${isPast?'<div><span class="red">⚠ FIT DATE PASSED</span></div>':''}
+      </div>
+    </div>`;
+  }).join('')}`;
+}
+
+// ── DAMAGE TAB ────────────────────────────────────────────
+function renderOfficeDamage(data) {
+  const items = data.damage || [];
+  return `
+  <div class="section-title">Open Damage &amp; Discrepancy Alerts</div>
+  ${!items.length
+    ? '<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-text">No open damage alerts</div><div class="empty-sub">All discrepancies resolved</div></div>'
+    : items.map(d=>`
+  <div class="damage-item">
+    <div class="damage-item-top">
+      <div>
+        <div class="damage-item-name">${d.customerName}</div>
+        <div class="damage-item-ref">${d.customerRef} · Container ${d.containerID}</div>
+      </div>
+      <div class="damage-type-badge">${d.damageType}</div>
+    </div>
+    <div class="damage-item-meta">
+      Logged by ${d.fitterName} at ${d.timestamp}<br>
+      Boxes shipped: ${d.boxesShipped} · Boxes received: ${d.boxesReceived}
+      ${d.photoURL?`<br><a href="${d.photoURL}" target="_blank" style="color:var(--accent);font-weight:700">📷 View Photo</a>`:'<br><span style="color:var(--text3)">No photo uploaded</span>'}
+    </div>
+    <div class="damage-actions">
+      <button class="da-btn primary" onclick="officeResolveDamage('${d.orderRowID}')">✓ Mark Resolved</button>
+      <button class="da-btn" onclick="showToast('Supplier claim feature coming soon','')">📋 Log Claim</button>
+    </div>
+  </div>`).join('')}`;
+}
+
+// ── SEARCH TAB (Office) ───────────────────────────────────
+function renderOfficeSearch() {
+  return `
+  <div class="search-input-wrap">
+    <input type="text" id="officeSearchInput" class="search-input" placeholder="Customer name, SM8 ref, container ID…" oninput="officeDoSearch(this.value)">
+    <button class="search-btn" onclick="officeDoSearch(document.getElementById('officeSearchInput').value)">🔍</button>
+  </div>
+  <div id="officeSearchResults">
+    <div class="empty-state" style="padding:24px 0">
+      <div class="empty-icon">🔍</div>
+      <div class="empty-text">Type to search</div>
+      <div class="empty-sub">Search across all orders, containers and customer refs</div>
+    </div>
+  </div>`;
+}
+
+let officeSearchTimer = null;
+function officeDoSearch(q) {
+  clearTimeout(officeSearchTimer);
+  const res = document.getElementById('officeSearchResults');
+  if (!res) return;
+  if (!q||q.length<2) {
+    res.innerHTML='<div class="empty-state" style="padding:24px 0"><div class="empty-icon">🔍</div><div class="empty-text">Type to search</div></div>';
+    return;
+  }
+  officeSearchTimer = setTimeout(async()=>{
+    res.innerHTML='<div class="loading"><div class="spinner"></div>Searching…</div>';
+    try {
+      const data = await apiFetch('searchOrders',{q});
+      const orders = data.orders||[];
+      if (!orders.length) { res.innerHTML='<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">No results</div></div>'; return; }
+      res.innerHTML = orders.map(o=>{
+        const supClass=o.supplier==='S:CRAFT'?'sb-sc':o.supplier==='TROPICAL'?'sb-tr':'sb-my';
+        const bookColor=o.bookingStatus==='BOOKED'?'var(--accent2)':o.bookingStatus==='READY TO BOOK'?'var(--accent)':'var(--text2)';
+        return `<div class="office-order-row">
+          <div class="oor-top">
+            <div><div class="oor-ref">${o.customerRef}</div><div class="oor-name">${o.customerName}</div></div>
+            <div class="oor-right"><div class="sup-badge ${supClass}">${o.supplier}</div><div class="oor-container">Container ${o.containerID}</div></div>
+          </div>
+          <div class="oor-meta">
+            <div>Status: <span style="color:var(--accent2)">${o.status}</span></div>
+            <div>Zone: <span>${o.zoneAssigned||'Not zoned'}</span></div>
+            <div>Booking: <span style="color:${bookColor}">${o.bookingStatus||'—'}</span></div>
+            <div>Boxes: <span>${o.boxesShipped}</span></div>
+            ${o.damageFlag==='Y'?'<div><span style="color:var(--dash-red)">⚠ '+o.damageType+'</span></div>':''}
+          </div>
+          ${o.notes?`<div style="margin-top:8px;font-size:12px;color:var(--text2);padding:8px;background:var(--surface2);border-radius:8px">📝 ${o.notes}</div>`:''}
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+            <button class="edit-zone-btn" onclick="officeEditZone('${o.orderRowID}','${o.customerName}','${o.containerID}','${o.zoneAssigned||''}')">📍 ${o.zoneAssigned?'Edit Zone':'Assign Zone'}</button>
+            <button class="edit-zone-btn" style="border-color:var(--info);color:var(--info)" onclick="officeEditNotes('${o.orderRowID}','${o.containerID}','${(o.notes||'').replace(/'/g,"\\'")}')">📝 Notes</button>
+            ${o.damageFlag==='Y'?`<button class="edit-zone-btn" style="border-color:var(--dash-green);color:var(--dash-green)" onclick="officeResolveDamage('${o.orderRowID}')">✓ Resolve Damage</button>`:''}
+          </div>
+        </div>`;
+      }).join('');
+    } catch(e) { res.innerHTML='<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Search failed</div></div>'; }
+  },400);
+}
+
+// ── ARCHIVE TAB ───────────────────────────────────────────
+function renderOfficeArchive() {
+  return `
+  <div class="section-title">Archive Search</div>
+  <div class="search-input-wrap">
+    <input type="text" id="archiveInput" class="search-input" placeholder="Customer ref, container ID, SM8 number…" oninput="archiveSearch(this.value)">
+    <button class="search-btn" onclick="archiveSearch(document.getElementById('archiveInput').value)">🔍</button>
+  </div>
+  <div id="archiveResults">
+    <div style="font-size:12px;color:var(--text3);padding:8px 0 16px">Search the full EVENT_LOG history — every status change, delivery, fitter action and alert ever recorded.</div>
+    <div class="empty-state" style="padding:24px 0">
+      <div class="empty-icon">📋</div>
+      <div class="empty-text">Full audit trail</div>
+      <div class="empty-sub">Search by customer ref or container to see complete history</div>
+    </div>
+  </div>`;
+}
+
+let archiveTimer = null;
+function archiveSearch(q) {
+  clearTimeout(archiveTimer);
+  const res = document.getElementById('archiveResults');
+  if (!res||!q||q.length<2) return;
+  archiveTimer = setTimeout(async()=>{
+    res.innerHTML='<div class="loading"><div class="spinner"></div>Searching archive…</div>';
+    try {
+      const data = await apiFetch('searchEventLog',{q});
+      const events = data.events||[];
+      if (!events.length){res.innerHTML='<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">No history found</div></div>';return;}
+      res.innerHTML=`<div style="font-size:12px;color:var(--text2);margin-bottom:12px">${events.length} events found for "${q}"</div>`+
+      events.map((e,i)=>`
+      <div class="timeline-item">
+        <div class="timeline-line">
+          <div class="tl-dot" style="background:${e.eventType==='SCRIPT_ERROR'?'var(--dash-red)':e.eventType==='FITTER_ACTION'?'var(--accent2)':e.eventType==='ALERT_SENT'?'var(--dash-amber)':'var(--accent)'}"></div>
+          ${i<events.length-1?'<div class="tl-line"></div>':''}
+        </div>
+        <div class="tl-content">
+          <div class="tl-event">${e.eventType} ${e.newValue?'→ '+e.newValue:''}</div>
+          <div class="tl-time">${e.timestamp} · ${e.actor}</div>
+          ${e.notes?`<div class="tl-note">${e.notes}</div>`:''}
+        </div>
+      </div>`).join('');
+    } catch(e){res.innerHTML='<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Search failed</div></div>';}
+  },400);
+}
+
+// ── OFFICE ACTIONS ────────────────────────────────────────
+function officeEditZone(orderRowID, customerName, containerID, currentZone) {
+  state.currentContainer = containerID;
+  if (!state.orderStates[orderRowID]) state.orderStates[orderRowID]={zone:currentZone,status:'pending'};
+  state.zoneTarget={orderRowID,isEdit:true,fromOffice:true};
+  document.getElementById('zoneSub').textContent='Assigning zone for '+customerName;
+  document.getElementById('zoneGrid').innerHTML=buildWarehouseGrid(currentZone);
+  document.getElementById('zoneOverlay').classList.add('open');
+}
+
+function officeEditNotes(orderRowID, containerID, currentNotes) {
+  notesTarget={orderRowID,containerID};
+  document.getElementById('notesSub').textContent='Notes for order '+orderRowID;
+  document.getElementById('notesInput').value=currentNotes||'';
+  document.getElementById('notesOverlay').classList.add('open');
+}
+
+async function officeResolveDamage(orderRowID) {
+  if (!confirm('Mark this damage as RESOLVED? This cannot be undone.')) return;
+  try {
+    const r = await apiPost('flagDamage',{orderRowID,damageType:'RESOLVED',fitterName:state.user});
+    if (r&&r.success){showToast('Damage resolved ✅','success'); refreshOfficeDash();}
+    else showToast('Save failed','error');
+  } catch(e){showToast('Save failed','error');}
+}
+
+async function officeShowContainerOrders(containerID) {
+  // Switch to status tab and show container inline
+  showToast('Loading '+containerID+'…','');
+  try {
+    const data = await apiFetch('getOrders',{containerID});
+    const orders = data.orders||[];
+    const body = document.getElementById('officeDashBody');
+    body.innerHTML=`
+    <button class="admin-btn" style="margin-bottom:14px" onclick="showOfficeTab('status',document.querySelectorAll('.office-tab')[1])">← Back to Status Board</button>
+    <div class="section-title">Container ${containerID} — ${orders.length} Orders</div>
+    ${orders.map(o=>{
+      const zoneInfo=o.zoneAssigned?`<div class="zone-tag" style="margin-top:8px;display:inline-block">📍 Zone ${o.zoneAssigned}</div>`:'<div style="font-size:12px;color:var(--text3);margin-top:6px">Not zoned</div>';
+      return `<div class="office-order-row">
+        <div class="oor-top">
+          <div><div class="oor-ref">${o.customerRef}</div><div class="oor-name">${o.customerName}${o.isRemake==='Y'?'<span style="font-size:10px;background:rgba(255,112,67,.15);color:var(--warn);padding:2px 6px;border-radius:4px;font-weight:700;margin-left:4px">REMAKE</span>':''}</div></div>
+          <div class="oor-right"><div style="font-size:20px;font-weight:800">${o.boxesShipped}</div><div style="font-size:9px;color:var(--text2)">BOXES</div></div>
+        </div>
+        <div class="oor-meta">
+          <div>Status: <span style="color:var(--accent2)">${o.status}</span></div>
+          <div>Booking: <span>${o.bookingStatus||'—'}</span></div>
+          ${o.damageFlag==='Y'?`<div><span style="color:var(--dash-red)">⚠ ${o.damageType||'DAMAGE'}</span></div>`:''}
+        </div>
+        ${zoneInfo}
+        ${o.notes?`<div style="margin-top:8px;font-size:12px;color:var(--text2);padding:8px;background:var(--surface2);border-radius:8px">📝 ${o.notes}</div>`:''}
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="edit-zone-btn" onclick="officeEditZone('${o.orderRowID}','${o.customerName}','${containerID}','${o.zoneAssigned||''}')">📍 ${o.zoneAssigned?'Edit Zone':'Assign Zone'}</button>
+          <button class="edit-zone-btn" style="border-color:var(--info);color:var(--info)" onclick="officeEditNotes('${o.orderRowID}','${containerID}','${(o.notes||'').replace(/'/g,"\\'")}')">📝 Notes</button>
+        </div>
+      </div>`;
+    }).join('')}`;
+  } catch(e){showToast('Could not load orders','error');}
+}
+
+// ═══════════════════════════════════════════════════════════
+// ADMIN PANEL
+// ═══════════════════════════════════════════════════════════
+function showAdminPanel() {
+  const userDef = USERS.find(u=>u.name===state.user);
+  if (!userDef || !userDef.adminAccess) {
+    openPinOverlay('Admin Access', ()=>{ _renderAdminPanel(); showScreen('admin'); });
+  } else {
+    _renderAdminPanel();
+    showScreen('admin');
+  }
+}
+
+function _renderAdminPanel() {
+  // User list
+  const ul = document.getElementById('adminUserList');
+  const dotColor = r => r==='Fitter'?'var(--accent)':r==='Surveyor'?'var(--warn)':r==='Office'?'var(--accent2)':'var(--info)';
+  ul.innerHTML = USERS.map(u=>`
+  <div class="user-row">
+    <div class="user-dot" style="background:${dotColor(u.role)}"></div>
+    <div class="user-info">
+      <div class="user-name">${u.name}</div>
+      <div class="user-role">${u.role} ${u.officeAccess?'· Office Dashboard':''}${u.adminAccess?' · Admin Panel':''}</div>
+    </div>
+    <div class="user-toggle">
+      <div style="font-size:11px;color:var(--text3);text-align:right">
+        ${u.officeAccess?'<div style="color:var(--accent2)">✓ Dashboard</div>':'<div>No dashboard</div>'}
+      </div>
+    </div>
+  </div>`).join('');
+
+  // PIN list
+  const pl = document.getElementById('adminPinList');
+  const officeUsers = USERS.filter(u=>u.officeAccess||u.adminAccess);
+  pl.innerHTML = officeUsers.map(u=>`
+  <div class="user-row">
+    <div class="user-dot" style="background:${dotColor(u.role)}"></div>
+    <div class="user-info"><div class="user-name">${u.name}</div><div class="user-role">${u.role}</div></div>
+    <div class="pin-display">${getUserPin(u.name).replace(/./g,'●')}</div>
+  </div>`).join('');
+
+  // Load saved token
+  const savedToken = localStorage.getItem('cs_api_token');
+  if (savedToken) document.getElementById('tokenInput').value = savedToken;
+
+  runHealthCheck();
+}
+
+function saveToken() {
+  const val = document.getElementById('tokenInput').value.trim();
+  localStorage.setItem('cs_api_token',val);
+  showToast('Token saved ✅','success');
+}
+
+async function runHealthCheck() {
+  document.getElementById('healthScript').textContent='Checking…';
+  document.getElementById('healthScript').className='health-val';
+  try {
+    const data = await apiFetch('getStats');
+    document.getElementById('healthScript').textContent='✓ Connected';
+    document.getElementById('healthScript').className='health-val ok';
+    document.getElementById('healthContainers').textContent=data.deliveriesNeeding??'—';
+    document.getElementById('healthOrders').textContent=data.unzoned??'—';
+    document.getElementById('healthErrors').textContent='0';
+    document.getElementById('healthErrors').className='health-val ok';
+  } catch(e) {
+    document.getElementById('healthScript').textContent='✗ Unreachable';
+    document.getElementById('healthScript').className='health-val err';
+  }
+}
+
+function adminResetPin() {
+  const name = prompt('Which user PIN to reset?\n\n'+USERS.filter(u=>u.officeAccess||u.adminAccess).map(u=>u.name).join(', '));
+  if (!name) return;
+  const user = USERS.find(u=>u.name.toLowerCase()===name.toLowerCase());
+  if (!user) { showToast('User not found','error'); return; }
+  const newPin = prompt('Enter new 4-digit PIN for '+user.name+':');
+  if (!newPin||newPin.length!==4||isNaN(newPin)) { showToast('PIN must be 4 digits','error'); return; }
+  const pins = getPins();
+  pins[user.name] = newPin;
+  localStorage.setItem('cs_pins',JSON.stringify(pins));
+  showToast('PIN updated for '+user.name+' ✅','success');
+  _renderAdminPanel();
+}
+
+function adminClearCache() {
+  if (!confirm('This will clear your saved login and all local settings. Continue?')) return;
+  localStorage.clear();
+  showToast('Cache cleared — reloading…','');
+  setTimeout(()=>location.reload(),1500);
+}
+
+// ═══════════════════════════════════════════════════════════
+// ALL FITTER FUNCTIONS (unchanged from v2)
+// ═══════════════════════════════════════════════════════════
+async function loadUnzonedJobs() {
+  const list = document.getElementById('unzonedList');
+  list.innerHTML='<div class="loading"><div class="spinner"></div>Loading...</div>';
+  try {
+    const data = await apiFetch('getUnzonedOrders');
+    const orders = data.orders||[];
+    if (!orders.length){list.innerHTML='<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-text">All orders zoned!</div></div>';return;}
+    list.innerHTML=orders.map(o=>{
+      const sc=o.supplier==='S:CRAFT'?'sb-sc':o.supplier==='TROPICAL'?'sb-tr':'sb-my';
+      return `<div class="order-row" style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+          <div><div class="order-ref">${o.customerRef}</div><div class="order-name">${o.customerName}</div></div>
+          <div style="text-align:right"><div class="sup-badge ${sc}">${o.supplier}</div><div style="font-size:11px;color:var(--text3);margin-top:3px">Container ${o.containerID}</div></div>
+        </div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:10px">Boxes: <span style="color:var(--text);font-weight:700">${o.boxesShipped}</span> &nbsp;·&nbsp; Arrived: <span style="color:var(--text)">${o.arrivedDate||'—'}</span></div>
+        <button class="assign-zone-btn" style="width:100%" onclick="openZonePickerForUnzoned('${o.orderRowID}','${o.customerName}','${o.containerID}')">📍 Assign Zone</button>
+      </div>`;
+    }).join('');
+  } catch(e){list.innerHTML='<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Could not load orders</div></div>';}
+}
+
+function openZonePickerForUnzoned(orderRowID,customerName,containerID){
+  state.currentContainer=containerID;
+  if(!state.orderStates[orderRowID])state.orderStates[orderRowID]={zone:'',status:'pending'};
+  state.zoneTarget={orderRowID,isEdit:false,fromUnzoned:true};
+  document.getElementById('zoneSub').textContent='Assign zone for '+customerName;
+  document.getElementById('zoneGrid').innerHTML=buildWarehouseGrid('');
+  document.getElementById('zoneOverlay').classList.add('open');
+}
+
+async function loadDeliveries(){
+  const list=document.getElementById('deliveriesList');
+  list.innerHTML='<div class="loading"><div class="spinner"></div>Loading...</div>';
+  try{
+    const data=await apiFetch('getDeliveries');
+    state.deliveries=data.deliveries||[];
+    renderDeliveriesList();
+  }catch(e){list.innerHTML='<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Could not load deliveries</div></div>';}
+}
+
+function filterDeliveries(supplier,chip){
+  state.filterSupplier=supplier;
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
   chip.classList.add('active');
   renderDeliveriesList();
 }
 
-function renderDeliveriesList() {
-  const list = document.getElementById('deliveriesList');
-  let items = state.deliveries;
-  if (state.filterSupplier !== 'ALL') items = items.filter(d => d.supplier === state.filterSupplier);
-  if (state.filterStatus) items = items.filter(d => d.status === state.filterStatus);
-
-  if (!items.length) {
-    list.innerHTML = '<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-text">All clear!</div><div class="empty-sub">No deliveries currently need action</div></div>';
-    return;
-  }
-
-  // Sort: ARRIVED first, then by confirmedDelDate soonest first
-  items = [...items].sort((a, b) => {
-    if (a.status === 'ARRIVED' && b.status !== 'ARRIVED') return -1;
-    if (b.status === 'ARRIVED' && a.status !== 'ARRIVED') return 1;
-    const da = a.confirmedDelDate ? a.confirmedDelDate.split('/').reverse().join('') : '99999999';
-    const db = b.confirmedDelDate ? b.confirmedDelDate.split('/').reverse().join('') : '99999999';
+function renderDeliveriesList(){
+  const list=document.getElementById('deliveriesList');
+  let items=state.deliveries;
+  if(state.filterSupplier!=='ALL')items=items.filter(d=>d.supplier===state.filterSupplier);
+  if(!items.length){list.innerHTML='<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-text">All clear!</div></div>';return;}
+  items=[...items].sort((a,b)=>{
+    if(a.status==='ARRIVED'&&b.status!=='ARRIVED')return -1;
+    if(b.status==='ARRIVED'&&a.status!=='ARRIVED')return 1;
+    const da=a.confirmedDelDate?a.confirmedDelDate.split('/').reverse().join(''):'99999999';
+    const db=b.confirmedDelDate?b.confirmedDelDate.split('/').reverse().join(''):'99999999';
     return da.localeCompare(db);
   });
-
-  const today = new Date(); today.setHours(0,0,0,0);
-  const tomorrow = new Date(today); tomorrow.setDate(today.getDate()+1);
-  const weekEnd = new Date(today); weekEnd.setDate(today.getDate()+7);
-
-  function dueBadge(dateStr, status) {
-    if (status === 'ARRIVED') return '<span style="font-size:11px;background:rgba(0,200,150,.15);color:var(--accent2);padding:2px 8px;border-radius:6px;font-weight:700">IN WAREHOUSE</span>';
-    if (!dateStr) return '';
-    const parts = dateStr.split('/');
-    if (parts.length !== 3) return '';
-    const d = new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]));
-    d.setHours(0,0,0,0);
-    if (d < today) return '<span style="font-size:11px;background:rgba(255,112,67,.2);color:var(--warn);padding:2px 8px;border-radius:6px;font-weight:700">OVERDUE</span>';
-    if (d.getTime() === today.getTime()) return '<span style="font-size:11px;background:rgba(255,112,67,.15);color:var(--warn);padding:2px 8px;border-radius:6px;font-weight:700">DUE TODAY</span>';
-    if (d.getTime() === tomorrow.getTime()) return '<span style="font-size:11px;background:rgba(255,159,67,.15);color:var(--myt);padding:2px 8px;border-radius:6px;font-weight:700">DUE TOMORROW</span>';
-    if (d <= weekEnd) return '<span style="font-size:11px;background:rgba(61,127,255,.12);color:var(--accent);padding:2px 8px;border-radius:6px;font-weight:700">THIS WEEK</span>';
+  const today=new Date();today.setHours(0,0,0,0);
+  const tomorrow=new Date(today);tomorrow.setDate(today.getDate()+1);
+  const weekEnd=new Date(today);weekEnd.setDate(today.getDate()+7);
+  function dueBadge(dateStr,status){
+    if(status==='ARRIVED')return '<span style="font-size:11px;background:rgba(0,200,150,.15);color:var(--accent2);padding:2px 8px;border-radius:6px;font-weight:700">IN WAREHOUSE</span>';
+    if(!dateStr)return '';
+    const parts=dateStr.split('/');if(parts.length!==3)return '';
+    const d=new Date(parseInt(parts[2]),parseInt(parts[1])-1,parseInt(parts[0]));d.setHours(0,0,0,0);
+    if(d<today)return '<span style="font-size:11px;background:rgba(255,112,67,.2);color:var(--warn);padding:2px 8px;border-radius:6px;font-weight:700">OVERDUE</span>';
+    if(d.getTime()===today.getTime())return '<span style="font-size:11px;background:rgba(255,112,67,.15);color:var(--warn);padding:2px 8px;border-radius:6px;font-weight:700">DUE TODAY</span>';
+    if(d.getTime()===tomorrow.getTime())return '<span style="font-size:11px;background:rgba(255,159,67,.15);color:var(--myt);padding:2px 8px;border-radius:6px;font-weight:700">DUE TOMORROW</span>';
+    if(d<=weekEnd)return '<span style="font-size:11px;background:rgba(61,127,255,.12);color:var(--accent);padding:2px 8px;border-radius:6px;font-weight:700">THIS WEEK</span>';
     return '';
   }
-
-  list.innerHTML = items.map(d => {
-    const pct = d.orderCount > 0 ? Math.round((d.zonedCount / d.orderCount) * 100) : 0;
-    const supClass = d.supplier === 'S:CRAFT' ? 'sb-sc' : d.supplier === 'TROPICAL' ? 'sb-tr' : 'sb-my';
-    const badge = dueBadge(d.confirmedDelDate, d.status);
-    // Progress steps: ARRIVED = step 1 done, any zoned = step 2 in progress, all zoned = done
-    const step1done = d.status === 'ARRIVED' || d.zonedCount > 0;
-    const step2done = d.zonedCount > 0;
-    const allZoned = d.orderCount > 0 && d.zonedCount >= d.orderCount;
-    const stepColor = (done) => done ? 'var(--accent2)' : 'var(--border)';
-    return `
-    <div class="container-card" onclick="showDetail('${d.containerID}')">
+  list.innerHTML=items.map(d=>{
+    const pct=d.orderCount>0?Math.round((d.zonedCount/d.orderCount)*100):0;
+    const sc=d.supplier==='S:CRAFT'?'sb-sc':d.supplier==='TROPICAL'?'sb-tr':'sb-my';
+    const badge=dueBadge(d.confirmedDelDate,d.status);
+    const s1=d.status==='ARRIVED'||d.zonedCount>0;
+    const s2=d.zonedCount>0;
+    const allZ=d.orderCount>0&&d.zonedCount>=d.orderCount;
+    return `<div class="container-card" onclick="showDetail('${d.containerID}')">
       <div class="cc-top">
-        <div>
-          <div style="font-size:11px;color:var(--text3);font-weight:600;letter-spacing:.3px">${d.supplier}</div>
-          <div class="cc-id">Container ${d.containerID}</div>
-        </div>
-        <div style="text-align:right">
-          <div class="sup-badge ${supClass}" style="margin-bottom:4px">${d.supplier}</div>
-          ${badge}
-        </div>
+        <div><div style="font-size:11px;color:var(--text3);font-weight:600">${d.supplier}</div><div class="cc-id">Container ${d.containerID}</div></div>
+        <div style="text-align:right"><div class="sup-badge ${sc}" style="margin-bottom:4px">${d.supplier}</div>${badge}</div>
       </div>
       <div class="cc-stats">
         <div><div class="cc-stat-val">${d.expectedBoxes}</div><div class="cc-stat-lbl">Boxes</div></div>
         <div><div class="cc-stat-val">${d.orderCount}</div><div class="cc-stat-lbl">Orders</div></div>
         <div><div class="cc-stat-val">${d.zonedCount}/${d.orderCount}</div><div class="cc-stat-lbl">Zoned</div></div>
-        <div><div class="cc-stat-val">${d.confirmedDelDate || '—'}</div><div class="cc-stat-lbl">Del. Date</div></div>
+        <div><div class="cc-stat-val">${d.confirmedDelDate||'—'}</div><div class="cc-stat-lbl">Del. Date</div></div>
       </div>
       <div style="display:flex;align-items:center;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
         <div style="display:flex;align-items:center;gap:4px;flex:1">
-          <div style="width:22px;height:22px;border-radius:50%;background:${step1done?'var(--accent2)':'var(--border)'};border:2px solid ${step1done?'var(--accent2)':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;color:#fff">${step1done?'✓':''}</div>
-          <div style="font-size:11px;color:${step1done?'var(--accent2)':'var(--text3)'};font-weight:700">Arrived</div>
-          <div style="flex:1;height:3px;background:${step1done?'var(--accent2)':'var(--border)'};border-radius:2px;margin:0 4px"></div>
-          <div style="width:22px;height:22px;border-radius:50%;background:${step2done?'var(--accent2)':'var(--border)'};border:2px solid ${step2done?'var(--accent2)':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;color:#fff">${step2done?'✓':''}</div>
-          <div style="font-size:11px;color:${step2done?'var(--accent2)':'var(--text3)'};font-weight:700">Zoned</div>
-          <div style="flex:1;height:3px;background:${allZoned?'var(--accent2)':'var(--border)'};border-radius:2px;margin:0 4px"></div>
-          <div style="width:22px;height:22px;border-radius:50%;background:${allZoned?'var(--accent2)':'var(--border)'};border:2px solid ${allZoned?'var(--accent2)':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;color:#fff">${allZoned?'✓':''}</div>
-          <div style="font-size:11px;color:${allZoned?'var(--accent2)':'var(--text3)'};font-weight:700">Ready</div>
+          <div style="width:22px;height:22px;border-radius:50%;background:${s1?'var(--accent2)':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;color:#fff">${s1?'✓':''}</div>
+          <div style="font-size:11px;color:${s1?'var(--accent2)':'var(--text3)'};font-weight:700">Arrived</div>
+          <div style="flex:1;height:3px;background:${s1?'var(--accent2)':'var(--border)'};border-radius:2px;margin:0 4px"></div>
+          <div style="width:22px;height:22px;border-radius:50%;background:${s2?'var(--accent2)':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;color:#fff">${s2?'✓':''}</div>
+          <div style="font-size:11px;color:${s2?'var(--accent2)':'var(--text3)'};font-weight:700">Zoned</div>
+          <div style="flex:1;height:3px;background:${allZ?'var(--accent2)':'var(--border)'};border-radius:2px;margin:0 4px"></div>
+          <div style="width:22px;height:22px;border-radius:50%;background:${allZ?'var(--accent2)':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;color:#fff">${allZ?'✓':''}</div>
+          <div style="font-size:11px;color:${allZ?'var(--accent2)':'var(--text3)'};font-weight:700">Ready</div>
         </div>
       </div>
     </div>`;
   }).join('');
 }
 
-// ═══════════════════════════════════════════════════════════
-// CONTAINER DETAIL
-// ═══════════════════════════════════════════════════════════
-async function showDetail(containerID) {
-  state.currentContainer = containerID;
-  state.orderStates = {};
+async function showDetail(containerID){
+  state.currentContainer=containerID;state.orderStates={};
   showScreen('detail');
-
-  const container = state.deliveries.find(d => d.containerID === containerID) || {};
-  document.getElementById('detailTitle').textContent = containerID;
-  const supClass = container.supplier === 'S:CRAFT' ? 'sb-sc' : container.supplier === 'TROPICAL' ? 'sb-tr' : 'sb-my';
-  document.getElementById('detailSub').textContent = container.supplier + ' — ' + (container.confirmedDelDate || '');
-
-  const body = document.getElementById('detailBody');
-  body.innerHTML = `
+  const container=state.deliveries.find(d=>d.containerID===containerID)||{};
+  document.getElementById('detailTitle').textContent=containerID;
+  const sc=container.supplier==='S:CRAFT'?'sb-sc':container.supplier==='TROPICAL'?'sb-tr':'sb-my';
+  document.getElementById('detailSub').textContent=(container.supplier||'')+' — '+(container.confirmedDelDate||'');
+  const body=document.getElementById('detailBody');
+  body.innerHTML=`
     <div class="detail-header">
       <div class="detail-id">${containerID}</div>
       <div class="detail-meta-row">
-        <div class="detail-meta-item"><div class="detail-meta-val">${container.expectedBoxes || '?'}</div><div class="detail-meta-lbl">Expected Boxes</div></div>
-        <div class="detail-meta-item"><div class="detail-meta-val">${container.orderCount || '?'}</div><div class="detail-meta-lbl">Orders</div></div>
-        <div class="detail-meta-item"><div class="detail-meta-val sup-badge ${supClass}" style="font-size:12px">${container.supplier || ''}</div><div class="detail-meta-lbl">Supplier</div></div>
+        <div class="detail-meta-item"><div class="detail-meta-val">${container.expectedBoxes||'?'}</div><div class="detail-meta-lbl">Expected Boxes</div></div>
+        <div class="detail-meta-item"><div class="detail-meta-val">${container.orderCount||'?'}</div><div class="detail-meta-lbl">Orders</div></div>
+        <div class="detail-meta-item"><div class="detail-meta-val sup-badge ${sc}" style="font-size:12px">${container.supplier||''}</div><div class="detail-meta-lbl">Supplier</div></div>
       </div>
     </div>
     <div style="padding:16px 16px 0">
       <div class="arrival-panel">
-        <div class="panel-title"><span class="panel-title-icon">📋</span> Arrival Confirmation</div>
-        <div class="input-row">
-          <div class="input-label">Boxes received</div>
-          <input class="num-input" type="number" id="boxesReceived" value="${container.expectedBoxes || ''}" min="0">
-        </div>
+        <div class="panel-title"><span>📋</span> Arrival Confirmation</div>
+        <div class="input-row"><div class="input-label">Boxes received</div><input class="num-input" type="number" id="boxesReceived" value="${container.expectedBoxes||''}" min="0"></div>
         <div style="font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:600">Was someone present?</div>
         <div class="toggle-row">
           <button class="toggle-btn" id="presentYes" onclick="setPresent(true)">✓ Yes — I was here</button>
@@ -920,782 +1733,391 @@ async function showDetail(containerID) {
         <button class="select-all-btn" id="allReceivedBtn" onclick="markAllComplete()">✓ Mark All Orders as Received</button>
         <textarea class="notes-input" id="arrivalNotes" placeholder="Notes — missing boxes, unexpected items, damage etc." style="margin-top:10px;margin-bottom:0"></textarea>
       </div>
-
       <div class="orders-section">
-        <div class="orders-header">
-          <div class="section-title">${container.supplier || 'SUPPLIER'} ORDERS</div>
-        </div>
+        <div class="orders-header"><div class="section-title">${container.supplier||'SUPPLIER'} ORDERS</div></div>
         <div id="ordersList"><div class="loading"><div class="spinner"></div>Loading orders...</div></div>
       </div>
-
-      <button class="confirm-btn" id="confirmBtn" onclick="confirmDelivery()">
-        Save — Confirm Delivery Received
-      </button>
+      <button class="confirm-btn" id="confirmBtn" onclick="confirmDelivery()">Save — Confirm Delivery Received</button>
       <div style="height:16px"></div>
     </div>`;
-
   loadOrders(containerID);
 }
 
-async function loadOrders(containerID) {
-  try {
-    const data = await apiFetch('getOrders', { containerID });
-    const orders = data.orders || [];
-    orders.forEach(o => {
-      state.orderStates[o.orderRowID] = {
-        status: o.zoneAssigned ? 'zoned' : 'pending',
-        zone: o.zoneAssigned || '',
-        boxesReceived: o.boxesShipped,
-        boxesShipped: o.boxesShipped,
-        isRemake: o.isRemake === 'Y'
-      };
-    });
+async function loadOrders(containerID){
+  try{
+    const data=await apiFetch('getOrders',{containerID});
+    const orders=data.orders||[];
+    orders.forEach(o=>{state.orderStates[o.orderRowID]={status:o.zoneAssigned?'zoned':'pending',zone:o.zoneAssigned||'',boxesReceived:o.boxesShipped,boxesShipped:o.boxesShipped,isRemake:o.isRemake==='Y'};});
     renderOrders(orders);
-  } catch(e) {
-    document.getElementById('ordersList').innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Could not load orders</div></div>';
-  }
+  }catch(e){document.getElementById('ordersList').innerHTML='<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Could not load orders</div></div>';}
 }
 
-function renderOrders(orders) {
-  const list = document.getElementById('ordersList');
-  if (!orders.length) {
-    list.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">No orders found</div></div>';
-    return;
-  }
-
-  list.innerHTML = orders.map(o => {
-    const os = state.orderStates[o.orderRowID];
-    const remakeTag = o.isRemake === 'Y' ? '<span style="font-size:10px;background:rgba(255,112,67,.15);color:var(--warn);padding:2px 6px;border-radius:4px;font-weight:700;margin-left:4px">REMAKE</span>' : '';
-    return `
-    <div class="order-row ${os.zone || o.zoneAssigned ? 'order-zoned' : (os.status === 'received' ? 'selected-order' : (os.status === 'partial' ? 'order-partial' : ''))}" id="orow-${o.orderRowID}">
+function renderOrders(orders){
+  const list=document.getElementById('ordersList');
+  if(!orders.length){list.innerHTML='<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">No orders found</div></div>';return;}
+  list.innerHTML=orders.map(o=>{
+    const os=state.orderStates[o.orderRowID];
+    const remake=o.isRemake==='Y'?'<span style="font-size:10px;background:rgba(255,112,67,.15);color:var(--warn);padding:2px 6px;border-radius:4px;font-weight:700;margin-left:4px">REMAKE</span>':'';
+    return `<div class="order-row ${os.zone||o.zoneAssigned?'order-zoned':os.status==='received'?'selected-order':os.status==='partial'?'order-partial':''}" id="orow-${o.orderRowID}">
       <div class="order-main">
-        <div class="order-ref-name">
-          <div class="order-ref">${o.customerRef}</div>
-          <div class="order-name">${o.customerName}${remakeTag}</div>
-        </div>
-        <div class="order-box-col">
-          <div class="order-box-num">${o.boxesShipped}</div>
-          <div class="order-box-lbl">BOXES</div>
-        </div>
+        <div class="order-ref-name"><div class="order-ref">${o.customerRef}</div><div class="order-name">${o.customerName}${remake}</div></div>
+        <div class="order-box-col"><div class="order-box-num">${o.boxesShipped}</div><div class="order-box-lbl">BOXES</div></div>
       </div>
-      ${(os.zone || o.zoneAssigned) ? `
+      ${(os.zone||o.zoneAssigned)?`
         <div class="order-zone-row">
-          <div class="zone-tag">📍 Zone ${os.zone || o.zoneAssigned}</div>
+          <div class="zone-tag">📍 Zone ${os.zone||o.zoneAssigned}</div>
           <button class="edit-zone-btn" onclick="openZonePicker('${o.orderRowID}','${o.customerName}',true)">Edit Zone</button>
           <button class="edit-zone-btn" style="margin-left:auto;border-color:var(--warn);color:var(--warn)" onclick="openDamagePanel('${o.orderRowID}','${o.customerName}')">⚠ Damage</button>
         </div>` : `
-        ${os.status === 'received' ? `
+        ${os.status==='received'?`
         <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
-          <div style="color:var(--accent2);font-size:13px;font-weight:700;flex:1">✓ Marked as received — assign zone below</div>
+          <div style="color:var(--accent2);font-size:13px;font-weight:700;flex:1">✓ Received — assign zone below</div>
           <button class="edit-zone-btn" style="border-color:var(--text3);color:var(--text2)" onclick="undoReceived('${o.orderRowID}')">Undo</button>
         </div>` : `
         <div class="order-check-row">
           <button class="check-btn complete" onclick="markComplete('${o.orderRowID}')">✓ Received</button>
           <button class="check-btn partial" onclick="togglePartial('${o.orderRowID}')">⚠ Partial / Issue</button>
         </div>`}
-        <div id="partial-${o.orderRowID}" style="display:${os.status === 'partial' ? 'block' : 'none'}">
+        <div id="partial-${o.orderRowID}" style="display:${os.status==='partial'?'block':'none'}">
           <div class="partial-area">
-            <div class="partial-row">
-              <div class="partial-label">Boxes actually received</div>
-              <input class="num-input" type="number" id="partial-boxes-${o.orderRowID}" placeholder="${o.boxesShipped}" min="0" max="${o.boxesShipped}" onchange="setPartialBoxes('${o.orderRowID}',this.value)">
-            </div>
-            <textarea class="notes-input" placeholder="Note reason — e.g. 1 box missing, damaged goods, wrong item" style="min-height:50px" id="partial-note-${o.orderRowID}"></textarea>
-            <div style="display:flex;gap:8px;margin-top:4px">
-              <button class="check-btn" style="border-color:var(--warn);color:var(--warn);flex:1" onclick="openDamagePanel('${o.orderRowID}','${o.customerName}')">⚠ Flag as Damaged / Missing</button>
-            </div>
+            <div class="partial-row"><div class="partial-label">Boxes actually received</div><input class="num-input" type="number" id="partial-boxes-${o.orderRowID}" placeholder="${o.boxesShipped}" min="0" onchange="setPartialBoxes('${o.orderRowID}',this.value)"></div>
+            <textarea class="notes-input" placeholder="Note reason" style="min-height:50px" id="partial-note-${o.orderRowID}"></textarea>
+            <div style="display:flex;gap:8px;margin-top:4px"><button class="check-btn" style="border-color:var(--warn);color:var(--warn);flex:1" onclick="openDamagePanel('${o.orderRowID}','${o.customerName}')">⚠ Flag as Damaged / Missing</button></div>
           </div>
         </div>
         <button class="assign-zone-btn" style="margin-top:8px;width:100%" onclick="openZonePicker('${o.orderRowID}','${o.customerName}',false)">📍 Assign Zone</button>`}
     </div>`;
   }).join('');
-
   checkConfirmReady();
 }
 
-function markComplete(orderRowID) {
-  const os = state.orderStates[orderRowID];
-  if (!os) return;
-  os.status = 'received';
-  const row = document.getElementById('orow-' + orderRowID);
-  if (row) {
-    const checkRow = row.querySelector('.order-check-row');
-    if (checkRow) checkRow.outerHTML = `
-      <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
-        <div style="color:var(--accent2);font-size:13px;font-weight:700;flex:1">✓ Marked as received — assign zone below</div>
-        <button class="edit-zone-btn" style="border-color:var(--text3);color:var(--text2)" onclick="undoReceived('${orderRowID}')">Undo</button>
-      </div>`;
-    row.className = 'order-row selected-order';
-  }
-  checkConfirmReady();
-}
+function markComplete(id){const os=state.orderStates[id];if(!os)return;os.status='received';const row=document.getElementById('orow-'+id);if(row){const cr=row.querySelector('.order-check-row');if(cr)cr.outerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-top:8px"><div style="color:var(--accent2);font-size:13px;font-weight:700;flex:1">✓ Received — assign zone below</div><button class="edit-zone-btn" style="border-color:var(--text3);color:var(--text2)" onclick="undoReceived('${id}')">Undo</button></div>`;row.className='order-row selected-order';}checkConfirmReady();}
+function undoReceived(id){const os=state.orderStates[id];if(!os)return;os.status='pending';apiFetch('getOrders',{containerID:state.currentContainer}).then(data=>renderOrders(data.orders||[]));}
+function togglePartial(id){const a=document.getElementById('partial-'+id);if(a)a.style.display=a.style.display==='none'?'block':'none';const os=state.orderStates[id];if(os)os.status='partial';}
+function setPartialBoxes(id,val){const os=state.orderStates[id];if(os)os.boxesReceived=parseInt(val)||0;}
+function setPresent(yes){document.getElementById('presentYes').className='toggle-btn '+(yes?'yes':'');document.getElementById('presentNo').className='toggle-btn '+(!yes?'no':'');state.wasPresent=yes;}
+function checkConfirmReady(){const btn=document.getElementById('confirmBtn');if(btn)btn.disabled=false;}
+function markAllComplete(){Object.keys(state.orderStates).forEach(id=>{state.orderStates[id].status='received';});const btn=document.getElementById('allReceivedBtn');if(btn){btn.textContent='✓ All Orders Marked as Received';btn.classList.add('done');}apiFetch('getOrders',{containerID:state.currentContainer}).then(data=>{renderOrders(data.orders||[]);showToast('All orders marked as received','success');});}
 
-function undoReceived(orderRowID) {
-  const os = state.orderStates[orderRowID];
-  if (!os) return;
-  os.status = 'pending';
-  // Re-render orders to restore the Received/Partial buttons
-  const container = state.deliveries.find(d => d.containerID === state.currentContainer) || {};
-  apiFetch('getOrders', { containerID: state.currentContainer }).then(data => {
-    renderOrders(data.orders || []);
-  });
-}
-
-// ═══════════════════════════════════════════════════════════
-// NOTES OVERLAY
-// ═══════════════════════════════════════════════════════════
-let notesTarget = null; // { orderRowID, containerID }
-
-function openNotesOverlay(orderRowID, containerID, currentNotes) {
-  notesTarget = { orderRowID, containerID };
-  document.getElementById('notesSub').textContent = 'Notes will be saved to the order record';
-  document.getElementById('notesInput').value = currentNotes || '';
-  document.getElementById('notesOverlay').classList.add('open');
-  setTimeout(() => document.getElementById('notesInput').focus(), 150);
-}
-
-function closeNotesOverlay() {
-  document.getElementById('notesOverlay').classList.remove('open');
-  notesTarget = null;
-}
-
-async function saveNotesOverlay() {
-  if (!notesTarget) return;
-  const notes = document.getElementById('notesInput').value;
-  try {
-    const r = await apiPost('updateOrderNotes', {
-      orderRowID: notesTarget.orderRowID,
-      containerID: notesTarget.containerID,
-      notes,
-      fitterName: state.user
-    });
-    closeNotesOverlay();
-    if (r && r.success) {
-      showToast('Notes saved ✅', 'success');
-      // Refresh search if on search screen
-      const q = document.getElementById('searchInput')?.value;
-      if (q) doSearch(q);
-    } else showToast('Save failed', 'error');
-  } catch(e) { showToast('Save failed — check connection', 'error'); }
-}
-
-// Replace searchEditNotes to use overlay instead of prompt
-function searchEditNotes(orderRowID, containerID) {
-  // Get current notes from the displayed card
-  const card = document.getElementById('srow-' + orderRowID);
-  const noteEl = card ? card.querySelector('.order-notes-text') : null;
-  const current = noteEl ? noteEl.textContent : '';
-  openNotesOverlay(orderRowID, containerID, current);
-}
-
-// ═══════════════════════════════════════════════════════════
-// DAMAGE PANEL
-// ═══════════════════════════════════════════════════════════
-let damageTarget = null;
-
-function openDamagePanel(orderRowID, customerName) {
-  damageTarget = { orderRowID, containerID: state.currentContainer };
-  // Show inline damage panel on the order row
-  const row = document.getElementById('orow-' + orderRowID);
-  if (!row) return;
-  let damagePanel = row.querySelector('.damage-panel');
-  if (damagePanel) { damagePanel.style.display = damagePanel.style.display === 'none' ? 'block' : 'none'; return; }
-  const panel = document.createElement('div');
-  panel.className = 'damage-panel';
-  panel.style.cssText = 'margin-top:10px;padding:12px;background:rgba(255,112,67,.08);border:1.5px solid var(--warn);border-radius:10px';
-  panel.innerHTML = `
-    <div style="font-size:13px;font-weight:700;color:var(--warn);margin-bottom:10px">⚠ Flag Damage / Issue for ${customerName}</div>
+let damageTarget=null;
+function openDamagePanel(orderRowID,customerName){
+  damageTarget={orderRowID,containerID:state.currentContainer};
+  const row=document.getElementById('orow-'+orderRowID);if(!row)return;
+  let dp=row.querySelector('.damage-panel');
+  if(dp){dp.style.display=dp.style.display==='none'?'block':'none';return;}
+  const p=document.createElement('div');p.className='damage-panel';
+  p.style.cssText='margin-top:10px;padding:12px;background:rgba(255,112,67,.08);border:1.5px solid var(--warn);border-radius:10px';
+  p.innerHTML=`<div style="font-size:13px;font-weight:700;color:var(--warn);margin-bottom:10px">⚠ Flag for ${customerName}</div>
     <div style="display:flex;flex-wrap:wrap;gap:8px">
-      <button class="check-btn" style="border-color:var(--warn);color:var(--warn);flex:none;padding:8px 14px" onclick="saveDamage('${orderRowID}','MISSING')">📦 Missing Boxes</button>
-      <button class="check-btn" style="border-color:var(--warn);color:var(--warn);flex:none;padding:8px 14px" onclick="saveDamage('${orderRowID}','DAMAGED')">💥 Damaged Goods</button>
+      <button class="check-btn" style="border-color:var(--warn);color:var(--warn);flex:none;padding:8px 14px" onclick="saveDamage('${orderRowID}','MISSING')">📦 Missing</button>
+      <button class="check-btn" style="border-color:var(--warn);color:var(--warn);flex:none;padding:8px 14px" onclick="saveDamage('${orderRowID}','DAMAGED')">💥 Damaged</button>
       <button class="check-btn" style="border-color:var(--warn);color:var(--warn);flex:none;padding:8px 14px" onclick="saveDamage('${orderRowID}','WRONG ITEM')">❌ Wrong Item</button>
     </div>
     <button class="edit-zone-btn" style="margin-top:10px;width:100%;text-align:center" onclick="this.closest('.damage-panel').style.display='none'">Cancel</button>`;
-  row.appendChild(panel);
+  row.appendChild(p);
 }
 
-async function saveDamage(orderRowID, damageType) {
-  const containerID = state.currentContainer || (damageTarget && damageTarget.containerID) || '';
-  try {
-    const r = await apiPost('flagDamage', { orderRowID, containerID, damageType, fitterName: state.user });
-    if (r && r.success) {
-      showToast('⚠ ' + damageType + ' flagged — office notified', 'error');
-      // Hide the damage panel
-      const row = document.getElementById('orow-' + orderRowID);
-      if (row) { const p = row.querySelector('.damage-panel'); if(p) p.style.display = 'none'; }
-      // Add visual indicator to the order row
-      const row2 = document.getElementById('orow-' + orderRowID);
-      if (row2) {
-        const existing = row2.querySelector('.damage-indicator');
-        if (!existing) {
-          const ind = document.createElement('div');
-          ind.className = 'damage-indicator';
-          ind.style.cssText = 'margin-top:8px;font-size:12px;color:var(--warn);font-weight:700';
-          ind.textContent = '⚠ ' + damageType + ' flagged';
-          row2.appendChild(ind);
-        }
-      }
-      // Refresh search if on search screen
-      const q = document.getElementById('searchInput')?.value;
-      if (q) doSearch(q);
-    } else showToast('Save failed', 'error');
-  } catch(e) { showToast('Save failed', 'error'); }
+async function saveDamage(orderRowID,damageType){
+  const containerID=state.currentContainer||(damageTarget&&damageTarget.containerID)||'';
+  try{
+    const r=await apiPost('flagDamage',{orderRowID,containerID,damageType,fitterName:state.user});
+    if(r&&r.success){showToast('⚠ '+damageType+' flagged','error');const row=document.getElementById('orow-'+orderRowID);if(row){const p=row.querySelector('.damage-panel');if(p)p.style.display='none';const ex=row.querySelector('.damage-indicator');if(!ex){const ind=document.createElement('div');ind.className='damage-indicator';ind.style.cssText='margin-top:8px;font-size:12px;color:var(--warn);font-weight:700';ind.textContent='⚠ '+damageType+' flagged';row.appendChild(ind);}}}
+    else showToast('Save failed','error');
+  }catch(e){showToast('Save failed','error');}
 }
 
-function togglePartial(orderRowID) {
-  const area = document.getElementById('partial-' + orderRowID);
-  if (area) area.style.display = area.style.display === 'none' ? 'block' : 'none';
-  const os = state.orderStates[orderRowID];
-  if (os) os.status = 'partial';
+async function confirmDelivery(){
+  const boxesReceived=document.getElementById('boxesReceived')?.value;
+  const notes=document.getElementById('arrivalNotes')?.value||'';
+  if(boxesReceived===''||boxesReceived===null){showToast('Please enter boxes received','error');return;}
+  const btn=document.getElementById('confirmBtn');btn.textContent='Saving...';btn.disabled=true;
+  const container=state.deliveries.find(d=>d.containerID===state.currentContainer)||{};
+  const received=parseInt(boxesReceived);const hasDisc=received<(container.expectedBoxes||0);
+  const orderUpdates=Object.entries(state.orderStates).map(([id,os])=>({orderRowID:id,zone:os.zone,boxesReceived:os.boxesReceived,status:os.status,note:document.getElementById('partial-note-'+id)?.value||''}));
+  try{
+    await apiPost('confirmDelivery',{containerID:state.currentContainer,boxesReceived:received,expectedBoxes:container.expectedBoxes||0,wasPresent:state.wasPresent!==false,notes,fitterName:state.user,orderUpdates,hasDiscrepancy:hasDisc});
+    showToast(hasDisc?'⚠ Saved — Becky alerted':'✅ Delivery confirmed!',hasDisc?'error':'success');
+    setTimeout(()=>showDeliveries(),1500);
+  }catch(e){btn.textContent='Save — Confirm Delivery Received';btn.disabled=false;showToast('Save failed','error');}
 }
 
-function setPartialBoxes(orderRowID, val) {
-  const os = state.orderStates[orderRowID];
-  if (os) os.boxesReceived = parseInt(val) || 0;
+async function loadPipeline(){
+  const list=document.getElementById('pipelineList');
+  list.innerHTML='<div class="loading"><div class="spinner"></div>Loading...</div>';
+  try{const data=await apiFetch('getPipeline');const items=data.pipeline||[];state.pipeline=items;
+    if(!items.length){list.innerHTML='<div class="empty-state"><div class="empty-icon">🚢</div><div class="empty-text">No containers in transit</div></div>';return;}
+    list.innerHTML=items.map(p=>renderContainerCard(p,'pipeline')).join('');
+  }catch(e){list.innerHTML='<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Could not load pipeline</div></div>';}
 }
 
-function markAllComplete() {
-  Object.keys(state.orderStates).forEach(id => {
-    state.orderStates[id].status = 'received';
-  });
-  // Turn button green
-  const btn = document.getElementById('allReceivedBtn');
-  if (btn) { btn.textContent = '✓ All Orders Marked as Received'; btn.classList.add('done'); }
-  // Re-render
-  apiFetch('getOrders', { containerID: state.currentContainer }).then(data => {
-    renderOrders(data.orders || []);
-    showToast('All orders marked as received', 'success');
-  });
+function showHistory(){showScreen('history');loadHistory();}
+async function loadHistory(){
+  const list=document.getElementById('historyList');
+  list.innerHTML='<div class="loading"><div class="spinner"></div>Loading...</div>';
+  try{const data=await apiFetch('getHistory');const items=data.history||[];state.historyItems=items;
+    if(!items.length){list.innerHTML='<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">No history yet</div></div>';return;}
+    list.innerHTML=items.map(p=>renderContainerCard(p,'history')).join('');
+  }catch(e){list.innerHTML='<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Could not load history</div></div>';}
 }
 
-function setPresent(yes) {
-  document.getElementById('presentYes').className = 'toggle-btn ' + (yes ? 'yes' : '');
-  document.getElementById('presentNo').className = 'toggle-btn ' + (!yes ? 'no' : '');
-  state.wasPresent = yes;
-}
-
-function checkConfirmReady() {
-  const btn = document.getElementById('confirmBtn');
-  if (!btn) return;
-  const allDone = Object.values(state.orderStates).every(os => os.status !== 'pending' || os.zone);
-  btn.disabled = false; // allow partial confirms
-}
-
-// ═══════════════════════════════════════════════════════════
-// ZONE PICKER
-// ═══════════════════════════════════════════════════════════
-function openZonePicker(orderRowID, customerName, isEdit) {
-  state.zoneTarget = { orderRowID, isEdit };
-  document.getElementById('zoneSub').textContent = (isEdit ? 'Editing zone for ' : 'Assign zone for ') + customerName;
-  const currentZone = state.orderStates[orderRowID]?.zone || '';
-  document.getElementById('zoneGrid').innerHTML = buildWarehouseGrid(currentZone);
-  document.getElementById('zoneOverlay').classList.add('open');
-}
-
-function buildWarehouseGrid(currentZone) {
-  const bay = (n, x, y, w=32, h=26) => {
-    const sel = String(currentZone) === String(n);
-    const fill = sel ? 'var(--accent)' : 'rgba(61,127,255,.07)';
-    const stroke = sel ? 'var(--accent)' : 'rgba(61,127,255,.3)';
-    const tf = sel ? '#fff' : 'var(--accent)';
-    return `<g class="picker-zone-clickable" onclick="selectZone('${n}')"><rect x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}" rx="6" class="picker-bay-box" style="fill:${fill};stroke:${stroke}"/><text x="${x}" y="${y}" class="picker-bay-number" style="fill:${tf}">${n}</text></g>`;
-  };
-
-  const dSel = String(currentZone)==='DELIVERY';
-  const eSel = String(currentZone)==='EDR';
-
-  function wzone(val, x, y, w, h, col, label) {
-    const sel = String(currentZone)===val;
-    const fill = sel ? col : 'var(--surface2)';
-    const tf = sel ? '#fff' : col;
-    return `<g class="picker-zone-clickable" onclick="selectZone('${val}')"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" class="picker-bay-box" style="fill:${fill};stroke:${col}"/><text x="${x+w/2}" y="${y+h/2}" class="picker-bay-number" style="fill:${tf};font-size:11px">${label}</text></g>`;
-  }
-
-  return `<svg viewBox="0 0 420 560" class="picker-svg">
-  <g transform="translate(10,20)">
-    <line x1="100" y1="0" x2="100" y2="200" class="picker-divider"/>
-    <line x1="200" y1="0" x2="200" y2="200" class="picker-divider"/>
-    <line x1="300" y1="0" x2="300" y2="200" class="picker-divider"/>
-    <line x1="0" y1="50" x2="400" y2="50" class="picker-divider"/>
-    <line x1="100" y1="100" x2="400" y2="100" class="picker-divider"/>
-    <line x1="100" y1="150" x2="400" y2="150" class="picker-divider"/>
-    <line x1="0" y1="0" x2="400" y2="0" class="picker-wall"/>
-    <line x1="0" y1="50" x2="0" y2="200" class="picker-wall"/>
-    <line x1="100" y1="200" x2="400" y2="200" class="picker-wall"/>
-    <line x1="100" y1="100" x2="400" y2="100" class="picker-wall"/>
-    ${bay(1,50,25)}
-    <g class="picker-zone-clickable" onclick="selectZone('DELIVERY')">
-      <rect x="15" y="60" width="32" height="130" rx="6" class="picker-bay-box" style="fill:${dSel?'var(--accent2)':'var(--surface2)'};stroke:var(--accent2)"/>
-      <text x="31" y="125" class="picker-bay-number" transform="rotate(-90,31,125)" style="fill:${dSel?'#fff':'var(--accent2)'};font-size:10px">DELIVERY</text>
-    </g>
-    ${bay(2,150,25)} ${bay(5,150,75)} ${bay(8,150,125)} ${bay(11,150,175)}
-    ${bay(3,250,25)} ${bay(6,250,75)} ${bay(9,250,125)} ${bay(12,250,175)}
-    ${bay(4,350,25)} ${bay(7,350,75)} ${bay(10,350,125)} ${bay(13,350,175)}
-  </g>
-  <g transform="translate(10,290)">
-    <line x1="0" y1="10" x2="80" y2="10" class="picker-wall"/>
-    <line x1="0" y1="10" x2="0" y2="210" class="picker-wall"/>
-    <line x1="180" y1="60" x2="180" y2="210" class="picker-wall"/>
-    <g class="picker-zone-clickable" onclick="selectZone('EDR')">
-      <rect x="15" y="25" width="65" height="32" rx="6" class="picker-bay-box" style="fill:${eSel?'var(--warn)':'var(--surface2)'};stroke:var(--warn)"/>
-      <text x="47.5" y="42" class="picker-bay-number" style="fill:${eSel?'#fff':'var(--warn)'};font-size:10px">EDR</text>
-    </g>
-    ${bay(14,32,85)} ${bay(15,32,135)} ${bay(16,32,185)}
-    ${bay(17,148,85)} ${bay(18,148,135)} ${bay(19,148,185)}
-    ${wzone('VAN',  230,50, 170,30,'var(--info)','🚐 VAN')}
-    ${wzone('RACK', 230,90, 170,30,'var(--info)','📦 RACK')}
-    ${wzone('STORE',230,130,170,30,'var(--info)','🚪 STORE')}
-    ${wzone('OTHER',230,170,170,30,'var(--info)','❓ OTHER')}
-  </g>
-</svg>`;
-}
-
-
-function selectZone(zone) {
-  const { orderRowID, fromSearch, fromUnzoned } = state.zoneTarget;
-  const os = state.orderStates[orderRowID];
-  if (os) { os.zone = zone; os.status = 'zoned'; }
-  closeZonePicker();
-
-  const container = state.currentContainer;
-  apiPost('assignZone', {
-    orderRowID, zone,
-    fitterName: state.user || 'Unknown',
-    containerID: container
-  }).then(r => {
-    if (r && r.success) {
-      showToast('Zone ' + zone + ' saved ✅', 'success');
-      if (fromSearch) { const q = document.getElementById('searchInput')?.value; if (q) doSearch(q); }
-      if (fromUnzoned) loadUnzonedJobs();
-    } else showToast('Zone ' + zone + ' assigned (save pending)', '');
-  }).catch(() => showToast('Zone ' + zone + ' assigned (offline)', ''));
-
-  if (!fromSearch && !fromUnzoned) {
-    const row = document.getElementById('orow-' + orderRowID);
-    if (row) {
-      let zoneRow = row.querySelector('.order-zone-row');
-      if (zoneRow) {
-        zoneRow.innerHTML = `<div class="zone-tag">📍 Zone ${zone}</div><button class="edit-zone-btn" onclick="openZonePicker('${orderRowID}','',true)">Edit Zone</button>`;
-      } else {
-        const assignBtn = row.querySelector('.assign-zone-btn');
-        if (assignBtn) {
-          assignBtn.outerHTML = `<div class="order-zone-row"><div class="zone-tag">📍 Zone ${zone}</div><button class="edit-zone-btn" onclick="openZonePicker('${orderRowID}','',true)">Edit Zone</button></div>`;
-        }
-      }
-      row.className = 'order-row order-zoned';
-    }
-  }
-  showToast('Zone ' + zone + ' assigned', 'success');
-  checkConfirmReady();
-}
-
-function closeZonePicker() {
-  document.getElementById('zoneOverlay').classList.remove('open');
-}
-
-// ═══════════════════════════════════════════════════════════
-// CONFIRM DELIVERY
-// ═══════════════════════════════════════════════════════════
-async function confirmDelivery() {
-  const boxesReceived = document.getElementById('boxesReceived')?.value;
-  const notes = document.getElementById('arrivalNotes')?.value || '';
-  const wasPresent = state.wasPresent !== false;
-
-  // Allow save even with 0 boxes (some containers have no expected count)
-  if (boxesReceived === '' || boxesReceived === null || boxesReceived === undefined) {
-    showToast('Please enter boxes received (enter 0 if none)', 'error');
-    return;
-  }
-
-  const btn = document.getElementById('confirmBtn');
-  btn.textContent = 'Saving...';
-  btn.disabled = true;
-
-  // Check for discrepancies
-  const container = state.deliveries.find(d => d.containerID === state.currentContainer) || {};
-  const expected = container.expectedBoxes || 0;
-  const received = parseInt(boxesReceived);
-  const hasDiscrepancy = received < expected;
-
-  // Build order updates
-  const orderUpdates = Object.entries(state.orderStates).map(([id, os]) => ({
-    orderRowID: id,
-    zone: os.zone,
-    boxesReceived: os.boxesReceived,
-    status: os.status,
-    note: document.getElementById('partial-note-' + id)?.value || ''
-  }));
-
-  try {
-    await apiPost('confirmDelivery', {
-      containerID: state.currentContainer,
-      boxesReceived: received,
-      expectedBoxes: expected,
-      wasPresent,
-      notes,
-      fitterName: state.user,
-      orderUpdates,
-      hasDiscrepancy
-    });
-
-    showToast(hasDiscrepancy ? '⚠ Saved — Becky alerted about missing boxes' : '✅ Delivery confirmed!', hasDiscrepancy ? 'error' : 'success');
-    setTimeout(() => showDeliveries(), 1500);
-  } catch(e) {
-    btn.textContent = 'Save — Confirm Delivery Received';
-    btn.disabled = false;
-    showToast('Save failed — check connection', 'error');
-  }
-}
-
-// ═══════════════════════════════════════════════════════════
-// PIPELINE
-// ═══════════════════════════════════════════════════════════
-async function loadPipeline() {
-  const list = document.getElementById('pipelineList');
-  list.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
-  try {
-    const data = await apiFetch('getPipeline');
-    const items = data.pipeline || [];
-    state.pipeline = items;
-    if (!items.length) {
-      list.innerHTML = '<div class="empty-state"><div class="empty-icon">🚢</div><div class="empty-text">No containers in transit</div></div>';
-      return;
-    }
-    list.innerHTML = items.map(p => renderContainerCard(p, 'pipeline')).join('');
-  } catch(e) {
-    list.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Could not load pipeline</div></div>';
-  }
-}
-
-// ═══════════════════════════════════════════════════════════
-// HISTORY
-// ═══════════════════════════════════════════════════════════
-function showHistory() {
-  showScreen('history');
-  loadHistory();
-}
-
-async function loadHistory() {
-  const list = document.getElementById('historyList');
-  list.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
-  try {
-    const data = await apiFetch('getHistory');
-    const items = data.history || [];
-    state.historyItems = items;
-    if (!items.length) {
-      list.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">No history yet</div><div class="empty-sub">Past deliveries will appear here</div></div>';
-      return;
-    }
-    list.innerHTML = items.map(p => renderContainerCard(p, 'history')).join('');
-  } catch(e) {
-    list.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Could not load history</div></div>';
-  }
-}
-
-// Shared card renderer for pipeline and history
-function renderContainerCard(p, context) {
-  const supClass = p.supplier === 'S:CRAFT' ? 'sb-sc' : p.supplier === 'TROPICAL' ? 'sb-tr' : 'sb-my';
-  const isPipeline = context === 'pipeline';
-  const isHistory  = context === 'history';
-  const gc = 'var(--accent2)'; // green for completed history values
-  const wc = 'var(--text)';    // white for pipeline (not yet happened)
-  const valColor = isHistory ? gc : wc;
-  const statusColor = p.status === 'FULLY ZONED' ? gc :
-                      p.status === 'ARRIVED'      ? gc :
-                      p.status === 'ON VESSEL'     ? 'var(--accent)' : 'var(--info)';
-  const dateLabel = isPipeline ? 'ETA' : 'Arrived';
-  const dateVal   = isPipeline ? (p.etaDate || 'TBC') : (p.actualArrivalDate || p.confirmedDelDate || '—');
-  const allZoned  = isHistory && p.orderCount > 0 && (p.zonedCount || 0) >= p.orderCount;
-  return `
-  <div class="container-card" onclick="showContainerDetail('${p.containerID}','${context}')">
+function renderContainerCard(p,context){
+  const sc=p.supplier==='S:CRAFT'?'sb-sc':p.supplier==='TROPICAL'?'sb-tr':'sb-my';
+  const isH=context==='history';const isPipe=context==='pipeline';
+  const gc='var(--accent2)';
+  const statusColor=p.status==='FULLY ZONED'?gc:p.status==='ARRIVED'?gc:p.status==='ON VESSEL'?'var(--accent)':'var(--info)';
+  const dateLabel=isPipe?'ETA':'Arrived';
+  const dateVal=isPipe?(p.etaDate||'TBC'):(p.actualArrivalDate||p.confirmedDelDate||'—');
+  const allZ=isH&&p.orderCount>0&&(p.zonedCount||0)>=p.orderCount;
+  return `<div class="container-card" onclick="showContainerDetail('${p.containerID}','${context}')">
     <div class="cc-top">
-      <div>
-        <div style="font-size:11px;color:var(--text3);font-weight:600;letter-spacing:.3px">${p.supplier}</div>
-        <div class="cc-id">Container ${p.containerID}</div>
-      </div>
-      <div style="text-align:right">
-        <div class="sup-badge ${supClass}" style="margin-bottom:4px">${p.supplier}</div>
-        <div style="font-size:11px;padding:2px 8px;border-radius:6px;font-weight:700;display:inline-block;background:${isHistory?'rgba(0,200,150,.1)':'rgba(61,127,255,.1)'};color:${statusColor}">${p.status}</div>
-      </div>
+      <div><div style="font-size:11px;color:var(--text3);font-weight:600">${p.supplier}</div><div class="cc-id">Container ${p.containerID}</div></div>
+      <div style="text-align:right"><div class="sup-badge ${sc}" style="margin-bottom:4px">${p.supplier}</div>
+      <div style="font-size:11px;padding:2px 8px;border-radius:6px;font-weight:700;display:inline-block;background:${isH?'rgba(0,200,150,.1)':'rgba(61,127,255,.1)'};color:${statusColor}">${p.status}</div></div>
     </div>
     <div class="cc-stats">
-      <div><div class="cc-stat-val" style="color:${valColor}">${p.expectedBoxes || '—'}</div><div class="cc-stat-lbl">Boxes</div></div>
-      <div><div class="cc-stat-val" style="color:${valColor}">${p.orderCount || '—'}</div><div class="cc-stat-lbl">Orders</div></div>
-      ${!isPipeline ? `<div><div class="cc-stat-val" style="color:${allZoned?gc:valColor}">${p.zonedCount || 0}/${p.orderCount || 0}</div><div class="cc-stat-lbl">Zoned</div></div>` : ''}
-      <div><div class="cc-stat-val" style="font-size:14px;color:${isHistory?gc:wc}">${dateVal}</div><div class="cc-stat-lbl">${dateLabel}</div></div>
+      <div><div class="cc-stat-val" style="color:${isH?gc:'var(--text)'}">${p.expectedBoxes||'—'}</div><div class="cc-stat-lbl">Boxes</div></div>
+      <div><div class="cc-stat-val" style="color:${isH?gc:'var(--text)'}">${p.orderCount||'—'}</div><div class="cc-stat-lbl">Orders</div></div>
+      ${!isPipe?`<div><div class="cc-stat-val" style="color:${allZ?gc:'var(--text)'}">${p.zonedCount||0}/${p.orderCount||0}</div><div class="cc-stat-lbl">Zoned</div></div>`:''}
+      <div><div class="cc-stat-val" style="font-size:14px;color:${isH?gc:'var(--text)'}">${dateVal}</div><div class="cc-stat-lbl">${dateLabel}</div></div>
     </div>
     <div style="margin-top:8px;font-size:12px;color:var(--text3)">Tap to view orders →</div>
   </div>`;
 }
 
-// Shows orders for a pipeline or history container (read-only view)
-async function showContainerDetail(containerID, context) {
-  state.currentContainer = containerID;
-  state.orderStates = {};
-  showScreen('detail');
-
-  // Find container from pipeline or history cache
-  const container = (context === 'pipeline'
-    ? (state.pipeline || [])
-    : (state.historyItems || [])
-  ).find(d => d.containerID === containerID) || { containerID, supplier: '', confirmedDelDate: '' };
-
-  document.getElementById('detailTitle').textContent = 'Container ' + containerID;
-  document.getElementById('detailSub').textContent = (container.supplier || '') + (container.confirmedDelDate ? ' — ' + container.confirmedDelDate : '');
-
-  const body = document.getElementById('detailBody');
-  const supClass = container.supplier === 'S:CRAFT' ? 'sb-sc' : container.supplier === 'TROPICAL' ? 'sb-tr' : 'sb-my';
-  const isHistory = context === 'history';
-
-  body.innerHTML = `
-    <div class="detail-header">
-      <div class="detail-id">Container ${containerID}</div>
-      <div class="detail-meta-row">
-        <div class="detail-meta-item"><div class="detail-meta-val">${container.expectedBoxes || '—'}</div><div class="detail-meta-lbl">Expected Boxes</div></div>
-        <div class="detail-meta-item"><div class="detail-meta-val">${container.orderCount || '—'}</div><div class="detail-meta-lbl">Orders</div></div>
-        <div class="detail-meta-item"><div class="detail-meta-val sup-badge ${supClass}" style="font-size:12px">${container.supplier || ''}</div><div class="detail-meta-lbl">Supplier</div></div>
-      </div>
-      ${isHistory && container.actualArrivalDate ? `<div style="margin-top:10px;font-size:13px;color:var(--accent2)">✅ Arrived: ${container.actualArrivalDate}</div>` : ''}
-      ${isHistory && container.notes ? `<div style="margin-top:6px;font-size:12px;color:var(--text2)">📝 ${container.notes}</div>` : ''}
+async function showContainerDetail(containerID,context){
+  state.currentContainer=containerID;state.orderStates={};showScreen('detail');
+  const container=(context==='pipeline'?(state.pipeline||[]):(state.historyItems||[])).find(d=>d.containerID===containerID)||{containerID,supplier:'',confirmedDelDate:''};
+  document.getElementById('detailTitle').textContent='Container '+containerID;
+  document.getElementById('detailSub').textContent=(container.supplier||'')+(container.confirmedDelDate?' — '+container.confirmedDelDate:'');
+  const body=document.getElementById('detailBody');
+  const sc=container.supplier==='S:CRAFT'?'sb-sc':container.supplier==='TROPICAL'?'sb-tr':'sb-my';
+  const isH=context==='history';
+  body.innerHTML=`<div class="detail-header"><div class="detail-id">Container ${containerID}</div>
+    <div class="detail-meta-row">
+      <div class="detail-meta-item"><div class="detail-meta-val">${container.expectedBoxes||'—'}</div><div class="detail-meta-lbl">Expected Boxes</div></div>
+      <div class="detail-meta-item"><div class="detail-meta-val">${container.orderCount||'—'}</div><div class="detail-meta-lbl">Orders</div></div>
+      <div class="detail-meta-item"><div class="detail-meta-val sup-badge ${sc}" style="font-size:12px">${container.supplier||''}</div><div class="detail-meta-lbl">Supplier</div></div>
+    </div>
+    ${isH&&container.actualArrivalDate?`<div style="margin-top:10px;font-size:13px;color:var(--accent2)">✅ Arrived: ${container.actualArrivalDate}</div>`:''}
     </div>
     <div style="padding:16px">
       <div class="orders-section">
-        <div class="orders-header">
-          <div class="section-title">${container.supplier || 'SUPPLIER'} ORDERS</div>
-          ${isHistory ? '<div style="font-size:12px;color:var(--text3)">Read only</div>' : ''}
-        </div>
+        <div class="orders-header"><div class="section-title">${container.supplier||'SUPPLIER'} ORDERS</div>${isH?'<div style="font-size:12px;color:var(--text3)">Read only</div>':''}</div>
         <div id="ordersList"><div class="loading"><div class="spinner"></div>Loading orders...</div></div>
       </div>
-      <button class="confirm-btn" style="background:var(--surface2);color:var(--text2);margin-top:8px" onclick="${context === 'pipeline' ? 'showPipeline()' : 'showHistory()'}">← Back</button>
+      <button class="confirm-btn" style="background:var(--surface2);color:var(--text2);margin-top:8px" onclick="${context==='pipeline'?'showPipeline()':'showHistory()'}">← Back</button>
       <div style="height:16px"></div>
     </div>`;
-
-  // Load orders in read-only mode
-  try {
-    const data = await apiFetch('getOrders', { containerID });
-    const orders = data.orders || [];
-    const list = document.getElementById('ordersList');
-    if (!orders.length) {
-      list.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">No orders found</div></div>';
-      return;
-    }
-    list.innerHTML = orders.map(o => {
-      const remakeTag = o.isRemake === 'Y' ? '<span style="font-size:10px;background:rgba(255,112,67,.15);color:var(--warn);padding:2px 6px;border-radius:4px;font-weight:700;margin-left:4px">REMAKE</span>' : '';
-      const zoneInfo = o.zoneAssigned ? `<div class="zone-tag" style="margin-top:8px">📍 Zone ${o.zoneAssigned}</div>` : '';
-      const statusColor = o.status === 'ZONED' ? 'var(--accent2)' : o.status === 'IN TRANSIT' ? 'var(--text3)' : 'var(--text2)';
-      const damageInfo = o.damageFlag === 'Y' ? `<div style="margin-top:6px;font-size:12px;color:var(--warn);font-weight:700">⚠ ${o.damageType || 'DAMAGE FLAGGED'}</div>` : '';
-      return `<div class="order-row ${o.zoneAssigned ? 'order-zoned' : ''}" style="margin-bottom:8px">
+  try{
+    const data=await apiFetch('getOrders',{containerID});
+    const orders=data.orders||[];
+    const list=document.getElementById('ordersList');
+    if(!orders.length){list.innerHTML='<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">No orders found</div></div>';return;}
+    list.innerHTML=orders.map(o=>{
+      const remake=o.isRemake==='Y'?'<span style="font-size:10px;background:rgba(255,112,67,.15);color:var(--warn);padding:2px 6px;border-radius:4px;font-weight:700;margin-left:4px">REMAKE</span>':'';
+      const zoneInfo=o.zoneAssigned?`<div class="zone-tag" style="margin-top:8px">📍 Zone ${o.zoneAssigned}</div>`:'';
+      const sc2=o.status==='ZONED'?'var(--accent2)':'var(--text2)';
+      const dmg=o.damageFlag==='Y'?`<div style="margin-top:6px;font-size:12px;color:var(--warn);font-weight:700">⚠ ${o.damageType||'DAMAGE FLAGGED'}</div>`:'';
+      return `<div class="order-row ${o.zoneAssigned?'order-zoned':''}">
         <div class="order-main">
-          <div class="order-ref-name">
-            <div class="order-ref">${o.customerRef}</div>
-            <div class="order-name">${o.customerName}${remakeTag}</div>
-          </div>
-          <div class="order-box-col">
-            <div class="order-box-num">${o.boxesShipped}</div>
-            <div class="order-box-lbl">BOXES</div>
-          </div>
+          <div class="order-ref-name"><div class="order-ref">${o.customerRef}</div><div class="order-name">${o.customerName}${remake}</div></div>
+          <div class="order-box-col"><div class="order-box-num">${o.boxesShipped}</div><div class="order-box-lbl">BOXES</div></div>
         </div>
         <div style="display:flex;gap:14px;margin-top:6px;font-size:12px;color:var(--text2)">
-          <span>Status: <span style="color:${statusColor};font-weight:700">${o.status}</span></span>
-          <span>Booking: <span style="color:var(--text)">${o.bookingStatus || '—'}</span></span>
+          <span>Status: <span style="color:${sc2};font-weight:700">${o.status}</span></span>
+          <span>Booking: <span style="color:var(--text)">${o.bookingStatus||'—'}</span></span>
         </div>
-        ${zoneInfo}${damageInfo}
-        ${o.notes ? `<div style="margin-top:6px;font-size:12px;color:var(--text2);padding:6px 8px;background:var(--surface2);border-radius:6px">📝 ${o.notes}</div>` : ''}
+        ${zoneInfo}${dmg}
+        ${o.notes?`<div style="margin-top:6px;font-size:12px;color:var(--text2);padding:6px 8px;background:var(--surface2);border-radius:6px">📝 ${o.notes}</div>`:''}
       </div>`;
     }).join('');
-  } catch(e) {
-    document.getElementById('ordersList').innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Could not load orders</div></div>';
-  }
+  }catch(e){document.getElementById('ordersList').innerHTML='<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Could not load orders</div></div>';}
 }
 
-// ═══════════════════════════════════════════════════════════
-// DRIVER DROP-OFF
-// ═══════════════════════════════════════════════════════════
-async function driverDropoff(supplier) {
-  // Find the button and show loading state
-  const btns = document.querySelectorAll('.driver-btn');
-  let activeBtn = null;
-  btns.forEach(b => { if (b.textContent.trim() === supplier) activeBtn = b; });
-  if (activeBtn) {
-    activeBtn.textContent = '⏳ Notifying...';
-    activeBtn.disabled = true;
-    activeBtn.style.opacity = '0.7';
-  }
-
-  const time = new Date().toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'});
-  const date = new Date().toLocaleDateString('en-GB', {weekday:'long',day:'numeric',month:'long',year:'numeric'});
-  const loggedBy = state.user || 'Unknown';
-  try {
-    const url = new URL(CONFIG.WEB_APP_URL);
-    url.searchParams.set('action', 'driverDropoff');
-    url.searchParams.set('supplier', supplier);
-    url.searchParams.set('loggedBy', loggedBy);
-    url.searchParams.set('time', time);
-    url.searchParams.set('date', date);
-    url.searchParams.set('data', JSON.stringify({ supplier, time, date, loggedBy }));
-    await fetch(url.toString());
-    if (activeBtn) {
-      activeBtn.textContent = '✓ Notified!';
-      activeBtn.style.opacity = '1';
-      activeBtn.style.background = 'rgba(0,200,150,.15)';
-      activeBtn.style.borderColor = 'var(--accent2)';
-      activeBtn.style.color = 'var(--accent2)';
-    }
-    showToast('✓ ' + supplier + ' logged — office notified', 'success');
-    // Reset button after 3 seconds
-    setTimeout(() => {
-      if (activeBtn) {
-        activeBtn.textContent = supplier;
-        activeBtn.disabled = false;
-        activeBtn.style.cssText = '';
-      }
-    }, 3000);
-  } catch(e) {
-    if (activeBtn) {
-      activeBtn.textContent = supplier;
-      activeBtn.disabled = false;
-      activeBtn.style.opacity = '1';
-    }
-    showToast('Logged locally (offline)', '');
-  }
-}
-
-
-// ═══════════════════════════════════════════════════════════
-// SEARCH
-// ═══════════════════════════════════════════════════════════
-function showSearch() {
-  showScreen('search');
-  setTimeout(() => document.getElementById('searchInput')?.focus(), 100);
-}
-
-let searchTimer = null;
-function doSearch(query) {
-  clearTimeout(searchTimer);
-  if (!query || query.length < 2) {
-    document.getElementById('searchResults').innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">Type to search</div><div class="empty-sub">SM8 number, customer name, or container ID</div></div>';
-    return;
-  }
-  searchTimer = setTimeout(() => runSearch(query), 400);
-}
-
-async function runSearch(query) {
-  const results = document.getElementById('searchResults');
-  results.innerHTML = '<div class="loading"><div class="spinner"></div>Searching...</div>';
-  try {
-    const data = await apiFetch('searchOrders', { q: query });
-    const orders = data.orders || [];
-    if (!orders.length) {
-      results.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">No results found</div><div class="empty-sub">Try a different search term</div></div>';
-      return;
-    }
-    results.innerHTML = orders.map(o => {
-      const supClass = o.supplier === 'S:CRAFT' ? 'sb-sc' : o.supplier === 'TROPICAL' ? 'sb-tr' : 'sb-my';
-      const zoneInfo = o.zoneAssigned
-        ? `<div class="zone-tag" style="margin-top:8px;display:inline-block">📍 Zone ${o.zoneAssigned}</div>`
-        : '<div style="font-size:12px;color:var(--text3);margin-top:6px">No zone assigned</div>';
-      const statusColor = o.status === 'ZONED' ? 'var(--accent2)' : o.status === 'ARRIVED' ? 'var(--warn)' : 'var(--text3)';
-      const damageColor = o.damageFlag === 'Y' ? 'var(--warn)' : 'var(--text3)';
-      return `<div class="order-row" style="margin-bottom:12px" id="srow-${o.orderRowID}">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px">
-          <div>
-            <div class="order-ref">${o.customerRef}</div>
-            <div class="order-name" style="font-size:16px;font-weight:700">${o.customerName}</div>
-          </div>
-          <div style="text-align:right">
-            <div class="sup-badge ${supClass}">${o.supplier}</div>
-            <div style="font-size:11px;color:var(--text3);margin-top:4px">Container ${o.containerID}</div>
-          </div>
-        </div>
-        <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px">
-          <div style="font-size:12px;color:var(--text2)">Boxes: <span style="color:${o.status==='ZONED'?'var(--accent2)':'var(--text)'};font-weight:700">${o.boxesShipped}</span></div>
-          <div style="font-size:12px;color:var(--text2)">Status: <span style="color:${statusColor};font-weight:700">${o.status}</span></div>
-          <div style="font-size:12px;color:var(--text2)">Booking: <span style="color:${o.bookingStatus==='READY TO BOOK'?'var(--accent2)':o.bookingStatus==='BOOKED'?'var(--accent)':'var(--text)'};font-weight:700">${o.bookingStatus || '—'}</span></div>
-          ${o.damageFlag === 'Y' ? `<div style="font-size:12px;color:var(--warn);font-weight:700">⚠ DAMAGE FLAGGED</div>` : ''}
-        </div>
-        ${zoneInfo}
-        ${o.notes ? `<div class="order-notes-text" style="font-size:12px;color:var(--text2);margin-top:8px;padding:8px;background:var(--surface2);border-radius:8px">📝 ${o.notes}</div>` : `<div class="order-notes-text" style="display:none"></div>`}
-        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:8px">
-          <button class="edit-zone-btn" onclick="searchEditZone('${o.orderRowID}','${o.customerName}','${o.containerID}')">${o.zoneAssigned ? '📍 Edit Zone' : '📍 Assign Zone'}</button>
-          <button class="edit-zone-btn" style="background:rgba(156,111,255,.12);border-color:var(--info);color:var(--info)" onclick="searchEditNotes('${o.orderRowID}','${o.containerID}')">📝 Notes</button>
-          <button class="edit-zone-btn" style="background:rgba(255,159,67,.1);border-color:var(--myt);color:var(--myt)" onclick="searchEditBoxes('${o.orderRowID}','${o.containerID}','${o.boxesShipped}')">📦 Edit Boxes</button>
-          <button class="edit-zone-btn" style="background:rgba(255,112,67,.1);border-color:var(--warn);color:var(--warn)" onclick="searchToggleDamage('${o.orderRowID}','${o.containerID}','${o.damageFlag}')">${o.damageFlag === 'Y' ? '✓ Damage Flagged' : '⚠ Flag Damage'}</button>
-        </div>
-      </div>`;
-    }).join('');
-  } catch(e) {
-    results.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Search failed</div></div>';
-  }
-}
-
-function searchEditZone(orderRowID, customerName, containerID) {
-  state.currentContainer = containerID;
-  if (!state.orderStates[orderRowID]) state.orderStates[orderRowID] = { zone: '', status: 'pending' };
-  state.zoneTarget = { orderRowID, isEdit: true, fromSearch: true };
-  document.getElementById('zoneSub').textContent = 'Editing zone for ' + customerName;
-  const currentZone = state.orderStates[orderRowID]?.zone || '';
-  document.getElementById('zoneGrid').innerHTML = buildWarehouseGrid(currentZone);
+// ZONE PICKER
+function openZonePicker(orderRowID,customerName,isEdit){
+  state.zoneTarget={orderRowID,isEdit};
+  document.getElementById('zoneSub').textContent=(isEdit?'Editing zone for ':'Assign zone for ')+customerName;
+  const current=state.orderStates[orderRowID]?.zone||'';
+  document.getElementById('zoneGrid').innerHTML=buildWarehouseGrid(current);
   document.getElementById('zoneOverlay').classList.add('open');
 }
 
-async function searchEditNotes(orderRowID, containerID) {
-  const current = prompt('Enter notes for this order (leave blank to clear):');
-  if (current === null) return; // cancelled
-  try {
-    const r = await apiPost('updateOrderNotes', { orderRowID, containerID, notes: current, fitterName: state.user });
-    if (r && r.success) {
-      showToast('Notes saved ✅', 'success');
-      doSearch(document.getElementById('searchInput').value);
-    } else showToast('Save failed', 'error');
-  } catch(e) { showToast('Save failed — check connection', 'error'); }
-}
-
-async function searchEditBoxes(orderRowID, containerID, currentBoxes) {
-  const val = prompt('Enter correct boxes received (currently ' + currentBoxes + '):');
-  if (val === null) return;
-  const num = parseInt(val);
-  if (isNaN(num) || num < 0) { showToast('Invalid number', 'error'); return; }
-  try {
-    const r = await apiPost('updateBoxesReceived', { orderRowID, containerID, boxesReceived: num, fitterName: state.user });
-    if (r && r.success) {
-      showToast('Boxes updated ✅', 'success');
-      doSearch(document.getElementById('searchInput').value);
-    } else showToast('Save failed', 'error');
-  } catch(e) { showToast('Save failed — check connection', 'error'); }
-}
-
-async function searchToggleDamage(orderRowID, containerID, currentFlag) {
-  const isDamaged = currentFlag === 'Y';
-  if (isDamaged) {
-    if (!confirm('Remove damage flag from this order?')) return;
-  } else {
-    const type = prompt('Select damage type:\n1 = Missing boxes\n2 = Damaged goods\n3 = Wrong item\n\nType 1, 2 or 3:');
-    if (!type) return;
-    const typeMap = {'1':'MISSING','2':'DAMAGED','3':'WRONG ITEM'};
-    const damageType = typeMap[type.trim()] || 'DAMAGED';
-    try {
-      const r = await apiPost('flagDamage', { orderRowID, containerID, damageType, fitterName: state.user });
-      if (r && r.success) {
-        showToast('⚠ Damage flagged — office notified', 'error');
-        doSearch(document.getElementById('searchInput').value);
-      } else showToast('Save failed', 'error');
-    } catch(e) { showToast('Save failed', 'error'); }
-    return;
+function buildWarehouseGrid(currentZone){
+  const bay=(n,x,y,w=32,h=26)=>{
+    const sel=String(currentZone)===String(n);
+    const fill=sel?'var(--accent)':'rgba(61,127,255,.07)';
+    const stroke=sel?'var(--accent)':'rgba(61,127,255,.3)';
+    const tf=sel?'#fff':'var(--accent)';
+    return `<g class="picker-zone-clickable" onclick="selectZone('${n}')"><rect x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}" rx="6" style="fill:${fill};stroke:${stroke};stroke-width:1.5;cursor:pointer"/><text x="${x}" y="${y}" style="font-size:13px;font-weight:700;fill:${tf};text-anchor:middle;dominant-baseline:middle;pointer-events:none;font-family:var(--font)">${n}</text></g>`;
+  };
+  const dSel=String(currentZone)==='DELIVERY';
+  const eSel=String(currentZone)==='EDR';
+  function wzone(val,x,y,w,h,col,label){
+    const sel=String(currentZone)===val;
+    const fill=sel?col:'var(--surface2)';const tf=sel?'#fff':col;
+    return `<g class="picker-zone-clickable" onclick="selectZone('${val}')"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" style="fill:${fill};stroke:${col};stroke-width:1.5;cursor:pointer"/><text x="${x+w/2}" y="${y+h/2}" style="font-size:11px;font-weight:700;fill:${tf};text-anchor:middle;dominant-baseline:middle;pointer-events:none;font-family:var(--font)">${label}</text></g>`;
   }
-  try {
-    const r = await apiPost('flagDamage', { orderRowID, containerID, damageType: 'RESOLVED', fitterName: state.user });
-    if (r && r.success) { showToast('Damage flag removed', 'success'); doSearch(document.getElementById('searchInput').value); }
-  } catch(e) { showToast('Save failed', 'error'); }
+  return `<svg viewBox="0 0 420 560" style="width:100%;height:auto;border-radius:12px;background:var(--bg);border:1px solid var(--border)">
+  <g transform="translate(10,20)">
+    <line x1="100" y1="0" x2="100" y2="200" stroke="var(--border)" stroke-width="1" stroke-dasharray="2 2"/>
+    <line x1="200" y1="0" x2="200" y2="200" stroke="var(--border)" stroke-width="1" stroke-dasharray="2 2"/>
+    <line x1="300" y1="0" x2="300" y2="200" stroke="var(--border)" stroke-width="1" stroke-dasharray="2 2"/>
+    <line x1="0" y1="50" x2="400" y2="50" stroke="var(--border)" stroke-width="1" stroke-dasharray="2 2"/>
+    <line x1="100" y1="100" x2="400" y2="100" stroke="var(--border)" stroke-width="1" stroke-dasharray="2 2"/>
+    <line x1="100" y1="150" x2="400" y2="150" stroke="var(--border)" stroke-width="1" stroke-dasharray="2 2"/>
+    <line x1="0" y1="0" x2="400" y2="0" stroke="var(--accent)" stroke-width="5" stroke-linecap="round"/>
+    <line x1="0" y1="50" x2="0" y2="200" stroke="var(--accent)" stroke-width="5" stroke-linecap="round"/>
+    <line x1="100" y1="200" x2="400" y2="200" stroke="var(--accent)" stroke-width="5" stroke-linecap="round"/>
+    ${bay(1,50,25)}
+    <g class="picker-zone-clickable" onclick="selectZone('DELIVERY')"><rect x="15" y="60" width="32" height="130" rx="6" style="fill:${dSel?'var(--accent2)':'var(--surface2)'};stroke:var(--accent2);stroke-width:1.5;cursor:pointer"/><text x="31" y="125" transform="rotate(-90,31,125)" style="font-size:10px;font-weight:700;fill:${dSel?'#fff':'var(--accent2)'};text-anchor:middle;dominant-baseline:middle;pointer-events:none">DELIVERY</text></g>
+    ${bay(2,150,25)} ${bay(5,150,75)} ${bay(8,150,125)} ${bay(11,150,175)}
+    ${bay(3,250,25)} ${bay(6,250,75)} ${bay(9,250,125)} ${bay(12,250,175)}
+    ${bay(4,350,25)} ${bay(7,350,75)} ${bay(10,350,125)} ${bay(13,350,175)}
+  </g>
+  <g transform="translate(10,290)">
+    <line x1="0" y1="10" x2="80" y2="10" stroke="var(--accent)" stroke-width="5" stroke-linecap="round"/>
+    <line x1="0" y1="10" x2="0" y2="210" stroke="var(--accent)" stroke-width="5" stroke-linecap="round"/>
+    <line x1="180" y1="60" x2="180" y2="210" stroke="var(--accent)" stroke-width="5" stroke-linecap="round"/>
+    <g class="picker-zone-clickable" onclick="selectZone('EDR')"><rect x="15" y="25" width="65" height="32" rx="6" style="fill:${eSel?'var(--warn)':'var(--surface2)'};stroke:var(--warn);stroke-width:1.5;cursor:pointer"/><text x="47.5" y="42" style="font-size:10px;font-weight:700;fill:${eSel?'#fff':'var(--warn)'};text-anchor:middle;dominant-baseline:middle;pointer-events:none">EDR</text></g>
+    ${bay(14,32,85)} ${bay(15,32,135)} ${bay(16,32,185)}
+    ${bay(17,148,85)} ${bay(18,148,135)} ${bay(19,148,185)}
+    ${wzone('VAN',230,50,170,30,'var(--info)','🚐 VAN')}
+    ${wzone('RACK',230,90,170,30,'var(--info)','📦 RACK')}
+    ${wzone('STORE',230,130,170,30,'var(--info)','🚪 STORE')}
+    ${wzone('OTHER',230,170,170,30,'var(--info)','❓ OTHER')}
+  </g></svg>`;
 }
 
-// ═══════════════════════════════════════════════════════════
-// TOAST
-// ═══════════════════════════════════════════════════════════
-function showToast(msg, type) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast show ' + (type || '');
-  setTimeout(() => t.className = 'toast', 4000);
+function selectZone(zone){
+  const {orderRowID,fromSearch,fromUnzoned,fromOffice}=state.zoneTarget;
+  const os=state.orderStates[orderRowID];
+  if(os){os.zone=zone;os.status='zoned';}
+  closeZonePicker();
+  const container=state.currentContainer;
+  apiPost('assignZone',{orderRowID,zone,fitterName:state.user||'Unknown',containerID:container}).then(r=>{
+    if(r&&r.success){showToast('Zone '+zone+' saved ✅','success');
+      if(fromSearch){const q=document.getElementById('searchInput')?.value;if(q)doSearch(q);}
+      if(fromUnzoned)loadUnzonedJobs();
+      if(fromOffice){const q=document.getElementById('officeSearchInput')?.value;if(q)officeDoSearch(q);}
+    }else showToast('Zone '+zone+' assigned (save pending)','');
+  }).catch(()=>showToast('Zone '+zone+' assigned (offline)',''));
+  if(!fromSearch&&!fromUnzoned&&!fromOffice){
+    const row=document.getElementById('orow-'+orderRowID);
+    if(row){let zr=row.querySelector('.order-zone-row');
+      if(zr){zr.innerHTML=`<div class="zone-tag">📍 Zone ${zone}</div><button class="edit-zone-btn" onclick="openZonePicker('${orderRowID}','',true)">Edit Zone</button>`;}
+      else{const ab=row.querySelector('.assign-zone-btn');if(ab)ab.outerHTML=`<div class="order-zone-row"><div class="zone-tag">📍 Zone ${zone}</div><button class="edit-zone-btn" onclick="openZonePicker('${orderRowID}','',true)">Edit Zone</button></div>`;}
+      row.className='order-row order-zoned';
+    }
+  }
+  showToast('Zone '+zone+' assigned','success');
+  checkConfirmReady();
 }
+
+function closeZonePicker(){document.getElementById('zoneOverlay').classList.remove('open');}
+
+// NOTES
+let notesTarget=null;
+function closeNotesOverlay(){document.getElementById('notesOverlay').classList.remove('open');notesTarget=null;}
+async function saveNotesOverlay(){
+  if(!notesTarget)return;
+  const notes=document.getElementById('notesInput').value;
+  try{
+    const r=await apiPost('updateOrderNotes',{orderRowID:notesTarget.orderRowID,containerID:notesTarget.containerID,notes,fitterName:state.user});
+    closeNotesOverlay();
+    if(r&&r.success){showToast('Notes saved ✅','success');const q=document.getElementById('searchInput')?.value;if(q)doSearch(q);}
+    else showToast('Save failed','error');
+  }catch(e){showToast('Save failed','error');}
+}
+
+// SEARCH (fitter)
+function showSearch(){showScreen('search');setTimeout(()=>document.getElementById('searchInput')?.focus(),100);}
+let searchTimer=null;
+function doSearch(query){
+  clearTimeout(searchTimer);
+  if(!query||query.length<2){document.getElementById('searchResults').innerHTML='<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">Type to search</div></div>';return;}
+  searchTimer=setTimeout(()=>runSearch(query),400);
+}
+async function runSearch(query){
+  const results=document.getElementById('searchResults');
+  results.innerHTML='<div class="loading"><div class="spinner"></div>Searching...</div>';
+  try{
+    const data=await apiFetch('searchOrders',{q:query});
+    const orders=data.orders||[];
+    if(!orders.length){results.innerHTML='<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">No results found</div></div>';return;}
+    results.innerHTML=orders.map(o=>{
+      const sc=o.supplier==='S:CRAFT'?'sb-sc':o.supplier==='TROPICAL'?'sb-tr':'sb-my';
+      const zoneInfo=o.zoneAssigned?`<div class="zone-tag" style="margin-top:8px;display:inline-block">📍 Zone ${o.zoneAssigned}</div>`:'<div style="font-size:12px;color:var(--text3);margin-top:6px">No zone assigned</div>';
+      const sc2=o.status==='ZONED'?'var(--accent2)':o.status==='ARRIVED'?'var(--warn)':'var(--text3)';
+      return `<div class="order-row" style="margin-bottom:12px" id="srow-${o.orderRowID}">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px">
+          <div><div class="order-ref">${o.customerRef}</div><div class="order-name" style="font-size:16px;font-weight:700">${o.customerName}</div></div>
+          <div style="text-align:right"><div class="sup-badge ${sc}">${o.supplier}</div><div style="font-size:11px;color:var(--text3);margin-top:4px">Container ${o.containerID}</div></div>
+        </div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px">
+          <div style="font-size:12px;color:var(--text2)">Boxes: <span style="color:var(--text);font-weight:700">${o.boxesShipped}</span></div>
+          <div style="font-size:12px;color:var(--text2)">Status: <span style="color:${sc2};font-weight:700">${o.status}</span></div>
+          <div style="font-size:12px;color:var(--text2)">Booking: <span style="font-weight:700">${o.bookingStatus||'—'}</span></div>
+          ${o.damageFlag==='Y'?`<div style="font-size:12px;color:var(--warn);font-weight:700">⚠ DAMAGE</div>`:''}
+        </div>
+        ${zoneInfo}
+        ${o.notes?`<div class="order-notes-text" style="font-size:12px;color:var(--text2);margin-top:8px;padding:8px;background:var(--surface2);border-radius:8px">📝 ${o.notes}</div>`:''}
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:8px">
+          <button class="edit-zone-btn" onclick="searchEditZone('${o.orderRowID}','${o.customerName}','${o.containerID}')">${o.zoneAssigned?'📍 Edit Zone':'📍 Assign Zone'}</button>
+          <button class="edit-zone-btn" style="background:rgba(156,111,255,.12);border-color:var(--info);color:var(--info)" onclick="searchEditNotes('${o.orderRowID}','${o.containerID}','${(o.notes||'').replace(/'/g,"\\'")}')">📝 Notes</button>
+          <button class="edit-zone-btn" style="background:rgba(255,112,67,.1);border-color:var(--warn);color:var(--warn)" onclick="searchToggleDamage('${o.orderRowID}','${o.containerID}','${o.damageFlag}')">${o.damageFlag==='Y'?'✓ Flagged':'⚠ Flag Damage'}</button>
+        </div>
+      </div>`;
+    }).join('');
+  }catch(e){results.innerHTML='<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Search failed</div></div>';}
+}
+
+function searchEditZone(orderRowID,customerName,containerID){
+  state.currentContainer=containerID;
+  if(!state.orderStates[orderRowID])state.orderStates[orderRowID]={zone:'',status:'pending'};
+  state.zoneTarget={orderRowID,isEdit:true,fromSearch:true};
+  document.getElementById('zoneSub').textContent='Editing zone for '+customerName;
+  document.getElementById('zoneGrid').innerHTML=buildWarehouseGrid(state.orderStates[orderRowID]?.zone||'');
+  document.getElementById('zoneOverlay').classList.add('open');
+}
+
+function searchEditNotes(orderRowID,containerID,currentNotes){
+  notesTarget={orderRowID,containerID};
+  document.getElementById('notesSub').textContent='Notes for order '+orderRowID;
+  document.getElementById('notesInput').value=currentNotes||'';
+  document.getElementById('notesOverlay').classList.add('open');
+}
+
+async function searchToggleDamage(orderRowID,containerID,currentFlag){
+  const isDamaged=currentFlag==='Y';
+  if(isDamaged){if(!confirm('Remove damage flag?'))return;
+    try{const r=await apiPost('flagDamage',{orderRowID,containerID,damageType:'RESOLVED',fitterName:state.user});if(r&&r.success){showToast('Flag removed','success');doSearch(document.getElementById('searchInput').value);}}catch(e){showToast('Save failed','error');}return;}
+  const type=prompt('Damage type:\n1=Missing\n2=Damaged\n3=Wrong item');if(!type)return;
+  const map={'1':'MISSING','2':'DAMAGED','3':'WRONG ITEM'};
+  try{const r=await apiPost('flagDamage',{orderRowID,containerID,damageType:map[type.trim()]||'DAMAGED',fitterName:state.user});
+    if(r&&r.success){showToast('⚠ Flagged','error');doSearch(document.getElementById('searchInput').value);}
+    else showToast('Save failed','error');
+  }catch(e){showToast('Save failed','error');}
+}
+
+// DRIVER DROP-OFF
+async function driverDropoff(supplier){
+  const btns=document.querySelectorAll('.driver-btn');let ab=null;
+  btns.forEach(b=>{if(b.textContent.trim()===supplier)ab=b;});
+  if(ab){ab.textContent='⏳ Notifying...';ab.disabled=true;ab.style.opacity='.7';}
+  const time=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  const date=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  try{
+    const url=new URL(CONFIG.WEB_APP_URL);url.searchParams.set('action','driverDropoff');url.searchParams.set('supplier',supplier);url.searchParams.set('loggedBy',state.user||'Unknown');url.searchParams.set('time',time);url.searchParams.set('token',getToken());url.searchParams.set('data',JSON.stringify({supplier,time,date,loggedBy:state.user||'Unknown'}));
+    await fetch(url.toString());
+    if(ab){ab.textContent='✓ Notified!';ab.style.opacity='1';ab.style.background='rgba(0,200,150,.15)';ab.style.borderColor='var(--accent2)';ab.style.color='var(--accent2)';}
+    showToast('✓ '+supplier+' logged — office notified','success');
+    setTimeout(()=>{if(ab){ab.textContent=supplier;ab.disabled=false;ab.style.cssText='';}},3000);
+  }catch(e){if(ab){ab.textContent=supplier;ab.disabled=false;ab.style.opacity='1';}showToast('Logged locally','');}
+}
+
+// TOAST
+function showToast(msg,type){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show '+(type||'');setTimeout(()=>t.className='toast',4000);}
 </script>
 </body>
 </html>
