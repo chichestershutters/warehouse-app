@@ -320,6 +320,51 @@
   .health-val{font-size:13px;font-weight:700;}
   .health-val.ok{color:#2ed573;}
   .health-val.err{color:#ff4757;}
+
+  /* ── SCHEDULING VIEW STYLES ── */
+  .sched-tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch;}
+  .sched-tab{padding:8px 14px;border-radius:20px;font-size:12px;font-weight:700;background:var(--surface);border:1.5px solid var(--border);color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0;}
+  .sched-tab.active{background:rgba(61,127,255,.15);border-color:var(--accent);color:var(--accent);}
+  .job-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;transition:all .15s;}
+  .job-card.urgent{border-left:3px solid #ff4757;background:rgba(255,71,87,.03);}
+  .job-card.risk{border-left:3px solid #ffa502;background:rgba(255,165,2,.02);}
+  .job-card.ready{border-left:3px solid #2ed573;}
+  .action-prompt{display:flex;align-items:flex-start;gap:8px;background:rgba(255,165,2,.08);border:1px solid rgba(255,165,2,.25);border-radius:8px;padding:7px 10px;margin-top:8px;}
+  .action-prompt-icon{font-size:14px;flex-shrink:0;margin-top:1px;}
+  .action-prompt-text{font-size:12px;color:#ffa502;font-weight:600;line-height:1.4;}
+  .fit-note-tag{display:inline-flex;align-items:center;gap:3px;background:rgba(156,111,255,.1);border:1px solid rgba(156,111,255,.2);color:var(--info);font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;}
+  .area-group{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;}
+  .area-group-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;transition:all .15s;background:rgba(61,127,255,.04);}
+  .area-group-header:active{background:var(--surface2);}
+  .area-district{font-size:16px;font-weight:800;font-family:var(--mono);color:var(--accent);}
+  .area-meta{font-size:12px;color:var(--text2);margin-top:2px;}
+  .area-jobs-count{text-align:right;}
+  .area-count-big{font-size:20px;font-weight:800;}
+  .area-count-lbl{font-size:9px;color:var(--text3);font-weight:700;text-transform:uppercase;}
+  .area-expand-icon{font-size:14px;color:var(--text3);margin-left:8px;transition:transform .2s;display:inline-block;}
+  .area-expand-icon.open{transform:rotate(180deg);}
+  .area-jobs-list{display:none;padding:0 10px 10px;}
+  .area-jobs-list.open{display:block;}
+  .day-suggest{background:rgba(0,200,150,.06);border:1.5px solid rgba(0,200,150,.2);border-radius:12px;padding:12px 14px;margin-bottom:10px;}
+  .day-suggest-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .day-suggest-title{font-size:13px;font-weight:800;color:var(--accent2);}
+  .day-suggest-hours{font-size:12px;font-weight:700;background:rgba(0,200,150,.15);color:var(--accent2);padding:3px 9px;border-radius:10px;white-space:nowrap;}
+  .day-job-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(0,200,150,.1);}
+  .day-job-row:last-child{border-bottom:none;}
+  .day-job-name{font-size:13px;font-weight:600;}
+  .day-job-ref{font-size:11px;color:var(--accent);font-family:var(--mono);}
+  .day-job-area{font-size:10px;font-weight:700;font-family:var(--mono);background:rgba(156,111,255,.1);color:var(--info);padding:2px 6px;border-radius:4px;white-space:nowrap;}
+  .container-plan-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;}
+  .container-plan-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;background:rgba(61,127,255,.03);transition:all .15s;}
+  .container-plan-header:active{background:var(--surface2);}
+  .cph-left{flex:1;}
+  .cph-id{font-size:15px;font-weight:800;}
+  .cph-meta{font-size:11px;color:var(--text2);margin-top:2px;}
+  .cph-right{text-align:right;flex-shrink:0;margin-left:12px;}
+  .cph-eta{font-size:12px;font-weight:700;}
+  .cph-body{display:none;padding:0 10px 10px;}
+  .cph-body.open{display:block;}
+
 </style>
 </head>
 <body>
@@ -840,12 +885,14 @@ function getMockData(action){
       {orderRowID:'ORD-A6',containerID:'AOS-1110',supplier:'S:CRAFT',customerRef:'6115',customerName:'Angela Hall',sm8JobRef:'6115',boxesShipped:2,status:'ARRIVED',zone:'',bookingStatus:'AWAITING STOCK',damageFlag:'N',fitDate:'28/04/2026',fitTimeHrs:4,fitCat:'1/2 Day (4hrs)',fittersReq:2,jobType:'2MF',helperReq:'N',postcode:'PO19 5GH',address:'22 East St',fitRisk:false,fitPassed:false,isDead:false,overnight:false,arrivalDate:'13/04/2026'},
     ],
     scheduling:[
-      {orderRowID:'ORD-A1',customerRef:'6077',customerName:'Beth Fullegar',containerID:'AOS-1110',status:'ARRIVED',zone:'',bookingStatus:'AWAITING STOCK',fitDate:'26/04/2026',fitTimeHrs:2,fitCat:'1/4 Day (2hrs)',fittersReq:1,jobType:'1MF',helperReq:false,postcode:'PO19 1AB',address:'12 Main St',fitRisk:false,fitPassed:false},
-      {orderRowID:'ORD-A2',customerRef:'6108',customerName:'Flo Perkins',containerID:'AOS-1110',status:'ZONED',zone:'B3',bookingStatus:'READY TO BOOK',fitDate:'26/04/2026',fitTimeHrs:2,fitCat:'1/4 Day (2hrs)',fittersReq:1,jobType:'1MF',helperReq:false,postcode:'PO19 2CD',address:'8 High St',fitRisk:false,fitPassed:false},
-      {orderRowID:'ORD-A3',customerRef:'6052',customerName:'Margaret Lamb',containerID:'AOS-1110',status:'ARRIVED',zone:'',bookingStatus:'AWAITING STOCK',fitDate:'13/04/2026',fitTimeHrs:2,fitCat:'1/4 Day (2hrs)',fittersReq:1,jobType:'1MF',helperReq:false,postcode:'PO20 3EF',address:'3 West Rd',fitRisk:false,fitPassed:true},
-      {orderRowID:'ORD-A4',customerRef:'6076',customerName:'Ian Long',containerID:'AOS-1110',status:'ZONED',zone:'C1',bookingStatus:'READY TO BOOK',fitDate:'30/04/2026',fitTimeHrs:4,fitCat:'1/2 Day (4hrs)',fittersReq:2,jobType:'2MF',helperReq:false,postcode:'PO19 1CD',address:'44 North Ave',fitRisk:false,fitPassed:false},
-      {orderRowID:'ORD-A5',customerRef:'6112',customerName:'Adrian Obertelli',containerID:'AOS-1110',status:'ZONED',zone:'A2',bookingStatus:'READY TO BOOK',fitDate:'27/04/2026',fitTimeHrs:2,fitCat:'1/4 Day (2hrs)',fittersReq:1,jobType:'1MF',helperReq:false,postcode:'PO18 9HJ',address:'Test Rd',fitRisk:false,fitPassed:false},
-      {orderRowID:'ORD-A6',customerRef:'6115',customerName:'Angela Hall',containerID:'AOS-1110',status:'ARRIVED',zone:'',bookingStatus:'AWAITING STOCK',fitDate:'28/04/2026',fitTimeHrs:4,fitCat:'1/2 Day (4hrs)',fittersReq:2,jobType:'2MF',helperReq:false,postcode:'PO19 5GH',address:'22 East St',fitRisk:false,fitPassed:false},
+      {orderRowID:'ORD-A1',customerRef:'6077',customerName:'Beth Fullegar',containerID:'AOS-1110',supplier:'S:CRAFT',status:'ARRIVED',zone:'',bookingStatus:'AWAITING STOCK',fitDate:'26/04/2026',daysOverdue:0,daysUntilFit:12,fitTimeHrs:2,fitCat:'1/4 Day',fittersRaw:'1 Fitter',helperReq:'N',postcode:'PO19 1AB',postcodeDistrict:'PO19',address:'12 Main St',fittingNotes:'Standard Fit, Check Survey Forms',hasFittingNotes:true,customerAction:'None',hasCustomerAction:false,fitRisk:false,fitPassed:false,damageFlag:'N',isDead:false,overnight:false,containerStatus:'ARRIVED',etaDate:''},
+      {orderRowID:'ORD-A2',customerRef:'6108',customerName:'Flo Perkins',containerID:'AOS-1110',supplier:'S:CRAFT',status:'ZONED',zone:'B3',bookingStatus:'READY TO BOOK',fitDate:'26/04/2026',daysOverdue:0,daysUntilFit:12,fitTimeHrs:2,fitCat:'1/4 Day',fittersRaw:'1 Fitter',helperReq:'N',postcode:'PO19 2CD',postcodeDistrict:'PO19',address:'8 High St',fittingNotes:'Standard Fit',hasFittingNotes:false,customerAction:'Remove Curtains',hasCustomerAction:true,fitRisk:false,fitPassed:false,damageFlag:'N',isDead:false,overnight:false,containerStatus:'ARRIVED',etaDate:''},
+      {orderRowID:'ORD-A3',customerRef:'6052',customerName:'Margaret Lamb',containerID:'AOS-1110',supplier:'S:CRAFT',status:'ARRIVED',zone:'',bookingStatus:'AWAITING STOCK',fitDate:'13/04/2026',daysOverdue:1,daysUntilFit:null,fitTimeHrs:2,fitCat:'1/4 Day',fittersRaw:'1 Fitter',helperReq:'N',postcode:'PO20 3EF',postcodeDistrict:'PO20',address:'3 West Rd',fittingNotes:'Standard Fit',hasFittingNotes:false,customerAction:'Decorate',hasCustomerAction:true,fitRisk:false,fitPassed:true,damageFlag:'N',isDead:false,overnight:false,containerStatus:'ARRIVED',etaDate:''},
+      {orderRowID:'ORD-A4',customerRef:'6076',customerName:'Ian Long',containerID:'AOS-1110',supplier:'S:CRAFT',status:'ZONED',zone:'C1',bookingStatus:'READY TO BOOK',fitDate:'30/04/2026',daysOverdue:0,daysUntilFit:16,fitTimeHrs:4,fitCat:'1/2 Day',fittersRaw:'2 Fitters',helperReq:'N',postcode:'PO19 1CD',postcodeDistrict:'PO19',address:'44 North Ave',fittingNotes:'Standard Fit, Check Survey Forms',hasFittingNotes:true,customerAction:'None',hasCustomerAction:false,fitRisk:false,fitPassed:false,damageFlag:'N',isDead:false,overnight:false,containerStatus:'ARRIVED',etaDate:''},
+      {orderRowID:'ORD-A5',customerRef:'6112',customerName:'Adrian Obertelli',containerID:'AOS-1110',supplier:'S:CRAFT',status:'ZONED',zone:'A2',bookingStatus:'READY TO BOOK',fitDate:'27/04/2026',daysOverdue:0,daysUntilFit:13,fitTimeHrs:2,fitCat:'1/4 Day',fittersRaw:'1 Fitter',helperReq:'N',postcode:'PO19 1AB',postcodeDistrict:'PO19',address:'Test Rd',fittingNotes:'Standard Fit, Ladders',hasFittingNotes:true,customerAction:'None',hasCustomerAction:false,fitRisk:false,fitPassed:false,damageFlag:'N',isDead:false,overnight:false,containerStatus:'ARRIVED',etaDate:''},
+      {orderRowID:'ORD-A6',customerRef:'6115',customerName:'Angela Hall',containerID:'AOS-1110',supplier:'S:CRAFT',status:'ARRIVED',zone:'',bookingStatus:'AWAITING STOCK',fitDate:'28/04/2026',daysOverdue:0,daysUntilFit:14,fitTimeHrs:4,fitCat:'1/2 Day',fittersRaw:'2 Fitters',helperReq:'N',postcode:'PO19 5GH',postcodeDistrict:'PO19',address:'22 East St',fittingNotes:'Standard Fit',hasFittingNotes:false,customerAction:'Remove Blinds',hasCustomerAction:true,fitRisk:true,fitPassed:false,damageFlag:'N',isDead:false,overnight:false,containerStatus:'ARRIVED',etaDate:''},
+      {orderRowID:'ORD-A7',customerRef:'6095',customerName:'Rodney Lockwood',containerID:'CONT-26023',supplier:'TROPICAL',status:'IN TRANSIT',zone:'',bookingStatus:'AWAITING STOCK',fitDate:'15/05/2026',daysOverdue:0,daysUntilFit:31,fitTimeHrs:8,fitCat:'Full Day',fittersRaw:'1 Fitter',helperReq:'N',postcode:'GU28 0AB',postcodeDistrict:'GU28',address:'Farm Lane',fittingNotes:'Standard Fit',hasFittingNotes:false,customerAction:'None',hasCustomerAction:false,fitRisk:false,fitPassed:false,damageFlag:'N',isDead:false,overnight:false,containerStatus:'ON VESSEL',etaDate:'20/04/2026'},
+      {orderRowID:'ORD-A8',customerRef:'5800',customerName:'James Holden',containerID:'AOS-1104',supplier:'S:CRAFT',status:'IN TRANSIT',zone:'',bookingStatus:'AWAITING STOCK',fitDate:'25/04/2026',daysOverdue:0,daysUntilFit:11,fitTimeHrs:2,fitCat:'1/4 Day',fittersRaw:'1 Fitter',helperReq:'N',postcode:'PO20 1XX',postcodeDistrict:'PO20',address:'Sea Rd',fittingNotes:'Standard Fit, Check Survey Forms',hasFittingNotes:true,customerAction:'Decorate',hasCustomerAction:true,fitRisk:true,fitPassed:false,damageFlag:'N',isDead:false,overnight:false,containerStatus:'ON VESSEL',etaDate:'20/04/2026'},
     ],
     incoming:[
       {containerID:'AOS-1107',supplier:'S:CRAFT',status:'ON VESSEL',etaDate:'11/05/2026',etaEstimated:true,confDate:'',orderCount:13,riskCount:2,delayFlag:'N'},
@@ -1028,102 +1075,374 @@ function setWhFilter(f){
 }
 
 // ── SCHEDULING ────────────────────────────────────────────
-function renderScheduling(data){
-  const items=data.scheduling||[];
-  if(!items.length) return '<div class="empty-state"><div class="empty-icon">📅</div><div class="empty-text">No scheduling data</div><div class="empty-sub">CS_DATA_LINK sync needed for fit time data</div></div>';
+function renderScheduling(data) {
+  const items = data.scheduling || [];
+  if (!items.length) return '<div class="empty-state"><div class="empty-icon">📅</div><div class="empty-text">No scheduling data</div><div class="empty-sub">CS_DATA_LINK sync needed</div></div>';
+  const tab = state.schedTab || 'urgent';
+  const tabs = [
+    {id:'urgent',label:'🚨 Urgent'},
+    {id:'area',label:'📍 By Area'},
+    {id:'container',label:'📦 By Container'},
+    {id:'dayplanner',label:'📋 Day Planner'},
+  ].map(t=>`<div class="sched-tab${tab===t.id?' active':''}" onclick="setSchedTab('${t.id}')">${t.label}</div>`).join('');
+  let content='';
+  if(tab==='urgent') content=renderSchedUrgent(items);
+  else if(tab==='area') content=renderSchedArea(items);
+  else if(tab==='container') content=renderSchedContainer(items,data);
+  else if(tab==='dayplanner') content=renderSchedDayPlanner(items);
+  return `<div class="sched-tabs">${tabs}</div>${content}`;
+}
 
-  // Group by fit time category
-  const groups={};
-  const order=['1/4 Day (2hrs)','1/2 Day (4hrs)','3/4 Day (6hrs)','Full Day (8hrs)',''];
-  items.forEach(o=>{
-    const cat=o.fitCat||'No fit time set';
-    if(!groups[cat]) groups[cat]=[];
-    groups[cat].push(o);
+function renderSchedUrgent(items) {
+  const urgent = items.filter(o=>o.fitPassed||o.fitRisk).sort((a,b)=>b.daysOverdue-a.daysOverdue);
+  const upcoming = items.filter(o=>!o.fitPassed&&!o.fitRisk&&o.fitDate).sort((a,b)=>{
+    const da=a.fitDate.split('/').reverse().join('');
+    const db=b.fitDate.split('/').reverse().join('');
+    return da.localeCompare(db);
   });
-
-  // Sort each group by fit date
-  Object.values(groups).forEach(g=>g.sort((a,b)=>{
-    if(!a.fitDate) return 1; if(!b.fitDate) return -1;
-    const pa=a.fitDate.split('/'),pb=b.fitDate.split('/');
-    return new Date(pa[2],pa[1]-1,pa[0])-new Date(pb[2],pb[1]-1,pb[0]);
-  }));
-
-  // Find grouping opportunities — same postcode prefix (first 4 chars)
-  const postGroups={};
-  items.forEach(o=>{
-    if(!o.postcode) return;
-    const pre=o.postcode.substring(0,4).trim();
-    if(!postGroups[pre]) postGroups[pre]=[];
-    postGroups[pre].push(o.customerRef);
-  });
-  const groupOpps=Object.entries(postGroups).filter(([,v])=>v.length>1);
-
+  const noDate = items.filter(o=>!o.fitDate);
   let html='';
-
-  // Grouping opportunities banner
-  if(groupOpps.length>0){
-    html+=`<div class="alert-strip blue" style="margin-bottom:12px">
-      <div class="alert-icon">📍</div>
-      <div class="alert-body">
-        <div class="alert-title">${groupOpps.length} grouping opportunit${groupOpps.length>1?'ies':'y'} by area</div>
-        <div class="alert-sub">${groupOpps.map(([pre,refs])=>`${pre}: ${refs.length} jobs nearby`).join(' · ')}</div>
-      </div>
-    </div>`;
+  if(!urgent.length&&!upcoming.length){
+    html+='<div class="empty-state" style="padding:24px 0"><div class="empty-icon">✅</div><div class="empty-text">Nothing urgent</div><div class="empty-sub">No fit dates at risk right now</div></div>';
   }
-
-  // Stats bar
-  const readyToBook=items.filter(i=>i.bookingStatus==='READY TO BOOK').length;
-  const awaiting=items.filter(i=>i.bookingStatus==='AWAITING STOCK').length;
-  const atRisk=items.filter(i=>i.fitRisk||i.fitPassed).length;
-  html+=`<div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
-    <div style="flex:1;min-width:80px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center"><div style="font-size:18px;font-weight:800;color:var(--accent2)">${readyToBook}</div><div style="font-size:9px;color:var(--text3);font-weight:700;text-transform:uppercase">Ready to Book</div></div>
-    <div style="flex:1;min-width:80px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center"><div style="font-size:18px;font-weight:800;color:var(--text3)">${awaiting}</div><div style="font-size:9px;color:var(--text3);font-weight:700;text-transform:uppercase">Awaiting Stock</div></div>
-    <div style="flex:1;min-width:80px;background:var(--surface);border:1px solid ${atRisk>0?'rgba(255,71,87,.3)':'var(--border)'};border-radius:10px;padding:10px;text-align:center"><div style="font-size:18px;font-weight:800;color:${atRisk>0?'#ff4757':'var(--text3)'}">${atRisk}</div><div style="font-size:9px;color:var(--text3);font-weight:700;text-transform:uppercase">At Risk</div></div>
-  </div>`;
-
-  // Jobs by fit time group
-  const catOrder=['1/4 Day (2hrs)','1/2 Day (4hrs)','3/4 Day (6hrs)','Full Day (8hrs)','No fit time set'];
-  catOrder.forEach(cat=>{
-    const g=groups[cat];
-    if(!g||!g.length) return;
-    const readyCount=g.filter(o=>o.bookingStatus==='READY TO BOOK').length;
-    const riskCount=g.filter(o=>o.fitRisk||o.fitPassed).length;
-    html+=`<div class="group-header">${fitPill(cat==='No fit time set'?'':cat)} ${cat}
-      <span class="group-badge gb-blue">${g.length} job${g.length!==1?'s':''}</span>
-      ${readyCount>0?`<span class="group-badge gb-green">${readyCount} ready</span>`:''}
-      ${riskCount>0?`<span class="group-badge gb-red">${riskCount} at risk</span>`:''}
-    </div>`;
-    g.forEach(o=>{
-      const fitDateColor=o.fitPassed?'color:#ff4757':o.fitRisk?'color:#ffa502':o.fitDate?'color:#2ed573':'color:var(--text3)';
-      // Check if this job has nearby grouping opportunity
-      const pre=o.postcode?o.postcode.substring(0,4).trim():'';
-      const hasGroup=pre&&postGroups[pre]&&postGroups[pre].length>1;
-      html+=`<div class="off-card${o.fitPassed?' risk':o.fitRisk?' warn':''}">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
-          <div><div class="off-ref">${o.customerRef}</div><div class="off-name">${o.customerName}</div></div>
-          <div style="text-align:right">
-            <div style="font-size:13px;font-weight:800;${fitDateColor}">📅 ${o.fitDate||'TBC'}</div>
-            <div style="font-size:10px;color:var(--text3);margin-top:2px">${o.containerID}</div>
-          </div>
-        </div>
-        <div class="off-meta">
-          ${bookPill(o.bookingStatus)}
-          <div>Fitters: <b>${o.fittersReq||'?'}</b></div>
-          <div>Type: <b>${o.jobType||'—'}</b></div>
-          ${o.zone?`<div>Zone: <b>${o.zone}</b></div>`:''}
-          ${o.postcode?`<span class="postcode-chip">${o.postcode}</span>`:''}
-          ${o.helperReq?'<span style="font-size:10px;background:rgba(156,111,255,.12);color:var(--info);padding:2px 7px;border-radius:5px;font-weight:700">+ HELPER</span>':''}
-          ${hasGroup?`<span style="font-size:10px;background:rgba(0,200,150,.1);color:var(--accent2);padding:2px 7px;border-radius:5px;font-weight:700">📍 GROUP NEARBY</span>`:''}
-          ${o.fitPassed?'<span class="off-meta red">⚠ DATE PASSED</span>':''}
-        </div>
-      </div>`;
-    });
-  });
-
+  if(urgent.length){
+    html+=`<div class="group-header">🚨 Needs Action Now <span class="group-badge gb-red">${urgent.length}</span></div>`;
+    html+=urgent.map(o=>renderJobCard(o)).join('');
+  }
+  if(upcoming.length){
+    html+=`<div class="group-header" style="margin-top:16px">📅 Upcoming Fit Dates <span class="group-badge gb-blue">${upcoming.length}</span></div>`;
+    html+=upcoming.slice(0,20).map(o=>renderJobCard(o)).join('');
+    if(upcoming.length>20) html+=`<div style="text-align:center;padding:10px;font-size:13px;color:var(--text3)">+${upcoming.length-20} more — use By Area or Day Planner to see all</div>`;
+  }
+  if(noDate.length){
+    html+=`<div class="group-header" style="margin-top:16px">❓ No Fit Date Set <span class="group-badge gb-amber">${noDate.length}</span></div>`;
+    html+=noDate.slice(0,10).map(o=>renderJobCard(o)).join('');
+    if(noDate.length>10) html+=`<div style="text-align:center;padding:10px;font-size:13px;color:var(--text3)">+${noDate.length-10} more jobs with no fit date</div>`;
+  }
   return html;
 }
 
-// ── INCOMING ──────────────────────────────────────────────
+function renderSchedArea(items) {
+  const areaMap={};
+  items.forEach(o=>{
+    const d=o.postcodeDistrict||'Unknown Area';
+    if(!areaMap[d]) areaMap[d]=[];
+    areaMap[d].push(o);
+  });
+  if(!Object.keys(areaMap).length) return '<div class="empty-state" style="padding:24px 0"><div class="empty-icon">📍</div><div class="empty-text">No postcode data</div><div class="empty-sub">Run CS_DATA_LINK sync to populate postcodes</div></div>';
+  const areas=Object.entries(areaMap).sort((a,b)=>{
+    const aR=a[1].filter(o=>o.bookingStatus==='READY TO BOOK').length;
+    const bR=b[1].filter(o=>o.bookingStatus==='READY TO BOOK').length;
+    return bR-aR;
+  });
+  let html=`<div style="font-size:12px;color:var(--text2);margin-bottom:12px">${areas.length} postcode areas · tap to expand</div>`;
+  areas.forEach(([district,jobs])=>{
+    const readyCount=jobs.filter(o=>o.bookingStatus==='READY TO BOOK').length;
+    const urgentCount=jobs.filter(o=>o.fitPassed||o.fitRisk).length;
+    const awaitingCount=jobs.filter(o=>o.bookingStatus==='AWAITING STOCK').length;
+    const totalHours=jobs.reduce((s,o)=>s+(o.fitTimeHrs||0),0);
+    const helperJobs=jobs.filter(o=>o.helperReq==='Y').length;
+    const qtr=jobs.filter(o=>o.fitCat==='1/4 Day').length;
+    const half=jobs.filter(o=>o.fitCat==='1/2 Day').length;
+    const thr=jobs.filter(o=>o.fitCat==='3/4 Day').length;
+    const full=jobs.filter(o=>o.fitCat==='Full Day').length;
+    const fitSum=[qtr?qtr+'× ¼':'',half?half+'× ½':'',thr?thr+'× ¾':'',full?full+'× Full':''].filter(Boolean).join(' · ');
+    const aId='area-'+district.replace(/\s/g,'').replace(/[^a-zA-Z0-9]/g,'');
+    html+=`<div class="area-group">
+      <div class="area-group-header" onclick="toggleArea('${aId}')">
+        <div>
+          <div class="area-district">${district}</div>
+          <div class="area-meta">${fitSum}${totalHours>0?' · '+totalHours+'hrs total':''}${helperJobs>0?' · '+helperJobs+' need helper':''}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div>
+            ${readyCount>0?`<div style="font-size:11px;font-weight:700;color:#2ed573">${readyCount} ready</div>`:''}
+            ${urgentCount>0?`<div style="font-size:11px;font-weight:700;color:#ff4757">${urgentCount} urgent</div>`:''}
+            ${awaitingCount>0?`<div style="font-size:11px;color:var(--text3)">${awaitingCount} awaiting</div>`:''}
+          </div>
+          <div class="area-jobs-count">
+            <div class="area-count-big" style="color:${readyCount>0?'var(--accent)':'var(--text3)'}">${jobs.length}</div>
+            <div class="area-count-lbl">jobs</div>
+          </div>
+          <div class="area-expand-icon" id="${aId}-icon">▼</div>
+        </div>
+      </div>
+      <div class="area-jobs-list" id="${aId}">
+        ${renderAreaDaySuggestion(jobs.filter(o=>o.bookingStatus==='READY TO BOOK'),district)}
+        ${jobs.sort((a,b)=>{
+          if(a.fitPassed&&!b.fitPassed) return -1;
+          if(b.fitPassed&&!a.fitPassed) return 1;
+          if(a.fitRisk&&!b.fitRisk) return -1;
+          if(b.fitRisk&&!a.fitRisk) return 1;
+          if(a.bookingStatus==='READY TO BOOK'&&b.bookingStatus!=='READY TO BOOK') return -1;
+          if(b.bookingStatus==='READY TO BOOK'&&a.bookingStatus!=='READY TO BOOK') return 1;
+          return 0;
+        }).map(o=>renderJobCard(o)).join('')}
+      </div>
+    </div>`;
+  });
+  return html;
+}
+
+function renderAreaDaySuggestion(ready,district) {
+  if(ready.length<2) return '';
+  const suggestions=findDayCombinations(ready,8);
+  if(!suggestions.length) return '';
+  const best=suggestions[0];
+  return `<div class="day-suggest" style="margin:10px 0 6px">
+    <div class="day-suggest-header">
+      <div class="day-suggest-title">💡 Suggested day in ${district}</div>
+      <div class="day-suggest-hours">${best.totalHours}/8hrs</div>
+    </div>
+    ${best.jobs.map(o=>`<div class="day-job-row">
+      <div style="flex:1"><div class="day-job-ref">${o.customerRef}</div><div class="day-job-name">${o.customerName}</div></div>
+      ${fitPillHtml(o.fitCat)}
+      <div class="day-job-area">${o.postcodeDistrict||'?'}</div>
+      ${o.hasCustomerAction?'<span style="font-size:10px;color:#ffa502" title="'+o.customerAction+'">⚠</span>':''}
+    </div>`).join('')}
+    <div style="font-size:11px;color:var(--text2);margin-top:8px">
+      ${best.jobs.filter(o=>o.hasCustomerAction).length>0?'⚠ Some jobs have customer pre-conditions — check before booking':'✓ No customer pre-conditions — can book immediately'}
+    </div>
+  </div>`;
+}
+
+function renderSchedContainer(items,data) {
+  const containerMap={};
+  items.forEach(o=>{
+    if(!containerMap[o.containerID]) containerMap[o.containerID]={
+      containerID:o.containerID, supplier:o.supplier, containerStatus:o.containerStatus,
+      arrivalDate:o.arrivalDate, etaDate:o.etaDate, jobs:[]
+    };
+    containerMap[o.containerID].jobs.push(o);
+  });
+  const containers=Object.values(containerMap).sort((a,b)=>{
+    const aA=['ARRIVED','FULLY ZONED'].includes(a.containerStatus);
+    const bA=['ARRIVED','FULLY ZONED'].includes(b.containerStatus);
+    if(aA&&!bA) return -1; if(bA&&!aA) return 1; return 0;
+  });
+  if(!containers.length) return '<div class="empty-state" style="padding:24px 0"><div class="empty-icon">📦</div><div class="empty-text">No containers found</div></div>';
+  return containers.map(c=>{
+    const readyCount=c.jobs.filter(o=>o.bookingStatus==='READY TO BOOK').length;
+    const urgentCount=c.jobs.filter(o=>o.fitPassed||o.fitRisk).length;
+    const totalHours=c.jobs.reduce((s,o)=>s+(o.fitTimeHrs||0),0);
+    const isArrived=['ARRIVED','FULLY ZONED','CONFIRMED DELIVERY'].includes(c.containerStatus);
+    const cId='cph-'+c.containerID.replace(/[^a-zA-Z0-9]/g,'');
+    const supClass=c.supplier==='S:CRAFT'?'sb-sc':c.supplier==='TROPICAL'?'sb-tr':'sb-my';
+    const statusColor=isArrived?'#2ed573':'var(--accent)';
+    const dateLabel=isArrived?'Arrived':'ETA';
+    const dateVal=isArrived?(c.arrivalDate||'—'):(c.etaDate||'TBC');
+    return `<div class="container-plan-card">
+      <div class="container-plan-header" onclick="toggleCph('${cId}')">
+        <div class="cph-left">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+            <div class="cph-id">${c.containerID}</div>
+            <span class="sup-badge ${supClass}">${c.supplier}</span>
+          </div>
+          <div class="cph-meta">${c.jobs.length} jobs · ${totalHours}hrs total${readyCount>0?' · <span style="color:#2ed573;font-weight:700">'+readyCount+' ready</span>':''}${urgentCount>0?' · <span style="color:#ff4757;font-weight:700">'+urgentCount+' urgent</span>':''}</div>
+        </div>
+        <div class="cph-right">
+          <div class="cph-eta" style="color:${statusColor}">${dateLabel}: ${dateVal}</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:2px">${c.containerStatus||'—'}</div>
+        </div>
+      </div>
+      <div class="cph-body" id="${cId}">
+        ${renderAreaDaySuggestion(c.jobs.filter(o=>o.bookingStatus==='READY TO BOOK'),c.containerID)}
+        <div style="margin-top:6px">
+          ${c.jobs.sort((a,b)=>{if(a.fitPassed&&!b.fitPassed)return -1;if(b.fitPassed&&!a.fitPassed)return 1;return 0;}).map(o=>renderJobCard(o)).join('')}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderSchedDayPlanner(items) {
+  const readyNow=items.filter(o=>o.bookingStatus==='READY TO BOOK');
+  const planAhead=items.filter(o=>o.bookingStatus==='AWAITING STOCK'&&o.etaDate&&o.etaDate!=='TBC');
+  let html=`<div style="margin-bottom:6px">
+    <div style="font-size:13px;font-weight:800;color:var(--accent2);margin-bottom:4px">✅ Ready to Book Now</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:12px">${readyNow.length} jobs confirmed in warehouse</div>
+  </div>`;
+  if(!readyNow.length){
+    html+='<div style="font-size:13px;color:var(--text3);padding:12px 0 20px">No jobs currently ready to book</div>';
+  } else {
+    const daySuggestions=buildDaySuggestions(readyNow);
+    if(daySuggestions.length){
+      daySuggestions.forEach((s,idx)=>{
+        const urgentIn=s.jobs.filter(o=>o.fitPassed||o.fitRisk).length;
+        const prompts=s.jobs.filter(o=>o.hasCustomerAction);
+        html+=`<div class="day-suggest">
+          <div class="day-suggest-header">
+            <div>
+              <div class="day-suggest-title">💡 Suggested Day ${idx+1}</div>
+              <div style="font-size:11px;color:var(--text2);margin-top:2px">${s.area} · ${s.jobs.length} jobs${urgentIn>0?' · <span style="color:#ff4757">'+urgentIn+' urgent</span>':''}</div>
+            </div>
+            <div class="day-suggest-hours">${s.totalHours}/8hrs</div>
+          </div>
+          ${s.jobs.map(o=>`<div class="day-job-row">
+            <div style="flex:1">
+              <div class="day-job-ref">${o.customerRef}</div>
+              <div class="day-job-name">${o.customerName}</div>
+              <div style="font-size:10px;color:var(--text2);margin-top:1px">${o.address||o.postcodeDistrict||''}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+              ${fitPillHtml(o.fitCat)}
+              <div class="day-job-area">${o.postcodeDistrict||'?'}</div>
+              ${o.fitPassed?'<span style="font-size:10px;color:#ff4757;font-weight:700">OVERDUE</span>':''}
+              ${o.fitRisk?'<span style="font-size:10px;color:#ffa502;font-weight:700">URGENT</span>':''}
+            </div>
+          </div>`).join('')}
+          ${prompts.length>0?`<div class="action-prompt" style="margin-top:10px">
+            <div class="action-prompt-icon">⚠️</div>
+            <div class="action-prompt-text">Booking prompts for ${prompts.length} job${prompts.length>1?'s':''}:
+              ${prompts.map(o=>o.customerName+': "'+o.customerAction+'"').join(' · ')}</div>
+          </div>`:'<div style="margin-top:8px;font-size:11px;color:var(--accent2)">✓ No pre-conditions — can book immediately</div>'}
+        </div>`;
+      });
+    } else {
+      html+='<div style="font-size:12px;color:var(--text2);margin-bottom:10px">Jobs ready — no area groupings found</div>';
+      html+=readyNow.map(o=>renderJobCard(o)).join('');
+    }
+  }
+  html+=`<div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+    <div style="font-size:13px;font-weight:800;color:var(--accent);margin-bottom:4px">🔭 Planning Ahead</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:12px">${planAhead.length} jobs awaiting stock · if containers arrive on time, earliest possible slots:</div>
+  </div>`;
+  if(!planAhead.length){
+    html+='<div style="font-size:13px;color:var(--text3);padding:8px 0">No incoming containers with ETA data</div>';
+  } else {
+    const now2=new Date();
+    const twoWk=new Date(now2.getTime()+14*86400000);
+    const fourWk=new Date(now2.getTime()+28*86400000);
+    const tw=planAhead.filter(o=>parseUkDateJs(o.etaDate)<=twoWk);
+    const nxt=planAhead.filter(o=>{const d=parseUkDateJs(o.etaDate);return d>twoWk&&d<=fourWk;});
+    const lat=planAhead.filter(o=>parseUkDateJs(o.etaDate)>fourWk);
+    if(tw.length){html+=`<div class="group-header">📦 Arriving within 2 weeks <span class="group-badge gb-green">${tw.length}</span></div>`;html+=tw.map(o=>renderPlanAheadCard(o)).join('');}
+    if(nxt.length){html+=`<div class="group-header" style="margin-top:14px">📦 Arriving 2–4 weeks <span class="group-badge gb-blue">${nxt.length}</span></div>`;html+=nxt.map(o=>renderPlanAheadCard(o)).join('');}
+    if(lat.length){html+=`<div class="group-header" style="margin-top:14px">📦 Arriving 4+ weeks <span class="group-badge gb-amber">${lat.length}</span></div>`;html+=lat.slice(0,10).map(o=>renderPlanAheadCard(o)).join('');if(lat.length>10)html+=`<div style="font-size:12px;color:var(--text3);padding:8px 0">+${lat.length-10} more further out</div>`;}
+  }
+  return html;
+}
+
+function renderPlanAheadCard(o) {
+  const etaDateObj=parseUkDateJs(o.etaDate);
+  const earliestFit=etaDateObj?new Date(etaDateObj.getTime()+3*86400000):null;
+  const earliestFitStr=earliestFit?formatDateSimple(earliestFit):'—';
+  const fitDateColor=o.fitPassed?'#ff4757':o.fitRisk?'#ffa502':o.fitDate?'#2ed573':'var(--text3)';
+  return `<div class="job-card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+      <div><div class="off-ref">${o.customerRef}</div><div class="off-name">${o.customerName}</div></div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-size:11px;color:var(--text3)">Container ${o.containerID}</div>
+        <div style="font-size:11px;font-weight:700;color:var(--accent);margin-top:2px">ETA ${o.etaDate||'TBC'}</div>
+      </div>
+    </div>
+    <div class="off-meta">
+      ${fitPillHtml(o.fitCat)}
+      <div>Fitters: <b>${o.fittersRaw||'—'}</b></div>
+      ${o.postcodeDistrict?`<span class="postcode-chip">${o.postcodeDistrict}</span>`:''}
+      ${bookPillHtml(o.bookingStatus)}
+    </div>
+    <div style="margin-top:8px;padding:8px 10px;background:rgba(61,127,255,.06);border:1px solid rgba(61,127,255,.15);border-radius:8px;font-size:12px">
+      📅 Confirmed fit date: <span style="color:${fitDateColor};font-weight:700">${o.fitDate||'Not set'}</span>
+      ${earliestFitStr!=='—'?' · Earliest possible: <span style="color:var(--accent2);font-weight:700">'+earliestFitStr+'</span>':''}
+      ${o.fitPassed?' <span style="color:#ff4757;font-weight:700">— DATE PASSED</span>':''}
+    </div>
+    ${o.hasCustomerAction?`<div class="action-prompt"><div class="action-prompt-icon">⚠️</div><div class="action-prompt-text">When booking: "${o.customerAction}"</div></div>`:''}
+    ${renderFittingNotesTags(o.fittingNotes)}
+  </div>`;
+}
+
+function renderJobCard(o) {
+  const cardStyle=o.fitPassed?'urgent':o.fitRisk?'risk':o.bookingStatus==='READY TO BOOK'?'ready':'';
+  const fitDateColor=o.fitPassed?'#ff4757':o.fitRisk?'#ffa502':o.fitDate?'#2ed573':'var(--text3)';
+  const overdueText=o.fitPassed&&o.daysOverdue>0?`<span style="color:#ff4757;font-weight:700">⚠ ${o.daysOverdue}d overdue</span>`:'';
+  const daysToFit=!o.fitPassed&&o.daysUntilFit!==null&&o.daysUntilFit<=30?`<span style="color:${o.daysUntilFit<=7?'#ff4757':'#ffa502'}">${o.daysUntilFit}d away</span>`:'';
+  return `<div class="job-card ${cardStyle}">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+      <div style="flex:1">
+        <div class="off-ref">${o.customerRef}${o.sm8JobRef&&o.sm8JobRef!==o.customerRef?' · '+o.sm8JobRef:''}</div>
+        <div class="off-name">${o.customerName}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;margin-left:8px">
+        <div style="font-size:13px;font-weight:800;color:${fitDateColor}">📅 ${o.fitDate||'No date'}</div>
+        <div style="font-size:10px;margin-top:2px">${overdueText}${daysToFit}</div>
+      </div>
+    </div>
+    <div class="off-meta">
+      ${fitPillHtml(o.fitCat)}
+      <div>Fitters: <b>${o.fittersRaw||'—'}</b></div>
+      ${o.helperReq==='Y'?'<span style="font-size:10px;background:rgba(156,111,255,.12);color:var(--info);padding:2px 7px;border-radius:5px;font-weight:700">+ HELPER</span>':''}
+      ${o.postcodeDistrict?`<span class="postcode-chip">${o.postcodeDistrict}</span>`:''}
+      ${bookPillHtml(o.bookingStatus)}
+      ${o.zone?`<div>Zone: <b>${o.zone}</b></div>`:''}
+      ${o.specificFitter&&o.specificFitter!=='No'?`<div>Fitter: <b style="color:var(--accent2)">${o.specificFitter}</b></div>`:''}
+      ${o.damageFlag==='Y'?'<span class="off-meta red">💥 DAMAGE</span>':''}
+      ${o.isDead?'<span class="off-meta amber">📦 DEAD STOCK</span>':''}
+    </div>
+    ${o.hasCustomerAction?`<div class="action-prompt"><div class="action-prompt-icon">⚠️</div><div class="action-prompt-text">Before booking, check: "${o.customerAction}"</div></div>`:''}
+    ${renderFittingNotesTags(o.fittingNotes)}
+  </div>`;
+}
+
+function renderFittingNotesTags(notes) {
+  if(!notes||notes.toLowerCase()==='standard fit') return '';
+  const parts=notes.split(',').map(s=>s.trim()).filter(s=>s&&s.toLowerCase()!=='standard fit');
+  if(!parts.length) return '';
+  return `<div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:4px">${parts.map(p=>'<span class="fit-note-tag">📋 '+p+'</span>').join('')}</div>`;
+}
+
+function findDayCombinations(jobs,targetHours) {
+  const suggestions=[];
+  const byArea={};
+  jobs.forEach(o=>{const d=o.postcodeDistrict||'Unknown';if(!byArea[d])byArea[d]=[];byArea[d].push(o);});
+  Object.entries(byArea).forEach(([district,areaJobs])=>{
+    let hours=0; const selected=[];
+    const sorted=[...areaJobs].sort((a,b)=>{
+      if(a.fitPassed&&!b.fitPassed)return -1;if(b.fitPassed&&!a.fitPassed)return 1;
+      if(a.fitRisk&&!b.fitRisk)return -1;if(b.fitRisk&&!a.fitRisk)return 1;return 0;
+    });
+    sorted.forEach(job=>{if(hours+(job.fitTimeHrs||0)<=targetHours){selected.push(job);hours+=(job.fitTimeHrs||0);}});
+    if(selected.length>=2||(selected.length===1&&hours>=4)) suggestions.push({area:district,jobs:selected,totalHours:hours});
+  });
+  return suggestions.sort((a,b)=>b.totalHours-a.totalHours);
+}
+
+function buildDaySuggestions(readyJobs){return findDayCombinations(readyJobs,8);}
+
+function toggleArea(id){
+  const el=document.getElementById(id);const icon=document.getElementById(id+'-icon');
+  if(!el)return;const isOpen=el.classList.contains('open');
+  el.classList.toggle('open',!isOpen);if(icon)icon.classList.toggle('open',!isOpen);
+}
+function toggleCph(id){const el=document.getElementById(id);if(!el)return;el.classList.toggle('open');}
+function setSchedTab(tab){state.schedTab=tab;if(state.offData)renderOffTab('scheduling',state.offData);}
+
+function fitPillHtml(cat){
+  if(!cat)return '<span class="fit-pill fp-unknown">—</span>';
+  if(cat.includes('1/4')||cat==='1/4 Day')return '<span class="fit-pill fp-quarter">¼ Day</span>';
+  if(cat.includes('1/2')||cat==='1/2 Day')return '<span class="fit-pill fp-half">½ Day</span>';
+  if(cat.includes('3/4')||cat==='3/4 Day')return '<span class="fit-pill fp-threequarter">¾ Day</span>';
+  if(cat.includes('Full')||cat==='Full Day')return '<span class="fit-pill fp-full">Full Day</span>';
+  return '<span class="fit-pill fp-unknown">'+cat+'</span>';
+}
+function bookPillHtml(bs){
+  if(bs==='READY TO BOOK')return '<span class="booking-pill bp-ready">READY</span>';
+  if(bs==='BOOKED')return '<span class="booking-pill bp-booked">BOOKED</span>';
+  if(bs==='AWAITING STOCK')return '<span class="booking-pill bp-awaiting">AWAITING</span>';
+  if(bs&&bs.includes('DAMAGED'))return '<span class="booking-pill bp-damaged">ON HOLD</span>';
+  return '<span class="booking-pill bp-awaiting">'+(bs||'—')+'</span>';
+}
+function parseUkDateJs(s){
+  if(!s||s==='TBC')return new Date(9999,0,1);
+  const p=s.split('/');if(p.length!==3)return new Date(9999,0,1);
+  return new Date(parseInt(p[2]),parseInt(p[1])-1,parseInt(p[0]));
+}
+function formatDateSimple(d){
+  if(!d)return '—';
+  return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();
+}
+
+
 function renderIncoming(data){
   const items=data.incoming||[];
   if(!items.length) return '<div class="empty-state"><div class="empty-icon">🚢</div><div class="empty-text">Nothing in transit</div></div>';
