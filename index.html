@@ -984,6 +984,18 @@ function offTab(tab, el){
   offRefresh();
 }
 
+function offTabGo(tab, filter) {
+  const tabIndex = {overview:0,warehouse:1,scheduling:2,incoming:3,damage:4,search:5};
+  const idx = tabIndex[tab] !== undefined ? tabIndex[tab] : 0;
+  const el = document.querySelectorAll('.off-tab')[idx];
+  if(filter) {
+    if(tab==='warehouse') { state.whFilter = filter; }
+    if(tab==='scheduling') { state.schedTab = filter; }
+  }
+  offTab(tab, el);
+  window.scrollTo(0,0);
+}
+
 async function offRefresh(){
   const body=document.getElementById('offBody');
   body.innerHTML='<div class="loading"><div class="spinner"></div>Loading…</div>';
@@ -1032,15 +1044,15 @@ function renderOverview(data){
   const alerts=data.alerts||[];
   return `
   <div class="kpi-row">
-    <div class="kpi-cell blue"><div class="kpi-val">${k.containersActive??'—'}</div><div class="kpi-lbl">Containers</div></div>
-    <div class="kpi-cell ${k.ordersUnzoned>0?'amber':'green'}"><div class="kpi-val">${k.ordersUnzoned??'—'}</div><div class="kpi-lbl">Unzoned</div></div>
-    <div class="kpi-cell ${(k.fitDatesAtRisk+k.fitDatesPassed)>0?'red':'green'}"><div class="kpi-val">${(k.fitDatesAtRisk||0)+(k.fitDatesPassed||0)}</div><div class="kpi-lbl">Fit Risk</div></div>
-    <div class="kpi-cell purple"><div class="kpi-val">${k.pipelineCount??'—'}</div><div class="kpi-lbl">In Transit</div></div>
+    <div class="kpi-cell blue" style="cursor:pointer" onclick="offTabGo('warehouse')"><div class="kpi-val">${k.containersActive??'—'}</div><div class="kpi-lbl">Containers ›</div></div>
+    <div class="kpi-cell ${k.ordersUnzoned>0?'amber':'green'}" style="cursor:pointer" onclick="offTabGo('warehouse','ARRIVED')"><div class="kpi-val">${k.ordersUnzoned??'—'}</div><div class="kpi-lbl">Unzoned ›</div></div>
+    <div class="kpi-cell ${(k.fitDatesAtRisk+k.fitDatesPassed)>0?'red':'green'}" style="cursor:pointer" onclick="offTabGo('scheduling','urgent')"><div class="kpi-val">${(k.fitDatesAtRisk||0)+(k.fitDatesPassed||0)}</div><div class="kpi-lbl">Fit Risk ›</div></div>
+    <div class="kpi-cell purple" style="cursor:pointer" onclick="offTabGo('incoming')"><div class="kpi-val">${k.pipelineCount??'—'}</div><div class="kpi-lbl">In Transit ›</div></div>
   </div>
   <div class="kpi-row">
-    <div class="kpi-cell green"><div class="kpi-val">${k.ordersReadyToBook??'0'}</div><div class="kpi-lbl">Ready Book</div></div>
-    <div class="kpi-cell ${k.damageOpen>0?'red':'green'}"><div class="kpi-val">${k.damageOpen??'0'}</div><div class="kpi-lbl">Damage</div></div>
-    <div class="kpi-cell ${k.deadStock>0?'amber':'green'}"><div class="kpi-val">${k.deadStock??'0'}</div><div class="kpi-lbl">Dead Stock</div></div>
+    <div class="kpi-cell green" style="cursor:pointer" onclick="offTabGo('scheduling','dayplanner')"><div class="kpi-val">${k.ordersReadyToBook??'0'}</div><div class="kpi-lbl">Ready Book ›</div></div>
+    <div class="kpi-cell ${k.damageOpen>0?'red':'green'}" style="cursor:pointer" onclick="offTabGo('damage')"><div class="kpi-val">${k.damageOpen??'0'}</div><div class="kpi-lbl">Damage ›</div></div>
+    <div class="kpi-cell ${k.deadStock>0?'amber':'green'}" style="cursor:pointer" onclick="offTabGo('warehouse','DEAD STOCK')"><div class="kpi-val">${k.deadStock??'0'}</div><div class="kpi-lbl">Dead Stock ›</div></div>
     <div class="kpi-cell ${k.overnightStock>0?'amber':'green'}"><div class="kpi-val">${k.overnightStock??'0'}</div><div class="kpi-lbl">On Van</div></div>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px">
@@ -1050,7 +1062,7 @@ function renderOverview(data){
   </div>
   <div class="section-title">🔔 Alerts</div>
   ${alerts.length
-    ? alerts.map(a=>`<div class="alert-strip ${a.type}"><div class="alert-icon">${a.icon}</div><div class="alert-body"><div class="alert-title">${a.title}</div><div class="alert-sub">${a.sub}</div></div></div>`).join('')
+    ? alerts.map(a=>`<div class="alert-strip ${a.type}" style="cursor:pointer" onclick="offTabGo(a.icon==='💥'?'damage':'scheduling',a.icon==='📅'||a.icon==='⚠️'?'urgent':'dayplanner')"><div class="alert-icon">${a.icon}</div><div class="alert-body"><div class="alert-title">${a.title}</div><div class="alert-sub">${a.sub} — tap to view ›</div></div></div>`).join('')
     : '<div style="font-size:13px;color:var(--text3);padding:8px 0 16px">✅ No alerts — all clear!</div>'
   }
   <div class="section-title" style="margin-top:8px">Quick Access</div>
@@ -1265,7 +1277,12 @@ function renderSchedArea(items) {
     const half=jobs.filter(o=>o.fitCat==='1/2 Day').length;
     const thr=jobs.filter(o=>o.fitCat==='3/4 Day').length;
     const full=jobs.filter(o=>o.fitCat==='Full Day').length;
-    const fitSum=[qtr?qtr+'× ¼':'',half?half+'× ½':'',thr?thr+'× ¾':'',full?full+'× Full':''].filter(Boolean).join(' · ');
+    const fitSum=[
+      qtr  ? qtr  +' quarter-day job'+(qtr>1?'s':'')  : '',
+      half ? half +' half-day job'+(half>1?'s':'')    : '',
+      thr  ? thr  +' 3/4-day job'+(thr>1?'s':'')     : '',
+      full ? full +' full-day job'+(full>1?'s':'')    : ''
+    ].filter(Boolean).join(' · ');
 
     const aId='area-'+zoneName.replace(/[^a-zA-Z0-9]/g,'');
 
@@ -1654,30 +1671,75 @@ function formatDateSimple(d){
 function renderIncoming(data){
   const items=data.incoming||[];
   if(!items.length) return '<div class="empty-state"><div class="empty-icon">🚢</div><div class="empty-text">Nothing in transit</div></div>';
-  return items.map(p=>{
+  return `<div style="font-size:12px;color:var(--text2);margin-bottom:12px">${items.length} containers · tap any to see orders inside</div>`+
+  items.map(p=>{
     const sc=p.supplier==='S:CRAFT'?'sb-sc':p.supplier==='TROPICAL'?'sb-tr':'sb-my';
     const statusColors={'ON VESSEL':'color:var(--accent)','LEFT PORT':'color:var(--info)','ORDER PLACED':'color:var(--text3)'};
     const sc2=statusColors[p.status]||'color:var(--text2)';
-    return `<div class="off-card">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
-        <div>
-          <div style="font-size:11px;color:var(--text3);font-weight:700;margin-bottom:2px">Container</div>
-          <div style="font-size:17px;font-weight:800">${p.containerID}</div>
+    const cId='inc-'+p.containerID.replace(/[^a-zA-Z0-9]/g,'');
+    return `<div class="container-plan-card">
+      <div class="container-plan-header" onclick="toggleCphIncoming('${cId}','${p.containerID}')">
+        <div class="cph-left">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+            <div class="cph-id">${p.containerID}</div>
+            <span class="sup-badge ${sc}">${p.supplier}</span>
+          </div>
+          <div class="cph-meta">
+            ETA: <span style="${p.etaEstimated?'color:var(--text3)':'color:var(--accent2);font-weight:700'}">${p.etaDate}${p.etaEstimated?' (est)':''}</span>
+            &nbsp;·&nbsp; ${p.orderCount} order${p.orderCount!==1?'s':''}
+            ${p.riskCount>0?' · <span style="color:#ff4757;font-weight:700">'+p.riskCount+' fit date'+(p.riskCount>1?'s':'')+' at risk</span>':''}
+            ${p.delayFlag==='Y'?' · <span style="color:#ffa502;font-weight:700">⚠ DELAYED</span>':''}
+          </div>
         </div>
-        <div style="text-align:right">
-          ${supBadge(p.supplier)}
-          <div style="font-size:11px;font-weight:700;margin-top:4px;${sc2}">${p.status}</div>
+        <div class="cph-right">
+          <div style="font-size:11px;font-weight:700;${sc2}">${p.status}</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:2px">tap to expand ›</div>
         </div>
       </div>
-      <div class="off-meta">
-        <div>ETA: <b style="${p.etaEstimated?'color:var(--text3)':'color:var(--accent2)'}">${p.etaDate}${p.etaEstimated?' (est)':''}</b></div>
-        <div>Orders: <b>${p.orderCount}</b></div>
-        ${p.delayFlag==='Y'?'<span style="color:#ffa502;font-weight:700">⚠ DELAYED</span>':''}
-        ${p.riskCount>0?`<span style="color:#ff4757;font-weight:700">📅 ${p.riskCount} fit date${p.riskCount>1?'s':''} at risk</span>`:''}
+      <div class="cph-body" id="${cId}">
+        ${p.riskCount>0?`<div style="padding:8px 10px;background:rgba(255,71,87,.08);border:1px solid rgba(255,71,87,.25);border-radius:8px;font-size:12px;color:#ff4757;font-weight:600;margin-bottom:10px">⚠ ${p.riskCount} order${p.riskCount>1?'s':''} have fit dates within 7 days of ETA</div>`:''}
+        <div id="${cId}-orders"><div class="loading"><div class="spinner"></div>Loading orders…</div></div>
       </div>
-      ${p.riskCount>0?`<div style="margin-top:8px;padding:8px 10px;background:rgba(255,71,87,.08);border:1px solid rgba(255,71,87,.25);border-radius:8px;font-size:12px;color:#ff4757;font-weight:600">⚠ ${p.riskCount} order${p.riskCount>1?'s':''} have fit dates within 7 days of ETA — check scheduling</div>`:''}
     </div>`;
   }).join('');
+}
+
+const _incLoaded = {};
+function toggleCphIncoming(cId, containerID) {
+  const body = document.getElementById(cId);
+  if(!body) return;
+  const isOpen = body.classList.contains('open');
+  toggleCph(cId);
+  if(isOpen) return; // was open, now closing — don't reload
+  if(_incLoaded[containerID]) return;
+  _incLoaded[containerID] = true;
+  const ordersEl = document.getElementById(cId+'-orders');
+  if(!ordersEl) return;
+  apiFetch('getOrders',{containerID}).then(data=>{
+    const orders = data.orders||[];
+    if(!orders.length){
+      ordersEl.innerHTML='<div style="font-size:13px;color:var(--text3);padding:8px 0">No orders linked yet</div>';
+      return;
+    }
+    ordersEl.innerHTML = orders.map(o=>{
+      const statusColor = o.status==='ZONED'?'#2ed573':o.status==='IN TRANSIT'?'var(--text3)':'var(--text2)';
+      return `<div class="off-card" style="margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div><div class="off-ref">${o.customerRef}</div><div class="off-name">${o.customerName}</div></div>
+          <div style="text-align:right">
+            <div style="font-size:11px;color:${statusColor};font-weight:700">${o.status}</div>
+            <div style="font-size:10px;color:var(--text3)">${o.boxesShipped} box${o.boxesShipped!==1?'es':''}</div>
+          </div>
+        </div>
+        <div class="off-meta" style="margin-top:6px">
+          ${bookPillHtml(o.bookingStatus)}
+          ${o.zoneAssigned?'<div class="zone-tag">📍 Zone '+o.zoneAssigned+'</div>':''}
+        </div>
+      </div>`;
+    }).join('');
+  }).catch(()=>{
+    ordersEl.innerHTML='<div style="font-size:13px;color:var(--text3);padding:8px 0">Could not load orders</div>';
+  });
 }
 
 // ── DAMAGE ────────────────────────────────────────────────
