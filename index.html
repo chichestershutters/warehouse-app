@@ -650,6 +650,44 @@ const CONFIG = {
   APP_NAME: 'CS Warehouse',
   WAREHOUSE: 'Unit 7, Kingley Centre'
 };
+// ═══════════════════════════════════════════════════════════
+// GEOGRAPHIC ZONE MAP
+// Groups postcode districts into fitting areas.
+// canCombine = adjacent zones a fitter can cover in one day.
+// ═══════════════════════════════════════════════════════════
+const ZONE_MAP = {
+  'Portsmouth':               { emoji:'⚓', districts:['PO1','PO2','PO3','PO4','PO5','PO6'], canCombine:['Havant & Hayling','Fareham & Whiteley'] },
+  'Havant & Hayling':         { emoji:'🌊', districts:['PO9','PO10','PO11'], canCombine:['Portsmouth','Chichester','Waterlooville'] },
+  'Waterlooville':            { emoji:'🏘', districts:['PO7','PO8'], canCombine:['Havant & Hayling','Fareham & Whiteley'] },
+  'Fareham & Whiteley':       { emoji:'🏗', districts:['PO12','PO13','PO14','PO15','PO16','PO17'], canCombine:['Portsmouth','Waterlooville','Southampton & Eastleigh'] },
+  'Chichester':               { emoji:'🏛', districts:['PO18','PO19','PO20'], canCombine:['Bognor Regis','Havant & Hayling'] },
+  'Bognor Regis':             { emoji:'🌴', districts:['PO21','PO22'], canCombine:['Chichester','Worthing & Littlehampton'] },
+  'Worthing & Littlehampton': { emoji:'🏖', districts:['BN11','BN12','BN13','BN14','BN15','BN16','BN17','BN18','BN44'], canCombine:['Bognor Regis','Pulborough & Horsham'] },
+  'Haslemere & Petworth':     { emoji:'🌲', districts:['GU26','GU27','GU28'], canCombine:['Midhurst & Petersfield'] },
+  'Midhurst & Petersfield':   { emoji:'🌾', districts:['GU29','GU30','GU31','GU32'], canCombine:['Chichester','Haslemere & Petworth'] },
+  'Alton & Bordon':           { emoji:'🌳', districts:['GU33','GU34','GU35'], canCombine:['Midhurst & Petersfield'] },
+  'Pulborough & Horsham':     { emoji:'🐴', districts:['RH13','RH14','RH20'], canCombine:['Worthing & Littlehampton'] },
+  'Southampton & Eastleigh':  { emoji:'🚢', districts:['SO30','SO31','SO50'], canCombine:['Fareham & Whiteley','Winchester & Bishops Waltham'] },
+  'Winchester & Bishops Waltham': { emoji:'⛪', districts:['SO21','SO24','SO32'], canCombine:['Southampton & Eastleigh'] },
+};
+
+// Lookup: postcode district → zone name
+function getZoneForDistrict(district) {
+  if(!district) return null;
+  const d = district.toUpperCase().trim();
+  for(const [zoneName, zoneData] of Object.entries(ZONE_MAP)) {
+    if(zoneData.districts.includes(d)) return zoneName;
+  }
+  return null;
+}
+
+// Add zone name to a job object
+function enrichJobWithZone(job) {
+  const zone = getZoneForDistrict(job.postcodeDistrict);
+  return Object.assign({}, job, { zone: zone || 'Unknown Area', zoneEmoji: zone ? ZONE_MAP[zone].emoji : '❓' });
+}
+
+
 
 // ═══════════════════════════════════════════════════════════
 // USERS — officeAccess:true routes to dashboard + requires PIN
@@ -1187,39 +1225,73 @@ function renderSchedUrgent(items) {
 }
 
 function renderSchedArea(items) {
-  const areaMap={};
-  items.forEach(o=>{
-    const d=o.postcodeDistrict||'Unknown Area';
-    if(!areaMap[d]) areaMap[d]=[];
-    areaMap[d].push(o);
+  // Enrich jobs with zone names
+  const enriched = items.map(enrichJobWithZone);
+
+  // Group by ZONE (not district)
+  const zoneGroups = {};
+  enriched.forEach(o => {
+    const z = o.zone;
+    if(!zoneGroups[z]) zoneGroups[z] = [];
+    zoneGroups[z].push(o);
   });
-  if(!Object.keys(areaMap).length) return '<div class="empty-state" style="padding:24px 0"><div class="empty-icon">📍</div><div class="empty-text">No postcode data</div><div class="empty-sub">Run CS_DATA_LINK sync to populate postcodes</div></div>';
-  const areas=Object.entries(areaMap).sort((a,b)=>{
-    const aR=a[1].filter(o=>o.bookingStatus==='READY TO BOOK').length;
-    const bR=b[1].filter(o=>o.bookingStatus==='READY TO BOOK').length;
-    return bR-aR;
+
+  const totalZones = Object.keys(zoneGroups).filter(z=>z!=='Unknown Area').length;
+  const unknownCount = (zoneGroups['Unknown Area']||[]).length;
+
+  // Sort zones: most ready-to-book first
+  const sorted = Object.entries(zoneGroups).sort((a,b)=>{
+    if(a[0]==='Unknown Area') return 1;
+    if(b[0]==='Unknown Area') return -1;
+    const aR = a[1].filter(o=>o.bookingStatus==='READY TO BOOK').length;
+    const bR = b[1].filter(o=>o.bookingStatus==='READY TO BOOK').length;
+    return bR - aR;
   });
-  let html=`<div style="font-size:12px;color:var(--text2);margin-bottom:12px">${areas.length} postcode areas · tap to expand</div>`;
-  areas.forEach(([district,jobs])=>{
-    const readyCount=jobs.filter(o=>o.bookingStatus==='READY TO BOOK').length;
-    const urgentCount=jobs.filter(o=>o.fitPassed||o.fitRisk).length;
-    const awaitingCount=jobs.filter(o=>o.bookingStatus==='AWAITING STOCK').length;
-    const totalHours=jobs.reduce((s,o)=>s+(o.fitTimeHrs||0),0);
-    const helperJobs=jobs.filter(o=>o.helperReq==='Y').length;
+
+  let html = `<div style="font-size:12px;color:var(--text2);margin-bottom:12px">${totalZones} areas · tap to expand · ${unknownCount>0?unknownCount+' jobs with no postcode':'all postcodes matched'}</div>`;
+
+  sorted.forEach(([zoneName, jobs])=>{
+    const zoneInfo = ZONE_MAP[zoneName] || { emoji:'❓', canCombine:[] };
+    const emoji = zoneInfo.emoji || '❓';
+    const readyCount = jobs.filter(o=>o.bookingStatus==='READY TO BOOK').length;
+    const urgentCount = jobs.filter(o=>o.fitPassed||o.fitRisk).length;
+    const awaitingCount = jobs.filter(o=>o.bookingStatus==='AWAITING STOCK').length;
+    const totalHours = jobs.reduce((s,o)=>s+(o.fitTimeHrs||0),0);
+    const helperCount = jobs.filter(o=>o.helperReq==='Y').length;
+    const canCombine = zoneInfo.canCombine||[];
+
+    // Fit summary
     const qtr=jobs.filter(o=>o.fitCat==='1/4 Day').length;
     const half=jobs.filter(o=>o.fitCat==='1/2 Day').length;
     const thr=jobs.filter(o=>o.fitCat==='3/4 Day').length;
     const full=jobs.filter(o=>o.fitCat==='Full Day').length;
     const fitSum=[qtr?qtr+'× ¼':'',half?half+'× ½':'',thr?thr+'× ¾':'',full?full+'× Full':''].filter(Boolean).join(' · ');
-    const aId='area-'+district.replace(/\s/g,'').replace(/[^a-zA-Z0-9]/g,'');
+
+    const aId='area-'+zoneName.replace(/[^a-zA-Z0-9]/g,'');
+
+    // Day suggestions from ready jobs in this zone
+    const readyJobs = jobs.filter(o=>o.bookingStatus==='READY TO BOOK');
+    const daySuggestions = findDayCombinations(readyJobs, 8);
+
+    // Check if any compatible zones also have ready jobs
+    const compatibleWithReady = canCombine.filter(z => {
+      const zJobs = zoneGroups[z]||[];
+      return zJobs.some(o=>o.bookingStatus==='READY TO BOOK');
+    });
+
     html+=`<div class="area-group">
       <div class="area-group-header" onclick="toggleArea('${aId}')">
-        <div>
-          <div class="area-district">${district}</div>
-          <div class="area-meta">${fitSum}${totalHours>0?' · '+totalHours+'hrs total':''}${helperJobs>0?' · '+helperJobs+' need helper':''}</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="font-size:22px">${emoji}</div>
+            <div>
+              <div class="area-district">${zoneName}</div>
+              <div class="area-meta">${fitSum}${totalHours>0?' · '+totalHours+'hrs total':''}${helperCount>0?' · '+helperCount+' need helper':''}</div>
+            </div>
+          </div>
         </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="text-align:right">
             ${readyCount>0?`<div style="font-size:11px;font-weight:700;color:#2ed573">${readyCount} ready</div>`:''}
             ${urgentCount>0?`<div style="font-size:11px;font-weight:700;color:#ff4757">${urgentCount} urgent</div>`:''}
             ${awaitingCount>0?`<div style="font-size:11px;color:var(--text3)">${awaitingCount} awaiting</div>`:''}
@@ -1232,12 +1304,31 @@ function renderSchedArea(items) {
         </div>
       </div>
       <div class="area-jobs-list" id="${aId}">
-        ${renderAreaDaySuggestion(jobs.filter(o=>o.bookingStatus==='READY TO BOOK'),district)}
+        ${compatibleWithReady.length>0?`<div style="font-size:11px;color:var(--accent);background:rgba(61,127,255,.08);border:1px solid rgba(61,127,255,.2);border-radius:8px;padding:8px 10px;margin-bottom:10px">💡 Can combine with: ${compatibleWithReady.join(', ')}</div>`:''}
+        ${daySuggestions.length>0 ? daySuggestions.map((s,idx)=>`
+        <div class="day-suggest" style="margin-bottom:10px">
+          <div class="day-suggest-header">
+            <div>
+              <div class="day-suggest-title">💡 Day ${idx+1} — ${zoneName}</div>
+              <div style="font-size:11px;color:var(--text2);margin-top:2px">${s.jobs.length} jobs${s.jobs.filter(o=>o.fitPassed||o.fitRisk).length>0?' · <span style="color:#ff4757">'+s.jobs.filter(o=>o.fitPassed||o.fitRisk).length+' urgent</span>':''}</div>
+            </div>
+            <div class="day-suggest-hours">${s.totalHours}/8hrs</div>
+          </div>
+          ${s.jobs.map(o=>`<div class="day-job-row">
+            <div style="flex:1">
+              <div class="day-job-ref">${o.customerRef}</div>
+              <div class="day-job-name">${o.customerName}</div>
+            </div>
+            ${fitPillHtml(o.fitCat)}
+            ${o.fitPassed?'<span style="font-size:10px;color:#ff4757;font-weight:700">OVERDUE</span>':o.fitRisk?'<span style="font-size:10px;color:#ffa502;font-weight:700">URGENT</span>':''}
+            ${o.hasCustomerAction?'<span style="font-size:12px" title="'+o.customerAction+'">⚠️</span>':''}
+          </div>`).join('')}
+          ${s.jobs.filter(o=>o.hasCustomerAction).length>0?`<div class="action-prompt" style="margin-top:8px"><div class="action-prompt-icon">⚠️</div><div class="action-prompt-text">Check before booking: ${s.jobs.filter(o=>o.hasCustomerAction).map(o=>o.customerName+': "'+o.customerAction+'"').join(' · ')}</div></div>`:'<div style="font-size:11px;color:var(--accent2);margin-top:8px">✓ No pre-conditions</div>'}
+        </div>`).join('') : (readyCount===0?`<div style="font-size:12px;color:var(--text3);padding:8px 0">No jobs ready to book yet — ${awaitingCount} awaiting stock</div>`:'')
+        }
         ${jobs.sort((a,b)=>{
           if(a.fitPassed&&!b.fitPassed) return -1;
           if(b.fitPassed&&!a.fitPassed) return 1;
-          if(a.fitRisk&&!b.fitRisk) return -1;
-          if(b.fitRisk&&!a.fitRisk) return 1;
           if(a.bookingStatus==='READY TO BOOK'&&b.bookingStatus!=='READY TO BOOK') return -1;
           if(b.bookingStatus==='READY TO BOOK'&&a.bookingStatus!=='READY TO BOOK') return 1;
           return 0;
@@ -1245,6 +1336,7 @@ function renderSchedArea(items) {
       </div>
     </div>`;
   });
+
   return html;
 }
 
@@ -1455,23 +1547,75 @@ function renderFittingNotesTags(notes) {
   return `<div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:4px">${parts.map(p=>'<span class="fit-note-tag">📋 '+p+'</span>').join('')}</div>`;
 }
 
-function findDayCombinations(jobs,targetHours) {
-  const suggestions=[];
-  const byArea={};
-  jobs.forEach(o=>{const d=o.postcodeDistrict||'Unknown';if(!byArea[d])byArea[d]=[];byArea[d].push(o);});
-  Object.entries(byArea).forEach(([district,areaJobs])=>{
-    let hours=0; const selected=[];
-    const sorted=[...areaJobs].sort((a,b)=>{
-      if(a.fitPassed&&!b.fitPassed)return -1;if(b.fitPassed&&!a.fitPassed)return 1;
-      if(a.fitRisk&&!b.fitRisk)return -1;if(b.fitRisk&&!a.fitRisk)return 1;return 0;
-    });
-    sorted.forEach(job=>{if(hours+(job.fitTimeHrs||0)<=targetHours){selected.push(job);hours+=(job.fitTimeHrs||0);}});
-    if(selected.length>=2||(selected.length===1&&hours>=4)) suggestions.push({area:district,jobs:selected,totalHours:hours});
+function findDayCombinations(jobs, targetHours) {
+  // Jobs are already filtered to one zone when called from renderSchedArea
+  // Just fill up to targetHours prioritising urgent jobs first
+  const suggestions = [];
+  if(!jobs || !jobs.length) return suggestions;
+
+  // Sort: overdue first, then at risk, then by fit date
+  const sorted = [...jobs].sort((a,b)=>{
+    if(a.fitPassed&&!b.fitPassed) return -1;
+    if(b.fitPassed&&!a.fitPassed) return 1;
+    if(a.fitRisk&&!b.fitRisk) return -1;
+    if(b.fitRisk&&!a.fitRisk) return 1;
+    if(a.fitDate&&b.fitDate) return a.fitDate.split('/').reverse().join('').localeCompare(b.fitDate.split('/').reverse().join(''));
+    return 0;
   });
-  return suggestions.sort((a,b)=>b.totalHours-a.totalHours);
+
+  // Greedy fill: keep adding jobs until we hit 8hrs
+  let hours = 0;
+  const selected = [];
+  sorted.forEach(job=>{
+    if(hours + (job.fitTimeHrs||0) <= targetHours) {
+      selected.push(job);
+      hours += (job.fitTimeHrs||0);
+    }
+  });
+
+  if(selected.length >= 1 && hours >= 2) {
+    suggestions.push({ jobs: selected, totalHours: hours });
+
+    // If there are leftover jobs, try a second day
+    const remaining = sorted.filter(j=>!selected.includes(j));
+    if(remaining.length >= 1) {
+      let hours2 = 0;
+      const selected2 = [];
+      remaining.forEach(job=>{
+        if(hours2 + (job.fitTimeHrs||0) <= targetHours) {
+          selected2.push(job);
+          hours2 += (job.fitTimeHrs||0);
+        }
+      });
+      if(selected2.length >= 1 && hours2 >= 2) {
+        suggestions.push({ jobs: selected2, totalHours: hours2 });
+      }
+    }
+  }
+
+  return suggestions;
 }
 
-function buildDaySuggestions(readyJobs){return findDayCombinations(readyJobs,8);}
+function buildDaySuggestions(readyJobs) {
+  // Group by zone, build suggestions per zone
+  const allSuggestions = [];
+  const byZone = {};
+  readyJobs.map(enrichJobWithZone).forEach(o=>{
+    if(!byZone[o.zone]) byZone[o.zone]=[];
+    byZone[o.zone].push(o);
+  });
+  Object.entries(byZone).forEach(([zoneName, zoneJobs])=>{
+    const suggestions = findDayCombinations(zoneJobs, 8);
+    suggestions.forEach(s => allSuggestions.push(Object.assign(s, {area: zoneName})));
+  });
+  // Sort: most urgent first, then fullest days
+  return allSuggestions.sort((a,b)=>{
+    const aU = a.jobs.filter(o=>o.fitPassed||o.fitRisk).length;
+    const bU = b.jobs.filter(o=>o.fitPassed||o.fitRisk).length;
+    if(bU!==aU) return bU-aU;
+    return b.totalHours-a.totalHours;
+  });
+}
 
 function toggleArea(id){
   const el=document.getElementById(id);const icon=document.getElementById(id+'-icon');
