@@ -1016,11 +1016,20 @@ function renderOverview(data){
     : '<div style="font-size:13px;color:var(--text3);padding:8px 0 16px">✅ No alerts — all clear!</div>'
   }
   <div class="section-title" style="margin-top:8px">Quick Access</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
     <div class="action-card" style="margin-bottom:0" onclick="offTab('warehouse',document.querySelectorAll('.off-tab')[1])"><div class="action-icon blue">🏭</div><div><div class="action-text-main">Warehouse</div><div class="action-text-sub">${k.ordersInWarehouse||0} orders</div></div></div>
     <div class="action-card" style="margin-bottom:0" onclick="offTab('scheduling',document.querySelectorAll('.off-tab')[2])"><div class="action-icon green">📅</div><div><div class="action-text-main">Scheduling</div><div class="action-text-sub">${k.ordersReadyToBook||0} ready</div></div></div>
     <div class="action-card" style="margin-bottom:0" onclick="offTab('incoming',document.querySelectorAll('.off-tab')[3])"><div class="action-icon purple">🚢</div><div><div class="action-text-main">Incoming</div><div class="action-text-sub">${k.pipelineCount||0} in transit</div></div></div>
     <div class="action-card" style="margin-bottom:0" onclick="offTab('damage',document.querySelectorAll('.off-tab')[4])"><div class="action-icon orange">⚠️</div><div><div class="action-text-main">Damage</div><div class="action-text-sub">${k.damageOpen||0} open</div></div></div>
+  </div>
+  <div class="driver-section">
+    <div class="driver-title">🚛 Delivery Just Arrived? Tap to Notify the Team</div>
+    <div class="driver-grid">
+      <button class="driver-btn sc" onclick="driverDropoff('S:CRAFT')">S:CRAFT</button>
+      <button class="driver-btn tr" onclick="driverDropoff('TROPICAL')">TROPICAL</button>
+      <button class="driver-btn my" onclick="driverDropoff('MYT')">MYT</button>
+      <button class="driver-btn co" onclick="driverDropoff('COURIER')">COURIER</button>
+    </div>
   </div>`;
 }
 
@@ -1029,44 +1038,99 @@ function renderWarehouse(data){
   const items=data.warehouse||[];
   if(!items.length) return '<div class="empty-state"><div class="empty-icon">🏭</div><div class="empty-text">Nothing in warehouse</div></div>';
 
-  // Filter chips state
   const f = state.whFilter||'ALL';
   const chips=['ALL','ARRIVED','ZONED','READY TO BOOK','AT RISK','DEAD STOCK'].map(c=>
     `<div class="filter-chip${f===c?' active':''}" onclick="setWhFilter('${c}')">${c}</div>`).join('');
 
   let filtered=items;
-  if(f==='ARRIVED')        filtered=items.filter(i=>i.status==='ARRIVED');
-  else if(f==='ZONED')     filtered=items.filter(i=>i.status==='ZONED');
+  if(f==='ARRIVED')            filtered=items.filter(i=>i.status==='ARRIVED');
+  else if(f==='ZONED')         filtered=items.filter(i=>i.status==='ZONED');
   else if(f==='READY TO BOOK') filtered=items.filter(i=>i.bookingStatus==='READY TO BOOK');
-  else if(f==='AT RISK')   filtered=items.filter(i=>i.fitRisk||i.fitPassed);
-  else if(f==='DEAD STOCK')filtered=items.filter(i=>i.isDead);
+  else if(f==='AT RISK')       filtered=items.filter(i=>i.fitRisk||i.fitPassed);
+  else if(f==='DEAD STOCK')    filtered=items.filter(i=>i.isDead);
 
-  return `
-  <div class="filter-row">${chips}</div>
-  <div style="font-size:12px;color:var(--text2);margin-bottom:10px">${filtered.length} order${filtered.length!==1?'s':''}</div>
-  ${filtered.map(o=>{
-    const riskStyle=o.fitPassed?'risk':o.isDead?'dead':'';
-    const fitDateColor=o.fitPassed?'class="red"':o.fitRisk?'class="amber"':o.fitDate?'class="green"':'';
-    return `<div class="off-card ${riskStyle}">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
-        <div><div class="off-ref">${o.customerRef}${o.sm8JobRef&&o.sm8JobRef!==o.customerRef?' · SM8: '+o.sm8JobRef:''}</div><div class="off-name">${o.customerName}</div></div>
-        <div style="text-align:right">${supBadge(o.supplier)}<div style="font-size:10px;color:var(--text3);margin-top:3px">${o.containerID}</div></div>
+  // Group by container
+  const containerMap={};
+  filtered.forEach(o=>{
+    if(!containerMap[o.containerID]) containerMap[o.containerID]={
+      containerID:o.containerID, supplier:o.supplier,
+      arrivalDate:o.arrivalDate, containerStatus:o.containerStatus, orders:[]
+    };
+    containerMap[o.containerID].orders.push(o);
+  });
+
+  const containers = Object.values(containerMap);
+  // Arrived first, then by containerID
+  containers.sort((a,b)=>{
+    const aA=['ARRIVED','FULLY ZONED'].includes(a.containerStatus);
+    const bA=['ARRIVED','FULLY ZONED'].includes(b.containerStatus);
+    if(aA&&!bA) return -1; if(bA&&!aA) return 1;
+    return a.containerID.localeCompare(b.containerID);
+  });
+
+  let html = `<div class="filter-row">${chips}</div>
+  <div style="font-size:12px;color:var(--text2);margin-bottom:10px">${filtered.length} order${filtered.length!==1?'s':''} in ${containers.length} container${containers.length!==1?'s':''}</div>`;
+
+  containers.forEach(c=>{
+    const supClass=c.supplier==='S:CRAFT'?'sb-sc':c.supplier==='TROPICAL'?'sb-tr':'sb-my';
+    const readyCount=c.orders.filter(o=>o.bookingStatus==='READY TO BOOK').length;
+    const unzonedCount=c.orders.filter(o=>!o.zone).length;
+    const cId='wh-'+c.containerID.replace(/[^a-zA-Z0-9]/g,'');
+
+    html+=`<div class="container-plan-card">
+      <div class="container-plan-header" onclick="toggleCph('${cId}')">
+        <div class="cph-left">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+            <div class="cph-id">${c.containerID}</div>
+            <span class="sup-badge ${supClass}">${c.supplier}</span>
+          </div>
+          <div class="cph-meta">
+            ${c.orders.length} order${c.orders.length!==1?'s':''}
+            ${readyCount>0?` · <span style="color:#2ed573;font-weight:700">${readyCount} ready</span>`:''}
+            ${unzonedCount>0?` · <span style="color:#ffa502;font-weight:700">${unzonedCount} unzoned</span>`:''}
+          </div>
+        </div>
+        <div class="cph-right">
+          <div style="font-size:11px;color:#2ed573;font-weight:700">${c.containerStatus||''}</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px">${c.arrivalDate||''}</div>
+        </div>
       </div>
-      <div class="off-meta">
-        <div>Zone: <b>${o.zone||'—'}</b></div>
-        <div>Boxes: <b>${o.boxesShipped}</b></div>
-        <div>Fit Date: <b ${fitDateColor}>${o.fitDate||'—'}</b></div>
-        ${fitPill(o.fitCat)}
-        ${bookPill(o.bookingStatus)}
-        ${o.postcode?`<span class="postcode-chip">${o.postcode}</span>`:''}
-        ${o.helperReq==='Y'?'<span style="font-size:10px;background:rgba(156,111,255,.12);color:var(--info);padding:2px 7px;border-radius:5px;font-weight:700">+ HELPER</span>':''}
-        ${o.fitPassed?'<span class="off-meta red">⚠ FIT DATE PASSED</span>':''}
-        ${o.isDead?'<span class="off-meta amber">📦 DEAD STOCK</span>':''}
-        ${o.damageFlag==='Y'?'<span class="off-meta red">💥 DAMAGE</span>':''}
-        ${o.overnight?'<span style="font-size:10px;background:rgba(156,111,255,.12);color:var(--info);padding:2px 7px;border-radius:5px;font-weight:700">🚐 ON VAN</span>':''}
+      <div class="cph-body" id="${cId}">
+        ${c.orders.map(o=>{
+          const fitDateColor=o.fitPassed?'#ff4757':o.fitRisk?'#ffa502':o.fitDate?'#2ed573':'var(--text3)';
+          const cardBorder=o.fitPassed?'border-left:3px solid #ff4757':o.fitRisk?'border-left:3px solid #ffa502':'';
+          return `<div class="off-card" style="margin-bottom:8px;${cardBorder}">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+              <div>
+                <div class="off-ref">${o.customerRef}</div>
+                <div class="off-name">${o.customerName}</div>
+              </div>
+              <div style="text-align:right">
+                <div style="font-size:12px;font-weight:800;color:${fitDateColor}">📅 ${o.fitDate||'No date'}</div>
+                <div style="font-size:10px;color:var(--text3);margin-top:2px">${o.boxesShipped} box${o.boxesShipped!==1?'es':''}</div>
+              </div>
+            </div>
+            <div class="off-meta">
+              ${fitPillHtml(o.fitCat)}
+              ${bookPillHtml(o.bookingStatus)}
+              ${o.zone?`<div class="zone-tag">📍 Zone ${o.zone}</div>`:'<span style="font-size:11px;color:#ffa502;font-weight:700">⚠ No zone</span>'}
+              ${o.postcodeDistrict?`<span class="postcode-chip">${o.postcodeDistrict}</span>`:''}
+              ${o.helperReq==='Y'?'<span style="font-size:10px;background:rgba(156,111,255,.12);color:var(--info);padding:2px 7px;border-radius:5px;font-weight:700">+ HELPER</span>':''}
+              ${o.damageFlag==='Y'?'<span style="font-size:10px;background:rgba(255,71,87,.12);color:#ff4757;padding:2px 7px;border-radius:5px;font-weight:700">💥 DAMAGE</span>':''}
+            </div>
+            ${o.hasCustomerAction?`<div class="action-prompt"><div class="action-prompt-icon">⚠️</div><div class="action-prompt-text">Before booking: "${o.customerAction}"</div></div>`:''}
+            <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+              <button class="edit-zone-btn" onclick="offAssignZone('${o.orderRowID}','${o.customerName}','${o.containerID}','${o.zone||''}')">${o.zone?'📍 Edit Zone':'📍 Assign Zone'}</button>
+              <button class="edit-zone-btn" style="border-color:var(--info);color:var(--info)" onclick="offEditNotes('${o.orderRowID}','${o.containerID}','')">📝 Notes</button>
+              ${o.damageFlag!=='Y'?`<button class="edit-zone-btn" style="border-color:var(--warn);color:var(--warn)" onclick="offFlagDamage('${o.orderRowID}','${o.containerID}','${o.customerName}')">⚠ Damage</button>`:`<button class="edit-zone-btn" style="border-color:#2ed573;color:#2ed573" onclick="offResolveDamage('${o.orderRowID}','${o.containerID}')">✓ Resolve</button>`}
+            </div>
+          </div>`;
+        }).join('')}
       </div>
     </div>`;
-  }).join('')}`;
+  });
+
+  return html;
 }
 
 function setWhFilter(f){
@@ -1493,6 +1557,18 @@ function renderDamage(data){
       <button class="edit-zone-btn" style="flex:1;text-align:center" onclick="showToast('Supplier claim — coming soon','')">📋 Log Claim</button>
     </div>
   </div>`).join('');
+}
+
+async function offFlagDamage(orderRowID,containerID,customerName){
+  const type = window.prompt('Damage type:\n1 = Missing boxes\n2 = Damaged goods\n3 = Wrong item\n\nType 1, 2 or 3:');
+  if(!type) return;
+  const typeMap={'1':'MISSING','2':'DAMAGED','3':'WRONG ITEM'};
+  const damageType=typeMap[type.trim()]||'DAMAGED';
+  try{
+    const r=await apiPost('flagDamage',{orderRowID,containerID,damageType,fitterName:state.user});
+    if(r&&r.success){showToast('⚠ '+damageType+' flagged','error');state.offData=null;offRefresh();}
+    else showToast('Save failed','error');
+  }catch(e){showToast('Save failed','error');}
 }
 
 async function offResolveDamage(orderRowID,containerID){
