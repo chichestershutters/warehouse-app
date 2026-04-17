@@ -1107,31 +1107,19 @@ function renderOverview(data){
     <div class="kpi-cell blue" style="cursor:pointer" onclick="offTabGo('warehouse')"><div class="kpi-val">${k.containersActive??'—'}</div><div class="kpi-lbl">Containers ›</div></div>
     <div class="kpi-cell ${k.ordersUnzoned>0?'amber':'green'}" style="cursor:pointer" onclick="offTabGo('warehouse','ARRIVED')"><div class="kpi-val">${k.ordersUnzoned??'—'}</div><div class="kpi-lbl">Unzoned ›</div></div>
     <div class="kpi-cell ${(k.fitDatesAtRisk+k.fitDatesPassed)>0?'red':'green'}" style="cursor:pointer" onclick="offTabGo('scheduling','urgent')"><div class="kpi-val">${(k.fitDatesAtRisk||0)+(k.fitDatesPassed||0)}</div><div class="kpi-lbl">Fit Risk ›</div></div>
-    <div class="kpi-cell purple" style="cursor:pointer" onclick="offTabGo('incoming')"><div class="kpi-val">${k.pipelineCount??'—'}</div><div class="kpi-lbl">In Transit ›</div></div>
+    <div class="kpi-cell green" style="cursor:pointer" onclick="offTabGo('scheduling','dayplanner')"><div class="kpi-val">${k.ordersReadyToBook??'0'}</div><div class="kpi-lbl">Ready ›</div></div>
   </div>
   <div class="kpi-row">
-    <div class="kpi-cell green" style="cursor:pointer" onclick="offTabGo('scheduling','dayplanner')"><div class="kpi-val">${k.ordersReadyToBook??'0'}</div><div class="kpi-lbl">Ready Book ›</div></div>
-    <div class="kpi-cell ${k.damageOpen>0?'red':'green'}" style="cursor:pointer" onclick="offTabGo('damage')"><div class="kpi-val">${k.damageOpen??'0'}</div><div class="kpi-lbl">Damage ›</div></div>
-    <div class="kpi-cell ${k.deadStock>0?'amber':'green'}" style="cursor:pointer" onclick="offTabGo('warehouse','DEAD STOCK')"><div class="kpi-val">${k.deadStock??'0'}</div><div class="kpi-lbl">Dead Stock ›</div></div>
-    <div class="kpi-cell ${k.overnightStock>0?'amber':'green'}"><div class="kpi-val">${k.overnightStock??'0'}</div><div class="kpi-lbl">On Van</div></div>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px">
-    <div style="background:var(--surface);padding:10px 8px;text-align:center"><div style="font-size:18px;font-weight:800;color:var(--ok)">${k.quarterDayJobs||0}</div><div style="font-size:9px;color:var(--text3);text-transform:uppercase;font-weight:700">¼ Day Jobs</div></div>
-    <div style="background:var(--surface);padding:10px 8px;text-align:center"><div style="font-size:18px;font-weight:800;color:var(--primary)">${k.halfDayJobs||0}</div><div style="font-size:9px;color:var(--text3);text-transform:uppercase;font-weight:700">½ Day Jobs</div></div>
-    <div style="background:var(--surface);padding:10px 8px;text-align:center"><div style="font-size:18px;font-weight:800;color:var(--warn)">${k.fullDayJobs||0}</div><div style="font-size:9px;color:var(--text3);text-transform:uppercase;font-weight:700">Full Day</div></div>
+    <div class="kpi-cell purple" style="cursor:pointer" onclick="offTabGo('incoming')"><div class="kpi-val">${k.pipelineCount??'—'}</div><div class="kpi-lbl">In Transit ›</div></div>
+    <div class="kpi-cell blue"><div class="kpi-val">${k.ordersInWarehouse??'—'}</div><div class="kpi-lbl">In Warehouse</div></div>
+    <div class="kpi-cell ${k.helperJobs>0?'amber':'blue'}"><div class="kpi-val">${k.helperJobs??'0'}</div><div class="kpi-lbl">Need Helper</div></div>
+    <div class="kpi-cell ${k.damageOpen>0?'red':'blue'}" style="cursor:pointer" onclick="offTabGo('damage')"><div class="kpi-val">${k.damageOpen??'0'}</div><div class="kpi-lbl">Damage ›</div></div>
   </div>
   <div class="section-title">🔔 Alerts</div>
   ${alerts.length
     ? alerts.map(a=>`<div class="alert-strip ${a.type}" style="cursor:pointer" onclick="offTabGo(a.icon==='💥'?'damage':'scheduling',a.icon==='📅'||a.icon==='⚠️'?'urgent':'dayplanner')"><div class="alert-icon-wrap"><span class="alert-icon">${a.icon}</span></div><div class="alert-body"><div class="alert-title">${a.title}</div><div class="alert-sub">${a.sub} — tap to view ›</div></div></div>`).join('')
     : '<div style="font-size:13px;color:var(--text3);padding:8px 0 16px">✅ No alerts — all clear!</div>'
   }
-  <div class="section-title" style="margin-top:8px">Quick Access</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
-    <div class="action-card" style="margin-bottom:0" onclick="offTab('warehouse',document.querySelectorAll('.off-tab')[1])"><div class="action-icon blue">🏭</div><div><div class="action-text-main">Warehouse</div><div class="action-text-sub">${k.ordersInWarehouse||0} orders</div></div></div>
-    <div class="action-card" style="margin-bottom:0" onclick="offTab('scheduling',document.querySelectorAll('.off-tab')[2])"><div class="action-icon green">📅</div><div><div class="action-text-main">Scheduling</div><div class="action-text-sub">${k.ordersReadyToBook||0} ready</div></div></div>
-    <div class="action-card" style="margin-bottom:0" onclick="offTab('incoming',document.querySelectorAll('.off-tab')[3])"><div class="action-icon purple">🚢</div><div><div class="action-text-main">Incoming</div><div class="action-text-sub">${k.pipelineCount||0} in transit</div></div></div>
-    <div class="action-card" style="margin-bottom:0" onclick="offTab('damage',document.querySelectorAll('.off-tab')[4])"><div class="action-icon orange">⚠️</div><div><div class="action-text-main">Damage</div><div class="action-text-sub">${k.damageOpen||0} open</div></div></div>
-  </div>
   <div class="driver-section">
     <div class="driver-title">🚛 Delivery Just Arrived? Tap to Notify the Team</div>
     <div class="driver-grid">
@@ -1228,7 +1216,6 @@ function renderWarehouse(data){
               ${o.helperReq==='Y'?'<span style="font-size:10px;background:rgba(156,111,255,.12);color:var(--courier);padding:2px 7px;border-radius:5px;font-weight:700">+ HELPER</span>':''}
               ${o.damageFlag==='Y'?'<span style="font-size:10px;background:rgba(255,71,87,.12);color:var(--danger);padding:2px 7px;border-radius:5px;font-weight:700">💥 DAMAGE</span>':''}
             </div>
-            ${o.hasCustomerAction?`<div class="action-prompt"><div class="action-prompt-icon">⚠️</div><div class="action-prompt-text">Before booking: "${o.customerAction}"</div></div>`:''}
             <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
               <button class="edit-zone-btn" onclick="offAssignZone('${o.orderRowID}','${o.customerName}','${o.containerID}','${o.zone||''}')">${o.zone?'📍 Edit Zone':'📍 Assign Zone'}</button>
               <button class="edit-zone-btn" style="border-color:var(--courier);color:var(--courier)" onclick="offEditNotes('${o.orderRowID}','${o.containerID}','')">📝 Notes</button>
