@@ -1120,6 +1120,12 @@ function renderOverview(data){
     ? alerts.map(a=>`<div class="alert-strip ${a.type}" style="cursor:pointer" onclick="offTabGo(a.icon==='💥'?'damage':'scheduling',a.icon==='📅'||a.icon==='⚠️'?'urgent':'dayplanner')"><div class="alert-icon-wrap"><span class="alert-icon">${a.icon}</span></div><div class="alert-body"><div class="alert-title">${a.title}</div><div class="alert-sub">${a.sub} — tap to view ›</div></div></div>`).join('')
     : '<div style="font-size:13px;color:var(--text3);padding:8px 0 16px">✅ No alerts — all clear!</div>'
   }
+<div class="action-card" onclick="showDeliveries()" style="margin-bottom:10px">
+    <div class="action-icon blue">🚛</div>
+    <div><div class="action-text-main">Check In Delivery</div>
+    <div class="action-text-sub">Confirm arrivals & assign zones</div></div>
+    <div class="action-badge blue" id="offDeliveryBadge">${(data.kpi&&data.kpi.containersActive)||0}</div>
+  </div>
   <div class="driver-section">
     <div class="driver-title">🚛 Delivery Just Arrived? Tap to Notify the Team</div>
     <div class="driver-grid">
